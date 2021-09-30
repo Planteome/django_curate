@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit gene page{% endblock %}
+{% block meta_description %}This page is for users to edit a gene page, add synonyms etc...{% endblock %}
+
+{% block main %}
+    {% if logged_in and superuser %}
+        <div id="geneEditTitle">
+            <h3>{{ gene.gene_id }}{% if gene.symbol %} | {{ gene.symbol }}{% endif %}
+                {% if gene.synonyms %} | {{ gene.synonyms }}{% endif %}
+            </h3>
+        </div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div id="comments" class="form-group">
+                <label for="id_commments" class>
+                    Comments for the moderator
+                </label>
+                <div class>
+                    <textarea name="comments" class="textarea form-control" id="id_commments"></textarea>
+                </div>
+            </div>
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    {% else %}
+        You must be a logged in superuser
+    {% endif %}
+{% endblock main %}

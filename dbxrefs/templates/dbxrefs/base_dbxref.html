@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Database external references{% endblock %}
+
+{% block main %}
+    List of dbxrefs
+    <br>
+    {% for dbxref in dbxrefs %}
+        <a href="{% url 'dbxrefs:dbxref' pk=dbxref.pk %}">{{ dbxref.dbname }}</a>
+        <br>
+    {% endfor %}
+{% endblock main %}

@@ -1,0 +1,29 @@
+{% load static %}
+<div class="container" style="width: 100%">
+    <div class="row">
+        <div>
+            <a href="/" title="Home" id="logo">
+                <img src="{% static 'images/Planteome_logo1.png' %}" width="200" style="margin-right: 20px">
+            </a>
+        </div>
+        <nav class="navbar navbar-expand navbar-light bg-light" role="navigation">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'about' %}">About us</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'contact' %}">Contact us</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'genes:search' %}">
+                <div>
+                    <input class="form-control mr-sm-2" placeholder="Search for genes: CONSTANS, AT5G15850" type="search" name="search" size="40">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
+                </div>
+            </form>
+        </nav>
+    </div>
+</div>

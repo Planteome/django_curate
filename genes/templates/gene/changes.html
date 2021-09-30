@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Gene changes page{% endblock %}
+{% block meta_description %}History of changes for gene{% endblock %}
+
+{% block main %}
+    <h3>Summary of changes to gene {{ gene.gene_id }}</h3>
+    <table class="table table-striped table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Field changed:</th>
+            <th>Old:</th>
+            <th>New:</th>
+            <th>Changed by:</th>
+            <th>Changed on</th>
+        </tr>
+    </thead>
+    {% for delta in delta_list %}
+        <tr>
+        {% for change in delta.changes %}
+            <td>{{ change.field }}</td>
+            <td>{{ change.old }}</td>
+            <td>{{ change.new }}</td>
+            <td><a href="{% url 'accounts:info' delta.changed_by %}">{{ delta.changed_by }}</a></td>
+            <td>{{ delta.history_date }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock main %}

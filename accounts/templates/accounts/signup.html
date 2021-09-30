@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Signup Form{% endblock title %}
+
+{% block meta_description %}Signup for the curate planteome site{% endblock meta_description %}
+
+{% block page_header_inner %}
+    <h1>Signup Form</h1>
+{% endblock page_header_inner %}
+
+{% block main %}
+    <div class="container" style="max-width: 40%">
+        <h2>Use this page to sign up for the curate planteome site</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    </div>
+{% endblock main %}

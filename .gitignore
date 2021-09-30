@@ -1,0 +1,12 @@
+# env file
+.env
+
+# media files
+media/annotations/*
+media/dbxrefs/*
+media/genes/*
+media/taxonomy/*
+
+# build files
+__pycache__
+.idea

@@ -1,0 +1,34 @@
+{% load static %}
+<div class="container" style="background: #e0e0e0; text-align: center">
+    <br>
+    {% if user.is_authenticated %}
+        <div class="row" style="align-items: center; justify-content: center">
+            <p>Logged in as {{ user.get_username }}
+                <a href="{% url 'accounts:logout' %}" class="btn btn-primary" role="button"
+                style="margin-left: 10px">Logout?</a>
+            </p>
+        </div>
+    {% else %}
+        <a href="{% url 'accounts:login' %}" class="btn btn-info" role="button">Login</a>
+    {% endif %}
+    <div style="display: flex; align-items: center; justify-content: center">
+        <a href="https://creativecommons.org/licenses/by/4.0/" style="margin-right: 8px">
+            <img alt="Creative Commons License" src="{% static 'images/cc_by.png' %}" width="80">
+        </a>
+        <a href="https://twitter.com/Planteome">
+            <i class="fab fa-twitter-square fa-2x fa-fw" style="color: black"></i>
+        </a>
+        <a href="https://www.facebook.com/Planteome/">
+            <i class="fab fa-facebook-square fa-2x fa-fw" style="color: black"></i>
+        </a>
+    </div>
+    <div style="text-align: center">
+        Planteome by <a href="https://planteome.org">https://planteome.org</a> is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">
+        Creative Commons Attribution 4.0 International License.
+    </a>
+    </div>
+    <div style="text-align: center">
+        Based on a work at <a href="https://planteome.org">planteome.org</a>.
+    </div>
+<br>
+</div>

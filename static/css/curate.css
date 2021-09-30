@@ -1,0 +1,12 @@
+/* Custom css for curate site that overrides others, if needed
+
+ */
+body {
+    padding-top: 50px;
+    -webkit-font-smoothing: antialiased;
+}
+@media (max-width: 980px) {
+    body {
+        padding-top: 0px;
+    }
+}

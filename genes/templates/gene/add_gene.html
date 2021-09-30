@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add individual gene{% endblock title %}
+
+{% block main %}
+    {% if logged_in and superuser %}
+        Use this page to add a single gene
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    {% else %}
+        <h2>You must be a logged in superuser to use this import page</h2>
+    {% endif %}
+{% endblock main %}

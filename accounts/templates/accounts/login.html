@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Login Page{% endblock title %}
+
+{% block meta_description %}Log in to the curate planteome site{% endblock meta_description %}
+
+{% block main %}
+    <div class="container" style="max-width: 40%">
+        <h2>Use this page to log in to the curate planteome site</h2>
+        <form action="{% url 'accounts:login' %}" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    </div>
+
+{% endblock main %}

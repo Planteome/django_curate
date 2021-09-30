@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Taxon{% endblock title %}
+{% block meta_description %}Taxon view page for the Planteome curate site{% endblock meta_description %}
+
+{% block main %}
+    <div id="singleTaxonView">
+        <h2>Taxonomy: {{ taxon.name }}</h2>
+        <br>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Rank:</h4>
+                <p class="card-text">{{ taxon.rank }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Related synonyms:</h4>
+                <p class="card-text">{{ taxon.related_synonyms }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Exact synonyms:</h4>
+                <p class="card-text">{{ taxon.exact_synonyms }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">NCBI ID:</h4>
+                <p class="card-text"><a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ taxon.ncbi_id }}">{{ taxon.ncbi_id }}</a></p>
+            </div>
+        </div>
+        {% if taxon.ncbi_id != 1 %}
+            <div class="card" style="width: 40%">
+                <div class="card-body">
+                    <h4 class="card-title">Parent</h4>
+                    <p class="card-text"><a href="/taxon/{{ parent.ncbi_id }}">{{ parent.name }}</a> - NCBI ID: <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ parent.ncbi_id }}">{{ parent.ncbi_id }}</a></p>
+                </div>
+            </div>
+        {% endif  %}
+    </div>
+{% endblock main %}

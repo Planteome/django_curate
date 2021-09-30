@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}User info page{% endblock %}
+{% block meta_description %}User info page{% endblock %}
+
+{% block main %}
+    {% if logged_in %}
+        {% if not user %}
+            <h4>No user with that ID or username</h4>
+        {% else %}
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Username:</h4>
+                <p class="card-text">{{ user.username }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Name:</h4>
+                <p class="card-text">{{ user.first_name }} {{ user.last_name }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Email:</h4>
+                <p class="card-text">{{ user.email }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Date joined:</h4>
+                <p class="card-text">{{ user.date_joined }}</p>
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+        <h3>You must be logged in to view this page</h3>
+    {% endif %}
+{% endblock main %}

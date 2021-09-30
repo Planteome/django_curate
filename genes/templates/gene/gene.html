@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Gene{% endblock title %}
+{% block meta_description %}Gene view page for the Planteome curate site{% endblock meta_description %}
+
+{% block main %}
+    {% if logged_in %}
+        <div style="width: 40%; text-align: center">
+            <div id="singleGeneEdit" class="d-inline-block">
+                <a href="{% url 'genes:gene_edit' pk=gene.id %}" class="btn btn-info" role="button">Edit gene</a>
+            </div>
+            <div id="addGene" class="d-inline-block">
+                <a href="{% url 'genes:gene_add' %}" class="btn btn-primary" role="button">Add new gene</a>
+            </div>
+        </div>
+    {% endif %}
+    <div id="singleGeneView">
+        <h2>Gene: {{ gene.gene_id }}{% if gene.name %} | {{ gene.name }}{% endif %}{% if gene.symbol %} | {{ gene.symbol }}{% endif %}</h2>
+        <br>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Symbol:</h4>
+                <p class="card-text">{{ gene.symbol }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Gene Name:</h4>
+                <p class="card-text">{{ gene.name }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Gene ID:</h4>
+                <p class="card-text">{{ gene.gene_id }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Gene type:</h4>
+                <p class="card-text">{{ gene.gene_type }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Species:</h4>
+                <p class="card-text">{{ gene.species }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Synonyms:</h4>
+                <p class="card-text">{{ gene.synonyms }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Location:</h4>
+                <p class="card-text">{{ gene.location }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Summary:</h4>
+                <p class="card-text">{{ gene.summary }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Description:</h4>
+                <p class="card-text">{{ gene.description }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Phenotype:</h4>
+                <p class="card-text">{{ gene.phenotype }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Data Source:</h4>
+                <p class="card-text">Object ID: {{ gene.data_source_object_id }}
+                    <br>Source Name: {{ gene.data_source_name }}</p>
+            </div>
+        </div>
+        {% if pubmed %}
+                <div class="card" style="width: 40%">
+                    <div class="card-body">
+                        <h4 class="card-title">Pubmed links:</h4>
+                        {% for id, title in pubmed.items %}
+                            <p class="card-text"><a href="https://pubmed.ncbi.nlm.nih.gov/{{ id }}">{{ title }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+        {% endif %}
+    </div>
+{% endblock main %}

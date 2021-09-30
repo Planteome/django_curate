@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  redis:
+    image: "redis:alpine"
+  web:
+    build: .
+    command: python /app/manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - ./media:/app/media
+      - /docker/curate/mysqld:/var/run/mysql
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+  celery:
+    build: .
+    command: celery -A curate worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+      - web
+  db:
+    image: mariadb:10.4
+    ports:
+      - "3307:3306"
+    env_file:
+      - .env
+    volumes:
+      - /docker/curate/mysqldata:/var/lib/mysql
+      - /docker/curate/mysqld:/var/run/mysql
+

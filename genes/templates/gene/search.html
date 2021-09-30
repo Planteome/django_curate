@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <table class="table table-striped table-bordered table-hover">
+    <thead>
+        <th>Gene</th>
+        <th>Species</th>
+    </thead>
+    {% for gene in all_search_results %}
+        <tr>
+        <th>
+            <h3><a href="{% url 'genes:gene' pk=gene.id %}">{{ gene.gene_id }}</a></h3>
+        </th>
+        <th>
+            <h3><a href="{% url 'taxon:taxon' ncbiID=gene.species_id %}">{{ gene.species }}</a></h3>
+        </th>
+        </tr>
+    {% empty %}
+        <h2>No results found</h2>
+    {% endfor %}
+    </table>
+{% endblock main %}

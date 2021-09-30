@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Gene alias import{% endblock %}
+{% block meta_description %}Page to import gene aliases (synonyms){% endblock %}
+
+{% block main %}
+    {% if logged_in and superuser %}
+        Use this page to import a species gene aliases file
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    {% else %}
+        <h2>You must be a logged in superuser to use this import page</h2>
+    {% endif %}
+{% endblock main %}

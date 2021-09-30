@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% load dbxref_templatetags %}
+
+{% block title %}DB xref{% endblock title %}
+{% block meta_description %}DB xref view page for the Planteome curate site{% endblock meta_description %}
+
+{% block main %}
+    {% if logged_in %}
+        <div id="singleDBXrefEdit" >
+            <a href="{% url 'dbxrefs:dbxref_edit' pk=dbxref.id %}" class="btn btn-info" role="button">Edit DB xref</a>
+        </div>
+    {% endif %}
+    <div id="singleDBXrefView">
+        <h2>DB xref: {{ dbxref.dbname }}</h2>
+        <br>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Database:</h4>
+                <p class="card-text">{{ dbxref.dbname }}: {{ dbxref.fullname }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Example ID:</h4>
+                <p class="card-text">{{ dbxref.exampleID }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Example URL:</h4>
+                <p class="card-text">{{ dbxref.xrefURL }}</p>
+            </div>
+        </div>
+        <div class="card" style="width: 40%">
+            <div class="card-body">
+                <h4 class="card-title">Working URL:</h4>
+                <p class="card-text"><a href="{{ dbxref.xrefURL|dbxref_url_replace:dbxref.exampleID|example_id_db_remove:dbxref.dbname }}">example</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock main %}

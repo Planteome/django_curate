@@ -1,0 +1,80 @@
+{% load static %}
+
+{% block extra_css %}
+    <style>
+    #accordion .has-children.closed a {
+        background: #fff3cd;
+    }
+    #accordion .has-children {
+    }
+    #accordion li {
+        background: #f0ad4e;
+    }
+    ul { /* This controls the indent of the taxonomy tree */
+        padding-left: 20px;
+    }
+    </style>
+{% endblock extra_css %}
+
+{% block extra_js %}
+    <script src="{% static 'js/taxonomy_tree.js' %}"></script>
+    <script src="{% static 'js/vendor/jquery.quiccordion.js' %}"></script>
+{% endblock extra_js %}
+
+{% block taxon_display %}
+    <div style="text-align: center">
+        To visit a taxon, click the taxon name. To expand/collapse the tree, click on a taxon's stripe.
+        <br>
+    </div>
+    <form id="searchForm" action="javascript:searchFunction();">
+    <div class="form-row justify-content-center">
+        <input type="search" id="taxonSearchInput"  class="input-group-text" placeholder="Search for taxon" style="text-align: center">
+        <button id="searchBtn" class="btn btn-primary" type="button" onclick="searchFunction()">Search</button>
+    </div>
+    </form>
+    <br>
+    <div id="taxonomy_tree">
+    </div>
+    <script type="text/javascript">
+    const taxonsJS = JSON.parse('{{ taxonsJS | safe }}')
+    document.getElementById("taxonomy_tree").innerHTML = build_tree(taxonsJS)
+    // Call the script from jquery.quiccordion.js to pretty up the tree
+    $(document).ready(function() {
+        $("#accordion").quiccordion({openLevel: 4, preserveChildren: true});
+    });
+    // Call the function to color the different depths of the tree
+    $(document).ready(function() {
+        update_depth();
+    });
+    // Function for the text search
+    function searchFunction() {
+        const taxon = document.getElementById("taxonSearchInput").value;
+        const pattern = taxon.toLowerCase();
+        const items = Array.from(document.querySelectorAll('.taxonElement'));
+        // Use some instead of forEach so we can stop after the first match
+        items.some(function(element) {
+            // Have to use .childNodes[0] here or it includes all parents
+            const text = element.childNodes[0].innerText.toLowerCase();
+            if (text.match(pattern)) {
+                const parents = getParents(element);
+                // Need to change the display for all the parent elements
+                parents.forEach(function(parentElement) {
+                    parentElement.style.display = "block";
+                });
+                element.parentElement.scrollIntoView({behavior: 'smooth'});
+                return true;
+            }
+        });
+    }
+
+    function getParents(elem) {
+        let parents = [];
+        while(elem.parentNode && elem.parentNode.id !== 'root') {
+            elem = elem.parentNode;
+            parents.push(elem);
+        }
+        return parents;
+    }
+    </script>
+{% endblock %}
+

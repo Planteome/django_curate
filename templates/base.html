@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" class="{% block html_class %}{% endblock %}">
+<head>
+{% block head %}
+    <title>Planteome Curate - {% block title %}{% endblock title %}{% block title_page %}{% endblock title_page %}</title>
+
+    <meta charset="utf-8" />
+    <meta name="description" content="{% block meta_description %}The Planteome Curation site."{% endblock meta_description %}/>
+    {% block meta %}{% endblock %}
+
+    {% block css %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/vendor/jquery-ui.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/vendor/bootstrap/bootstrap.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/vendor/fontawesome/all.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/vendor/chosen.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/vendor/bootstrap/chosen-bootstrap.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/curate.css' %}" />
+    {% endblock css %}
+
+    {% block extra_css %}{% endblock %}
+    {% block link %}{%  endblock %}
+
+    {% block js_library %}
+        <script type="text/javascript" src="{% static 'js/vendor/jquery-3.6.0.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/vendor/chosen.jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/vendor/bootstrap.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/vendor/font-awesome.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/vendor/jquery-ui.min.js' %}"></script>
+    {% endblock js_library %}
+
+    {% block extra_js %}{% endblock %}
+{% endblock head %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+{% block body %}
+{% block header %}
+    {% include 'navbar.html' %}
+{% endblock header %}
+
+{% block main_outer %}
+<div id="main" role="main" style="margin-left: 5%">
+    <br>
+    {% block main %}{% endblock main %}
+</div>
+{% endblock main_outer %}
+<div id="footer">
+    <br>
+    {% block footer %}
+        {% include 'footer.html' %}
+    {% endblock footer %}
+</div>
+{% endblock body %}
+</body>
+</html>

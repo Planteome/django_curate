@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Gene home page{% endblock %}
+{% block meta_description %}Gene home page{% endblock %}
+
+{% block main %}
+    This is the base gene home page.<br>
+    <div id="geneSearch">
+        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'genes:search' %}">
+            <input class="form-control mr-sm-2" type="search" name="search">
+            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+    Last 10 genes added were:<br>
+    {% for gene in latest_genes %}
+        <a href="{% url 'genes:gene' pk=gene.id %}">{{ gene.gene_id }}</a>
+        <br>
+    {% endfor %}
+{% endblock main%}

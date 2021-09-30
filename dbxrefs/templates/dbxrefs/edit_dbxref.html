@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit dbxref page{% endblock %}
+{% block meta_description %}This page is for users to edit a dbxref item{% endblock %}
+
+{% block main %}
+    {% if logged_in and superuser %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    {% else %}
+        You must be a logged in superuser
+    {% endif %}
+{% endblock main %}

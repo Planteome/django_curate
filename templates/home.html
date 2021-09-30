@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block main %}
+    <div style="text-align: center">
+        <h1>
+            Welcome to the home page for planteome curate.
+            {% if not user.is_authenticated %}
+                <a href="{% url 'accounts:login' %}">Login</a>
+            {% endif %}
+        </h1>
+    </div>
+    <div class="row">
+        <div id="taxon_display" style="alignment: left; width: 50%" >
+            {% block taxon_display %}
+                {% include 'taxonomy_display/taxon_display.html' with taxons=taxons %}
+            {% endblock taxon_display %}
+        </div>
+        <div id="latest_genes_display" style="alignment: right; width: 30%; text-align: right">
+            {% block latest_genes_display %}
+                {% include 'latest_genes_display/latest_genes_display.html' %}
+            {% endblock latest_genes_display %}
+        </div>
+    </div>
+{% endblock main %}
