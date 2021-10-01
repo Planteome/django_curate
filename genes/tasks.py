@@ -21,7 +21,7 @@ import re
 
 # Decorator to tell celery this is a worker task
 @shared_task(bind=True)
-def process_genes_task(self, file_id, species_pk):
+def process_genes_task(self, file_id, species_pk, user_id):
     progress_recorder = ProgressRecorder(self)
     # All genes
     genes_lst = []
@@ -40,7 +40,8 @@ def process_genes_task(self, file_id, species_pk):
 
         gene_location = "Chromosome " + str(gene_chr) + ": " + str(gene_start) + " - " + str(gene_end)
 
-        genes_lst.append(Gene(symbol=gene_symbol, gene_id=gene_id, gene_type=gene_type, species=species, location=gene_location, description=gene_desc))
+        genes_lst.append(Gene(symbol=gene_symbol, gene_id=gene_id, gene_type=gene_type, species=species,
+                              location=gene_location, description=gene_desc, changed_by_id=user_id))
         progress_recorder.set_progress(index, total_genes_to_save, description="Processing genes from file")
 
     # Now put them in the database

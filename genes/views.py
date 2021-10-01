@@ -202,12 +202,13 @@ class GeneImportView(FormView):
 
     def post(self, request, *args, **kwargs):
         form = GeneImportDocumentForm(request.POST, request.FILES)
+        user = self.request.user
         if form.is_valid():
             species = form.cleaned_data['species']
             file = GeneDocument(document=request.FILES['document'], species=species)
             file.save()
             # pass the new uploaded file id so it can be looked up in the task
-            genes_lst = process_genes_task.delay(file.document.name, species.pk)
+            genes_lst = process_genes_task.delay(file.document.name, species.pk, user.pk)
             return render(self.request, 'gene/display_progress.html', context={'task_id': genes_lst.task_id})
 
 
@@ -261,7 +262,8 @@ class GeneAddView(FormView):
             Gene.objects.create(symbol=symbol, name=name, gene_id=gene_id, gene_type=gene_type, species=species,
                                 synonyms=synonyms, location=location, summary=summary, description=description,
                                 phenotype=phenotype, data_source_object_id=data_source_object_id,
-                                data_source_name=data_source_name, pubmed_id=pubmed_id)
+                                data_source_name=data_source_name, pubmed_id=pubmed_id,
+                                changed_by=self.request.user)
 
             return HttpResponseRedirect('/gene/import_success/')
         else:
