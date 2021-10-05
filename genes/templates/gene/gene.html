@@ -95,4 +95,10 @@
                 </div>
         {% endif %}
     </div>
+    <br>
+    <div style="width: 40%; text-align: center">
+            <div id="singleGeneChanges" class="d-inline-block">
+                <a href="{% url 'genes:gene_changes' pk=gene.id %}" class="btn btn-info" role="button">Gene History</a>
+            </div>
+    </div>
 {% endblock main %}
