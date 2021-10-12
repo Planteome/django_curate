@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class DBXref(models.Model):
-    dbname = models.CharField(max_length=255)
+    dbname = models.CharField(max_length=255, unique=True)
     fullname = models.TextField(max_length=1000)
     genericURL = models.URLField(max_length=255)
     exampleID = models.CharField(max_length=100, null=True, blank=True)
