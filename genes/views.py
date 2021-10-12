@@ -165,7 +165,7 @@ class GeneEditView(UpdateView):
 
             # add new values
             changed_gene.status = status
-            changed_gene.action = choices.INITIAL
+            changed_gene.action = choices.ApprovalActions.INITIAL
             changed_gene.requestor = requestor
             changed_gene.datetime = curr_time
             changed_gene.comments = comments
@@ -325,7 +325,7 @@ class ApprovalView(TemplateView):
             context['superuser'] = False
 
         # get list of genes awaiting approval
-        approval_genes = GeneApproval.objects.filter(Q(status=choices.PENDING)|Q(status=choices.MORE_INFO))
+        approval_genes = GeneApproval.objects.filter(Q(status=choices.ApprovalStates.PENDING)|Q(status=choices.ApprovalStates.MORE_INFO))
         context['approval_genes'] = approval_genes
 
         return context
@@ -343,8 +343,8 @@ class ApprovalView(TemplateView):
             org_gene.pubmed_id = approved_gene.pubmed_id
 
             # change the GeneApproval model
-            approved_gene.action = choices.APPROVE
-            approved_gene.status = choices.APPROVED
+            approved_gene.action = choices.ApprovalActions.APPROVE
+            approved_gene.status = choices.ApprovalStates.APPROVED
 
             # Go ahead and save
             org_gene.save()
@@ -355,15 +355,15 @@ class ApprovalView(TemplateView):
         for reject_gene_id in reject_list:
             reject_gene = GeneApproval.objects.get(pk=reject_gene_id)
             # Only have to change the GeneApproval model status
-            reject_gene.action = choices.REJECT
-            reject_gene.status = choices.REJECTED
+            reject_gene.action = choices.ApprovalActions.REJECT
+            reject_gene.status = choices.ApprovalStates.REJECTED
             reject_gene.save()
 
         # Ones to request more info from requestor
         requestInfo_list = request.POST.getlist('requestInfoChkbox')
         for request_gene_id in requestInfo_list:
             request_gene = GeneApproval.objects.get(pk=request_gene_id)
-            request_gene.action = choices.MORE_INFO
+            request_gene.action = choices.ApprovalActions.MORE_INFO
             # add a comment to the comment box so we know this has been requested for more info
             #  if it hasn't already
             if "More info requested" not in request_gene.comments:
