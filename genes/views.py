@@ -1,4 +1,4 @@
-import datetime
+from django.utils import timezone
 
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
@@ -122,7 +122,7 @@ class GeneEditView(UpdateView):
         # update status and requestor fields
         status = choices.ApprovalStates.PENDING
         requestor = request.user
-        curr_time = datetime.datetime.now()
+        curr_time = timezone.now()
 
         # get the comments from the form
         comments = request.POST.get('comments')
