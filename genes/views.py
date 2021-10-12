@@ -120,7 +120,7 @@ class GeneEditView(UpdateView):
 
     def post(self, request, **kwargs):
         # update status and requestor fields
-        status = choices.PENDING
+        status = choices.ApprovalStates.PENDING
         requestor = request.user
         curr_time = datetime.datetime.now()
 

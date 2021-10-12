@@ -51,14 +51,14 @@ class GeneApproval(AbstractGene):
     source_gene = models.ForeignKey(Gene, on_delete=models.CASCADE)
 
     action = models.PositiveSmallIntegerField(
-        choices=choices.APPROVAL_ACTION_CHOICES,
+        choices=choices.ApprovalActions.choices,
         blank=False,
-        default=choices.INITIAL
+        default=choices.ApprovalActions.INITIAL
     )
     status = models.PositiveSmallIntegerField(
-        choices=choices.APPROVED_STATE_CHOICES,
+        choices=choices.ApprovalStates.choices,
         blank=False,
-        default=choices.PENDING
+        default=choices.ApprovalStates.PENDING
     )
 
     requestor = models.ForeignKey(User, blank=False, null=False,
