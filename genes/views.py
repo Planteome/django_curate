@@ -325,7 +325,7 @@ class ApprovalView(TemplateView):
             context['superuser'] = False
 
         # get list of genes awaiting approval
-        approval_genes = GeneApproval.objects.filter(Q(status=choices.ApprovalStates.PENDING)|Q(status=choices.ApprovalStates.MORE_INFO))
+        approval_genes = GeneApproval.objects.filter(Q(status=choices.ApprovalStates.PENDING))
         context['approval_genes'] = approval_genes
 
         return context
