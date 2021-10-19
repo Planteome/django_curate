@@ -16,15 +16,15 @@
         </tr>
     </thead>
     {% for delta in delta_list %}
-        <tr>
         {% for change in delta.changes %}
+          <tr>
             <td>{{ change.field }}</td>
             <td>{{ change.old }}</td>
             <td>{{ change.new }}</td>
             <td><a href="{% url 'accounts:info' delta.changed_by %}">{{ delta.changed_by }}</a></td>
             <td>{{ delta.history_date }}</td>
+          </tr>
         {% endfor %}
-        </tr>
     {% endfor %}
     </table>
 {% endblock main %}
