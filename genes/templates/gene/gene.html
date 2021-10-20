@@ -89,7 +89,8 @@
                     <div class="card-body">
                         <h4 class="card-title">Pubmed links:</h4>
                         {% for id, title in pubmed.items %}
-                            <p class="card-text"><a href="https://pubmed.ncbi.nlm.nih.gov/{{ id }}">{{ title }}</a>
+                            <p class="card-text">{{ title }} (Pubmed: <a href="https://pubmed.ncbi.nlm.nih.gov/{{ id }}">{{ id }}</a>)
+                            (<a href="{% url 'annotations:by-reference' id %}">Associated annotations</a>)
                         {% endfor %}
                     </div>
                 </div>
