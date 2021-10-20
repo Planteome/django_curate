@@ -5,7 +5,7 @@
 {% block meta_description %}This page is for users to edit a gene page, add synonyms etc...{% endblock %}
 
 {% block main %}
-    {% if logged_in and superuser %}
+    {% if logged_in %}
         <div id="geneEditTitle">
             <h3>{{ gene.gene_id }}{% if gene.symbol %} | {{ gene.symbol }}{% endif %}
                 {% if gene.synonyms %} | {{ gene.synonyms }}{% endif %}
@@ -25,6 +25,6 @@
             <input type="submit" value="Submit" class="btn btn-primary">
         </form>
     {% else %}
-        You must be a logged in superuser
+        You must be a logged in
     {% endif %}
 {% endblock main %}
