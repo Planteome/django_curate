@@ -24,6 +24,7 @@ urlpatterns = [
     path('taxon/', include('taxon.urls')),
     path('gene/', include('genes.urls')),
     path('dbxref/', include('dbxrefs.urls')),
+    path('annotations/', include('annotations.urls')),
     path('celery-progress/', include('celery_progress.urls')),
     path('about', TemplateView.as_view(template_name='about_us.html'), name='about'),
     path('contact', TemplateView.as_view(template_name='contact.html'), name='contact'),

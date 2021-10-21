@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'celery',
     'django_celery_beat',
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
     'taxon',
     'genes',
     'dbxrefs',
+    'annotations',
 ]
 
 MIDDLEWARE = [

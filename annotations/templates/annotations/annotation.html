@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% load dbxref_templatetags %}
+
+{% block title %}Planteome annotation page{% endblock %}
+{% block meta_description %}Planteome annotation page{% endblock %}
+
+{% block main %}
+    {% if logged_in %}
+        <div style="width: 40%; text-align: center">
+            <div id="singleAnnotationEdit" class="d-inline-block">
+                <a href="{% url 'annotations:annotation_edit' pk=annotation.id %}" class="btn btn-info" role="button">Edit Annotation</a>
+            </div>
+            <div id="addAnnotation" class="d-inline-block">
+                <a href="{% url 'annotations:annotation_add' %}" class="btn btn-primary" role="button">Add new Annotation</a>
+            </div>
+        </div>
+    {% endif %}
+    <div id="singleAnnotation">
+        <h2>Annotation: {{ annotation.db_obj_symbol }}{% if annotation.db_obj_id %} | {{ annotation.db_obj_id }}{% endif %}
+            {% if annotation.db_obj_name %} | {{ annotation.db_obj_name }}{% endif %}
+            {% if annotation.db_obj_synonym %} | {{ annotation.db_obj_synonym }}{% endif %}
+        </h2>
+        <br>
+        <div class="card" style="width: 50%;">
+            <div class="card-body">
+                <div class="row">
+                    <p><strong>Source database:</strong>
+                        <a href="{% url 'dbxrefs:dbxref' pk=dbxref.id %}">{{ dbxref.dbname }}</a>
+                        <a href="{{ dbxref.xrefURL|dbxref_url_replace:annotation.db_obj_id|example_id_db_remove:dbxref.dbname }}">{{ annotation.db_obj_id }}</a>
+                    </p>
+                </div>
+                <div class="row">
+                    <p><strong>Ontology Term:</strong>
+                        <a href="https://browser.planteome.org/amigo/term/{{ annotation.ontology_id }}">{{ annotation.ontology_id }}</a>
+                        &nbsp;
+                        <div id="ont_term"></div>
+                        <script type="application/javascript">
+                            $.getJSON("https://browser.planteome.org/api/entity/terms?entity={{ annotation.ontology_id }}", function(json){
+                                const element = document.getElementById("ont_term");
+                                element.innerHTML = json.data[0].annotation_class_label;
+                            });
+                        </script>
+                    </p>
+                </div>
+                <div class="row">
+                    <p><strong>Aspect (ontology):</strong>
+                        {{ annotation.get_aspect_display }}</p>
+                </div>
+                <div class="row">
+                    <p><strong>Evidence Code:</strong>
+                        {{ ev_code_short }} - {{ annotation.get_evidence_code_display }}
+                    </p>
+                </div>
+                <div class="row">
+                    <p><strong>Object Type:</strong>
+                    {{ annotation.get_db_obj_type_display }}</p>
+                </div>
+                <div class="row">
+                    <p><strong>Taxon:</strong>
+                    {{ annotation.taxon }}</p>
+                </div>
+                <div class="row">
+                    <p><strong>Database Reference:</strong>
+                        <a href="{{ annotation.db_reference|get_dbxref_url }}">{{ annotation.db_reference }}</a></p>
+                </div>
+                {% if annotation.with_from %}
+                    <div class="row">
+                    <p><strong>With/From:</strong>
+                        <a href="{{ annotation.with_from|get_dbxref_url }}">{{ annotation.with_from }}</a>
+                    </p>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <p><strong>Date:</strong>
+                    {{ annotation.date }}</p>
+                </div>
+                <div class="row">
+                    <p><strong>Assigned by:</strong>
+                    {{ annotation.assigned_by }}</p>
+                </div>
+                {% if annotation.annotation_extension %}
+                    <div class="row">
+                        <p><strong>Annotation Extension:</strong>{{ annotation.annotation_extension }}</p>
+                    </div>
+                {% endif %}
+                {% if annotation.gene_product_form_id %}
+                    <div class="row">
+                        <p><strong>Gene Product Form ID:</strong>{{ annotation.gene_product_form_id }}</p>
+                    </div>
+                {% endif %}
+                {% if annotation.qualifier %}
+                    <div class="row">
+                        <p><strong>Qualifier:</strong>{{ annotation.qualifier }}</p>
+                    </div>
+                {% endif %}
+                {% if annotation.internal_gene %}
+                    <div class="row">
+                        <p><strong>Known Planteome gene:</strong>
+                        <a href="{% url 'genes:gene' pk=annotation.internal_gene.id %}">{{ annotation.internal_gene }}</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock main %}

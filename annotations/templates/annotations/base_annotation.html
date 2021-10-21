@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Annotation home page{% endblock %}
+{% block meta_description %}Annotation home page{% endblock %}
+
+{% block main %}
+    This is the base annotation home page.<br>
+    <div id="annotationSearch">
+        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'annotations:search' %}">
+            <input class="form-control mr-sm-2" type="search" name="search">
+            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+    Last 10 annotations added were:<br>
+    {% for annotation in latest_annotations %}
+        <a href="{% url 'annotations:annotation' pk=annotation.id %}">{{ annotation.db_obj_symbol }}</a>
+        <br>
+    {% endfor %}
+{% endblock main%}
