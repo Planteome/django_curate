@@ -103,9 +103,13 @@ class AnnotationView(TemplateView):
 
         # get the dbxref so it can be used to generate external link
         context['dbxref'] = DBXref.objects.get(dbname=annotation.db)
-        # get the reverse evidence code dict and pass the short code to the template
-        ev_code_dict = {e.value: e.name for e in choices.EvidenceCode}
-        context['ev_code_short'] = ev_code_dict[annotation.evidence_code]
+        # get the list of db_references and put it in a dict
+        db_reference_dict = {}
+        db_references = annotation.db_reference.split("|")
+        for db_reference in db_references:
+            dbname = db_reference.split(':')[0]
+            db_reference_dict[db_reference] = DBXref.objects.get(dbname=dbname)
+        context['db_references_dict'] = db_reference_dict
         # get the with_from URL
         with_from_db = annotation.with_from.split(':')[0]
         return context

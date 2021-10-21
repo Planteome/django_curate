@@ -49,7 +49,7 @@
                 </div>
                 <div class="row">
                     <p><strong>Evidence Code:</strong>
-                        {{ ev_code_short }} - {{ annotation.get_evidence_code_display }}
+                        {{ annotation.get_evidence_code_display }}
                     </p>
                 </div>
                 <div class="row">
@@ -62,7 +62,9 @@
                 </div>
                 <div class="row">
                     <p><strong>Database Reference:</strong>
-                        <a href="{{ annotation.db_reference|get_dbxref_url }}">{{ annotation.db_reference }}</a></p>
+                        {% for db_reference in db_references_dict %}
+                        <a href="{{ db_reference|get_dbxref_url }}">{{ db_reference }}</a></p>
+                        {% endfor %}
                 </div>
                 {% if annotation.with_from %}
                     <div class="row">
