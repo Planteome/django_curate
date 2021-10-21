@@ -14,7 +14,7 @@
     {# List of pages (wtih current "active") #}
     {% for page in page_numbers %}
         {% ifequal page page_obj.number %}
-            <li class="active page-item"><span class="page-link"><a href="#">{{ page }}</a></span> </li>
+            <li class="active page-item"><span class="page-link"><a href="#" style="color: white">{{ page }}</a></span> </li>
         {% else %}
             <li class="page-item"><span class="page-link"><a href="?page={{ page }}">{{ page }}</a></span> </li>
         {% endifequal %}
@@ -30,6 +30,6 @@
     {% if page_obj.has_next %}
         <li class="page-item"><span class="page-link"><a href="?page={{ page_obj.next_page_number }}">Next</a> </span> </li>
     {% else %}
-        <li class="disabled page-item"><span class="page-link"><a href="#">Next</a> </span> </li>
+        <li class="disabled page-item"><span class="page-link">Next</span> </li>
     {% endif %}
 </ul>
