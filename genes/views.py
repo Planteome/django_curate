@@ -125,8 +125,7 @@ class GeneEditView(UpdateView):
         return context
 
     def post(self, request, **kwargs):
-        # update status and requestor fields
-        status = choices.ApprovalStates.PENDING
+        # update requestor field
         requestor = request.user
         curr_time = timezone.now()
 
@@ -135,51 +134,47 @@ class GeneEditView(UpdateView):
 
         existing_gene = get_object_or_404(Gene, pk=self.kwargs['pk'])
 
-        # if user is superuser, skip approval
+        # initialize the changed gene to the same as the existing
+        changed_gene = GeneApproval()
+        for field in existing_gene._meta.fields:
+            setattr(changed_gene, field.name, getattr(existing_gene, field.name))
+        # Change the values
+        changed_gene.pk = None # will get the next pk available
+        changed_gene.synonyms = request.POST.get('synonyms')
+        changed_gene.summary = request.POST.get('summary')
+        changed_gene.description = request.POST.get('description')
+        changed_gene.pubmed_id = request.POST.get('pubmed_id')
+
+        # add new values
+        changed_gene.requestor = requestor
+        changed_gene.datetime = curr_time
+        changed_gene.comments = comments
+        changed_gene.source_gene = existing_gene
+
+        changed_gene.status = choices.ApprovalStates.PENDING
+        changed_gene.action = choices.ApprovalActions.INITIAL
+
         if requestor.is_superuser:
-            changed = False
-            if request.POST.get('synonyms') != existing_gene.synonyms:
-                existing_gene.synonyms = request.POST.get('synonyms')
-                changed = True
-            if request.POST.get('summary') != existing_gene.summary:
-                existing_gene.summary = request.POST.get('summary')
-                changed = True
-            if request.POST.get('description') != existing_gene.description:
-                existing_gene.description = request.POST.get('description')
-                changed = True
-            if request.POST.get('pubmed_id') != existing_gene.pubmed_id:
-                existing_gene.pubmed_id = request.POST.get('pubmed_id')
-                changed = True
-
-            if changed:
-                existing_gene.save()
-                return render(self.request, 'gene/gene_import_success.html')
-            else:
-                return HttpResponse("No changes to gene were found")
-
-        else:
-            # initialize the changed gene to the same as the existing
-            changed_gene = GeneApproval()
-            for field in existing_gene._meta.fields:
-                setattr(changed_gene, field.name, getattr(existing_gene, field.name))
-            # Change the values
-            changed_gene.pk = None # will get the next pk available
-            changed_gene.synonyms = request.POST.get('synonyms')
-            changed_gene.summary = request.POST.get('summary')
-            changed_gene.description = request.POST.get('description')
-            changed_gene.pubmed_id = request.POST.get('pubmed_id')
-
-            # add new values
-            changed_gene.status = status
-            changed_gene.action = choices.ApprovalActions.INITIAL
-            changed_gene.requestor = requestor
-            changed_gene.datetime = curr_time
-            changed_gene.comments = comments
-            changed_gene.source_gene = existing_gene
-
+            # Set it to approved
+            changed_gene.status = choices.ApprovalStates.APPROVED
+            changed_gene.action = choices.ApprovalActions.APPROVE
             # save it to the db as a GeneApproval model
             changed_gene.save()
-            # go to the request submitted page
+
+            # Save the existing gene with the updated fields
+            existing_gene.synonyms = changed_gene.synonyms
+            existing_gene.summary = changed_gene.summary
+            existing_gene.description = changed_gene.description
+            existing_gene.pubmed_id = changed_gene.pubmed_id
+
+            existing_gene.save()
+            
+        # save it to the db as a GeneApproval model
+        changed_gene.save()
+        # go to the request submitted page or success
+        if requestor.is_superuser:
+            return render(self.request, 'gene/gene_import_success.html')
+        else:
             return render(self.request, 'gene/gene_request.html')
 
 
