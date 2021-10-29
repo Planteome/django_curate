@@ -12,6 +12,11 @@
             <div id="addGene" class="d-inline-block">
                 <a href="{% url 'genes:gene_add' %}" class="btn btn-primary" role="button">Add new gene</a>
             </div>
+            {% if change_count %}
+                <div id="geneChanges" class="d-inline-block">
+                    <a href="{% url 'genes:gene_changes' pk=gene.id %}" class="btn btn-dark" role="button">View {{ change_count }} approved changes</a>
+                </div>
+            {% endif %}
         </div>
     {% endif %}
     <div id="singleGeneView">

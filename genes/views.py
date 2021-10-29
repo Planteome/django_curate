@@ -90,6 +90,10 @@ class GeneView(TemplateView):
             context['superuser'] = True
         else:
             context['superuser'] = False
+        # Get the count of changes that been approved for this annotation
+        change_count = GeneApproval.objects.filter(source_gene=gene, status=choices.ApprovalStates.APPROVED).count()
+        if change_count > 0:
+            context['change_count'] = change_count
         return context
 
 
@@ -397,9 +401,12 @@ class GeneChangeView(TemplateView):
         # get the gene history
         gene_iterator = gene.history.all().order_by('history_date').iterator()
         delta_list = []
+        delta_number = 1
         for record_pair in self.pair_iterable_for_delta_changes(gene_iterator):
             old_record, new_record = record_pair
             delta = new_record.diff_against(old_record)
+            delta.number = delta_number
+            delta_number += 1
             delta.history_date = new_record.history_date
             delta.changed_by = new_record.changed_by
             delta_list.append(delta)

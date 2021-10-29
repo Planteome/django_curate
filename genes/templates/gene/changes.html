@@ -8,6 +8,7 @@
     <table class="table table-striped table-bordered table-hover">
     <thead class="thead-dark">
         <tr>
+            <th>Change number:</th>
             <th>Field changed:</th>
             <th>Old:</th>
             <th>New:</th>
@@ -18,6 +19,7 @@
     {% for delta in delta_list %}
         {% for change in delta.changes %}
           <tr>
+            <td>{{ delta.number }}</td>
             <td>{{ change.field }}</td>
             <td>{{ change.old }}</td>
             <td>{{ change.new }}</td>
