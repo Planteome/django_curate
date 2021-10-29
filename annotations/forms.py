@@ -15,7 +15,7 @@ class AnnotationImportDocumentForm(forms.ModelForm):
 class AnnotationAddForm(forms.ModelForm):
     class Meta:
         model = AnnotationApproval
-        exclude = ['datetime', 'action', 'status', 'requestor', 'internal_gene', 'source_annotation']
+        exclude = ['datetime', 'action', 'status', 'requestor', 'internal_gene', 'source_annotation', 'assigned_by']
         #TODO: add search for gene in db
 
 

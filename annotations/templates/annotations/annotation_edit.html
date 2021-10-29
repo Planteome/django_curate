@@ -7,6 +7,7 @@
 
 {% block main %}
     {% if logged_in %}
+        <h3 style="color:red;">Note: Any changes will create a new annotation. The original annotation will be unchanged.</h3>
         <div id="annotationEditTitle">
             <h3>Annotation: {{ annotation.db_obj_symbol }}{% if annotation.db_obj_id %} | {{ annotation.db_obj_id }}{% endif %}
                 {% if annotation.db_obj_name %} | {{ annotation.db_obj_name }}{% endif %}

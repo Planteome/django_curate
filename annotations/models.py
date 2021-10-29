@@ -21,7 +21,7 @@ class AbstractAnnotation(models.Model):
     db_obj_id = models.CharField(max_length=255, blank=False, help_text='P12345', verbose_name='Database object ID')
     db_obj_symbol = models.CharField(max_length=255, blank=False, help_text='PHO3', verbose_name='Database object symbol')
     qualifier = models.CharField(max_length=255, blank=True, help_text='NOT')
-    ontology_id = models.CharField(max_length=16, blank=False, help_text='GO:0003993')
+    ontology_id = models.CharField(max_length=16, blank=False, help_text='GO:0003993', verbose_name='Ontology ID')
     db_reference = models.CharField(max_length=255, blank=False, help_text='PMID:2676709', verbose_name='Reference DB')
     evidence_code = models.PositiveSmallIntegerField(choices=choices.EvidenceCode.choices, blank=False, help_text='IMP')
     with_from = models.TextField(max_length=1000, blank=True, help_text='GO:0000346', verbose_name='With/From')

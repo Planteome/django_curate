@@ -14,6 +14,11 @@
             <div id="addAnnotation" class="d-inline-block">
                 <a href="{% url 'annotations:annotation_add' %}" class="btn btn-primary" role="button">Add new Annotation</a>
             </div>
+            {% if change_count %}
+                <div id="annotationChanges" class="d-inline-block">
+                    <a href="{% url 'annotations:annotation_changes' pk=annotation.id %}" class="btn btn-dark" role="button">View {{ change_count }} approved changes</a>
+                </div>
+            {% endif %}
         </div>
     {% endif %}
     <div id="singleAnnotation">
