@@ -173,7 +173,7 @@ class AnnotationEditView(UpdateView):
         existing_annotation = get_object_or_404(Annotation, pk=self.kwargs['pk'])
 
 
-        # initialize the changed gene to the same as the existing
+        # initialize the changed annotation to the same as the existing
         changed_annotation = AnnotationApproval()
         for field in existing_annotation._meta.fields:
             setattr(changed_annotation, field.name, getattr(existing_annotation, field.name))
