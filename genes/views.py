@@ -16,6 +16,7 @@ from urllib3.connectionpool import xrange
 
 from .models import Gene, GeneDocument, GeneApproval
 from taxon.models import Taxon
+from annotations.models import Annotation
 
 # forms import
 from .forms import GeneImportDocumentForm, GeneAddForm, GeneEditForm
@@ -65,6 +66,13 @@ class GeneView(TemplateView):
         context = super(GeneView, self).get_context_data(**kwargs)
         gene = Gene.objects.get(pk=self.kwargs['pk'])
         context['gene'] = gene
+
+        # Get the related annotations
+        related_annotations = Annotation.objects.filter(internal_gene=gene)
+        if related_annotations.count() > 0:
+            context['related_annotations'] = related_annotations
+            context['latest_annotations'] = related_annotations.order_by('-id')[:5]
+
         # Get the pubmed info if possible
         if gene.pubmed_id:
             # Need to set a contact email
@@ -90,10 +98,11 @@ class GeneView(TemplateView):
             context['superuser'] = True
         else:
             context['superuser'] = False
-        # Get the count of changes that been approved for this annotation
+        # Get the count of changes that been approved for this gene
         change_count = GeneApproval.objects.filter(source_gene=gene, status=choices.ApprovalStates.APPROVED).count()
         if change_count > 0:
             context['change_count'] = change_count
+
         return context
 
 

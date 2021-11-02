@@ -5,7 +5,7 @@
 
 {% block main %}
     {% if logged_in %}
-        <div style="width: 40%; text-align: center">
+        <div style="text-align: center;">
             <div id="singleGeneEdit" class="d-inline-block">
                 <a href="{% url 'genes:gene_edit' pk=gene.id %}" class="btn btn-info" role="button">Edit gene</a>
             </div>
@@ -18,93 +18,118 @@
                 </div>
             {% endif %}
         </div>
-    {% endif %}
-    <div id="singleGeneView">
-        <h2>Gene: {{ gene.gene_id }}{% if gene.name %} | {{ gene.name }}{% endif %}{% if gene.symbol %} | {{ gene.symbol }}{% endif %}</h2>
         <br>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Symbol:</h4>
-                <p class="card-text">{{ gene.symbol }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Gene Name:</h4>
-                <p class="card-text">{{ gene.name }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Gene ID:</h4>
-                <p class="card-text">{{ gene.gene_id }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Gene type:</h4>
-                <p class="card-text">{{ gene.gene_type }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Species:</h4>
-                <p class="card-text">{{ gene.species }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Synonyms:</h4>
-                <p class="card-text">{{ gene.synonyms }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Location:</h4>
-                <p class="card-text">{{ gene.location }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Summary:</h4>
-                <p class="card-text">{{ gene.summary }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Description:</h4>
-                <p class="card-text">{{ gene.description }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Phenotype:</h4>
-                <p class="card-text">{{ gene.phenotype }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Data Source:</h4>
-                <p class="card-text">Object ID: {{ gene.data_source_object_id }}
-                    <br>Source Name: {{ gene.data_source_name }}</p>
-            </div>
-        </div>
-        {% if pubmed %}
-                <div class="card" style="width: 40%">
-                    <div class="card-body">
-                        <h4 class="card-title">Pubmed links:</h4>
-                        {% for id, title in pubmed.items %}
-                            <p class="card-text">{{ title }} (Pubmed: <a href="https://pubmed.ncbi.nlm.nih.gov/{{ id }}">{{ id }}</a>)
-                            (<a href="{% url 'annotations:by-reference' id %}">Associated annotations</a>)
-                        {% endfor %}
-                    </div>
+    {% endif %}
+    <div class="row">
+        <div style="alignment: left; width: 50%">
+            <div id="singleGeneView" class="card">
+                <div class="card-header" style="text-align: center;">
+                <h2>Gene: {{ gene.gene_id }}{% if gene.name %} | {{ gene.name }}{% endif %}{% if gene.symbol %} | {{ gene.symbol }}{% endif %}</h2>
                 </div>
-        {% endif %}
-    </div>
-    <br>
-    <div style="width: 40%; text-align: center">
-            <div id="singleGeneChanges" class="d-inline-block">
-                <a href="{% url 'genes:gene_changes' pk=gene.id %}" class="btn btn-info" role="button">Gene History</a>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Symbol:</h4>
+                            <p class="card-text">{{ gene.symbol }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Gene Name:</h4>
+                            <p class="card-text">{{ gene.name }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Gene ID:</h4>
+                            <p class="card-text">{{ gene.gene_id }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Gene type:</h4>
+                            <p class="card-text">{{ gene.gene_type }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Species:</h4>
+                            <p class="card-text">{{ gene.species }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Synonyms:</h4>
+                            <p class="card-text">{{ gene.synonyms }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Location:</h4>
+                            <p class="card-text">{{ gene.location }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Summary:</h4>
+                            <p class="card-text">{{ gene.summary }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Description:</h4>
+                            <p class="card-text">{{ gene.description }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Phenotype:</h4>
+                            <p class="card-text">{{ gene.phenotype }}</p>
+                        </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Data Source:</h4>
+                            <p class="card-text">Object ID: {{ gene.data_source_object_id }}
+                            <br>Source Name: {{ gene.data_source_name }}</p>
+                        </li>
+                {% if pubmed %}
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">Pubmed links:</h4>
+                            {% for id, title in pubmed.items %}
+                                <p class="card-text">{{ title }} (Pubmed: <a href="https://pubmed.ncbi.nlm.nih.gov/{{ id }}">{{ id }}</a>)
+                                (<a href="{% url 'annotations:by-reference' id %}">Associated annotations</a>)
+                            {% endfor %}
+                        </li>
+                {% endif %}
+                    </ul>
+                </div>
             </div>
+            {% if change_count %}
+                <br>
+                <div style="text-align: center">
+                        <div id="singleGeneChanges" class="d-inline-block">
+                            <a href="{% url 'genes:gene_changes' pk=gene.id %}" class="btn btn-info" role="button">Gene History</a>
+                        </div>
+                </div>
+            {% endif %}
+        </div>
+        <div style="alignment: center; width: 10%"></div>
+        <div style="alignment: right; width: 30%; text-align: center">
+            <div id="latest_annotations" class="card">
+                <div class="card-header">
+                    <h3 style="color:red">Latest annotations for this gene:</h3>
+                </div>
+                {% if latest_annotations %}
+                    <ul class="list-group list-group-flush">
+                    {% for latest_annotation in latest_annotations %}
+                        <li class="list-group-item ml-3">
+                        <div class="row">
+                            <a href="{% url 'annotations:annotation' pk=latest_annotation.id %}">{{ latest_annotation.ontology_id }}</a>
+                            &nbsp;-&nbsp;
+                            <div id="ont_term_{{ forloop.counter }}"></div>
+                            <script type="application/javascript">
+                            $.getJSON("https://browser.planteome.org/api/entity/terms?entity={{ latest_annotation.ontology_id }}", function(json){
+                                const element = document.getElementById("ont_term_{{ forloop.counter }}");
+                                element.innerHTML = json.data[0].annotation_class_label;
+                            });
+                            </script>
+                        </div>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item ml-3">None found</li>
+                    </ul>
+                {% endif %}
+            </div>
+        <br><br>
+            <div id="paralogs" class="card">
+                <div class="card-header">
+                    <h3 style="color:red">Paralogous genes:</h3>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock main %}
