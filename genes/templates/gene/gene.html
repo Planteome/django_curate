@@ -129,7 +129,66 @@
                 <div class="card-header">
                     <h3 style="color:red">Paralogous genes:</h3>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item ml-3">
+                        Placeholder until orthologs are available from API or internally
+                    </li>
+                </ul>
+            </div>
+        <br><br>
+            <div id="homologs" class="card">
+                <div class="card-header">
+                    <h3 style="color:red">Orthologous genes:</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item ml-3">
+                        Placeholder until homologs are available from API or internally
+                    </li>
+                </ul>
             </div>
         </div>
+    </div>
+    <br>
+    <div id="annotationList" class="card" style="text-align: center">
+        <div class="card-header">
+            <h1>Annotations</h1>
+        </div>
+    {% if related_annotations %}
+        <table class="card-table table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>Accession</th>
+            <th>Source Gene DB ID</th>
+            <th>Aspect (Ontology)</th>
+            <th>Ontology term</th>
+            <th>Qualifier</th>
+            <th>Evidence Code</th>
+            <th>Assigned By</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for related_annotation in related_annotations %}
+            <tr>
+                <td><a href="{% url 'annotations:annotation' pk=related_annotation.pk %}">{{ related_annotation.pk }}</a></td>
+                <td>{{ related_annotation.db }}:{{ related_annotation.db_obj_id }}</td>
+                <td>{{ related_annotation.get_aspect_display }}</td>
+                <td><div id="rel_ont_term_{{ forloop.counter }}"></div>
+                            <script type="application/javascript">
+                            $.getJSON("https://browser.planteome.org/api/entity/terms?entity={{ related_annotation.ontology_id }}", function(json){
+                                const element = document.getElementById("rel_ont_term_{{ forloop.counter }}");
+                                element.innerHTML = json.data[0].annotation_class_label;
+                            });
+                            </script></td>
+                <td>{{ related_annotation.qualifier }}</td>
+                <td>{{ related_annotation.get_evidence_code_display }}</td>
+                <td>{{ related_annotation.assigned_by }}</td>
+                <td>{{ related_annotation.date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    {% else %}
+    {% endif %}
     </div>
 {% endblock main %}
