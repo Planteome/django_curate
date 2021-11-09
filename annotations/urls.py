@@ -16,6 +16,7 @@ urlpatterns = [
     path('search/', views.SearchView.as_view(), name='search'),
     path('approval/', views.ApprovalView.as_view(), name='approval'),
     path('by-reference/<int:id>', views.SearchByReferenceView.as_view(), name='by-reference'),
+    path('by-taxon/<int:id>', views.SearchByTaxonView.as_view(), name='by-taxon'),
     path('', views.BaseAnnotationView.as_view(), name='base_annotation')
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
