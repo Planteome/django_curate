@@ -36,8 +36,8 @@
     <div id="taxonomy_tree">
     </div>
     <script type="text/javascript">
-    const taxonsJS = JSON.parse('{{ taxonsJS | safe }}')
-    document.getElementById("taxonomy_tree").innerHTML = build_tree(taxonsJS)
+    const taxonsJS = JSON.parse('{{ taxonsJS | safe }}');
+    document.getElementById("taxonomy_tree").innerHTML = build_tree(taxonsJS);
     // Call the script from jquery.quiccordion.js to pretty up the tree
     $(document).ready(function() {
         $("#accordion").quiccordion({openLevel: 4, preserveChildren: true});

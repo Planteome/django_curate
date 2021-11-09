@@ -2,14 +2,14 @@ function build_tree(taxons) {
     // Loop through all taxons and put them in order by parentage
     let dataMap = {};
     taxons.forEach(function(node) {
-        dataMap[node.pk] = node;
+        dataMap[node.ncbi_id] = node;
     });
     // create the tree array
     let tree = [];
     taxons.forEach(function(node) {
         // find parent
-        if (node['fields']['parent'] != 0) {
-            let parent = dataMap[node['fields']['parent']];
+        if (node['parent'] != 0) {
+            let parent = dataMap[node['parent']];
             // create child array if it doesn't exist
             (parent.children || (parent.children = []))
                 // add node to parent's child array
@@ -26,17 +26,20 @@ function build_tree(taxons) {
 function tree_to_html(tree) {
     let htmlText = '';
     tree.forEach(function(node) {
-        if(node.pk === 1) {
+        if(node.ncbi_id === 1) {
             htmlText += '<ul id="accordion">';
         }
         // TODO: pretty up this text some more
-        const nodeID = (node.fields.name).replace(/\s/g, '').replace(/\//g, '')
-        htmlText += '<li class="taxonElement" id="' + nodeID + '"><a href="/taxon/' + node.pk + '">' + node.fields.name + '</a>';
+        const nodeID = (node.name).replace(/\s/g, '').replace(/\//g, '')
+        htmlText += '<li class="taxonElement" id="' + nodeID + '"><a href="/taxon/' + node.ncbi_id + '">' + node.name + '</a>';
+        if(node.num_annotations > 0) {
+            htmlText += " - " + node.num_annotations + " annotations";
+        }
         if(node.children) {
-            htmlText += '<ul>' + tree_to_html(node.children) + '</ul>'
+            htmlText += '<ul>' + tree_to_html(node.children) + '</ul>';
         }
 
-        if(node.pk === 1) {
+        if(node.ncbi_id === 1) {
             htmlText += '</ul>';
         }
     });
