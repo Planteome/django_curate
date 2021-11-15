@@ -32,6 +32,9 @@ function tree_to_html(tree) {
         // TODO: pretty up this text some more
         const nodeID = (node.name).replace(/\s/g, '').replace(/\//g, '')
         htmlText += '<li class="taxonElement" id="' + nodeID + '"><a href="/taxon/' + node.ncbi_id + '">' + node.name + '</a>';
+        if(node.num_genes > 0) {
+            htmlText += " - " + node.num_genes + ' genes'
+        }
         if(node.num_annotations > 0) {
             htmlText += " - " + '<a href="/annotations/by-taxon/' + node.ncbi_id + '">' + node.num_annotations + "</a> annotations";
         }
