@@ -39,6 +39,7 @@ function tree_to_html(tree) {
             htmlText += " - " + '<a href="/annotations/by-taxon/' + node.ncbi_id + '">' + node.num_annotations + "</a> annotations";
         }
         if(node.children) {
+            htmlText += '<i class="fa fa-caret-down" style="float: right; margin-right: 5%"></i>'
             htmlText += '<ul>' + tree_to_html(node.children) + '</ul>';
         }
 
