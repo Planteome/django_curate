@@ -7,6 +7,9 @@
     <br>
     {% for dbxref in dbxrefs %}
         <a href="{% url 'dbxrefs:dbxref' pk=dbxref.pk %}">{{ dbxref.dbname }}</a>
+        {% if dbxref.num_annotations %}
+            <span> - {{ dbxref.num_annotations }} annotations</span>
+        {% endif %}
         <br>
     {% endfor %}
 {% endblock main %}

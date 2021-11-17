@@ -3,9 +3,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django.views.generic.edit import UpdateView
+from django.db.models import Count
 
 # models import
 from .models import DBXref, DBXrefDocument
+from annotations.models import Annotation
 
 # forms import
 from .forms import DBXrefImportDocumentForm, DBXrefAddForm, DBXrefEditForm
@@ -27,7 +29,7 @@ class BaseDBXrefView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(BaseDBXrefView, self).get_context_data(**kwargs)
-        dbxrefs = DBXref.objects.all()
+        dbxrefs = DBXref.objects.annotate(num_annotations=Count('annotation'))
         context['dbxrefs'] = dbxrefs
         return context
 
