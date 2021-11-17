@@ -4,35 +4,39 @@
 {% block meta_description %}Taxon view page for the Planteome curate site{% endblock meta_description %}
 
 {% block main %}
-    <div id="singleTaxonView">
+<div class="row">
+    <div id="singleTaxonView" style="width: 40%">
         <h2>Taxonomy: {{ taxon.name }}</h2>
         <br>
-        <div class="card" style="width: 40%">
+        {% if gene_count %}
+            <ul><h5>{{ gene_count }} genes in database</h5></ul>
+        {% endif %}
+        <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Rank:</h4>
                 <p class="card-text">{{ taxon.rank }}</p>
             </div>
         </div>
-        <div class="card" style="width: 40%">
+        <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Related synonyms:</h4>
                 <p class="card-text">{{ taxon.related_synonyms }}</p>
             </div>
         </div>
-        <div class="card" style="width: 40%">
+        <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Exact synonyms:</h4>
                 <p class="card-text">{{ taxon.exact_synonyms }}</p>
             </div>
         </div>
-        <div class="card" style="width: 40%">
+        <div class="card">
             <div class="card-body">
                 <h4 class="card-title">NCBI ID:</h4>
                 <p class="card-text"><a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ taxon.ncbi_id }}">{{ taxon.ncbi_id }}</a></p>
             </div>
         </div>
         {% if taxon.ncbi_id != 1 %}
-            <div class="card" style="width: 40%">
+            <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Parent</h4>
                     <p class="card-text"><a href="/taxon/{{ parent.ncbi_id }}">{{ parent.name }}</a> - NCBI ID: <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ parent.ncbi_id }}">{{ parent.ncbi_id }}</a></p>
@@ -40,4 +44,9 @@
             </div>
         {% endif  %}
     </div>
+    <div id="taxon_padding" style="alignment: center; width: 15%"></div>
+    <div id="taxon_latest_annotations" style="alignment: right; width: 30%;">
+        {% include 'latest_genes_display/latest_genes_display.html' %}
+    </div>
+</div>
 {% endblock main %}

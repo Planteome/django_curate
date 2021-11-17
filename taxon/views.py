@@ -7,6 +7,8 @@ from django import forms
 
 # models import
 from .models import Taxon, TaxonomyDocument
+from annotations.models import Annotation
+from genes.models import Gene
 
 # forms import
 from .forms import TaxonomyImportDocumentForm, TaxonomyAddForm
@@ -53,6 +55,13 @@ class TaxonView(TemplateView):
         if taxon.ncbi_id != 1:
             parent = Taxon.objects.get(ncbi_id=taxon.parent)
             context['parent'] = parent
+        # get the last 10 annotations in reverse order
+        annotation_list = Annotation.objects.filter(taxon=taxon).order_by('-id')[:10:1]
+        context['latest_annotations'] = annotation_list
+        # get the gene count
+        gene_count = Gene.objects.filter(species=taxon).count()
+        if gene_count > 0:
+            context['gene_count'] = gene_count
         return context
 
 
