@@ -1,1 +1,26 @@
-Add the latest genes that have had annotations
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered">
+<thead>
+<tr class="table-success">
+    <th colspan="3" class="text-center">
+            <h3>10 most recent annotations</h3>
+    </th>
+</tr>
+</thead>
+<tbody>
+{% for annotation in latest_annotations %}
+    <tr>
+        <td>
+            <a href="{% url 'annotations:annotation' pk=annotation.pk %}">{{ annotation.db }}:{{ annotation.db_obj_id }}</a>
+        </td>
+        <td>
+            <a href="{% url 'taxon:taxon' ncbiID=annotation.taxon.pk %}">{{ annotation.taxon }}</a>
+        </td>
+        <td>
+            <a href="https://browser.planteome.org/amigo/term/{{ annotation.ontology_id }}">{{ annotation.ontology_id }}</a>
+        </td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>

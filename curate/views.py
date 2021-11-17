@@ -8,6 +8,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 # models import
 from taxon.models import Taxon
+from annotations.models import Annotation
 
 
 class HomeView(TemplateView):
@@ -31,4 +32,6 @@ class HomeView(TemplateView):
         # add the annotated field to the json results
         taxonsJS = json.dumps(list(taxons), cls=DjangoJSONEncoder)
         context['taxonsJS'] = taxonsJS
+        annotation_list = Annotation.objects.all().order_by('-id')[:10:1]
+        context['latest_annotations'] = annotation_list
         return context
