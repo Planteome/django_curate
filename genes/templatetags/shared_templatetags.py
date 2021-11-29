@@ -28,3 +28,8 @@ def inline_diff(a, b):
         assert False, "Unknown tag %r" % tag
 
     return mark_safe(''.join(process_tag(*t) for t in matcher.get_opcodes()))
+
+
+@register.filter
+def pipe_space(string):
+    return string.replace('|', ' | ')

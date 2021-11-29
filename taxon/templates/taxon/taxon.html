@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load shared_templatetags %}
 
 {% block title %}Taxon{% endblock title %}
 {% block meta_description %}Taxon view page for the Planteome curate site{% endblock meta_description %}
@@ -20,13 +21,13 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Related synonyms:</h4>
-                <p class="card-text">{{ taxon.related_synonyms }}</p>
+                <p class="card-text">{{ taxon.related_synonyms|pipe_space }}</p>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Exact synonyms:</h4>
-                <p class="card-text">{{ taxon.exact_synonyms }}</p>
+                <p class="card-text">{{ taxon.exact_synonyms|pipe_space }}</p>
             </div>
         </div>
         <div class="card">
