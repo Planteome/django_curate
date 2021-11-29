@@ -11,6 +11,10 @@
             {% csrf_token %}
             {{ form|crispy }}
             <input type="submit" value="Submit" class="btn btn-primary">
+            <br><br>
+            Don't have an account?
+            <a href="{% url 'accounts:signup_form' %}" class="btn btn-dark" role="button">Sign Up</a>
+
         </form>
     </div>
 

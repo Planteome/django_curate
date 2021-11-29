@@ -10,6 +10,8 @@
         </div>
     {% else %}
         <a href="{% url 'accounts:login' %}" class="btn btn-info" role="button">Login</a>
+        &nbsp;
+        <a href="{% url 'accounts:signup_form' %}" class="btn btn-dark" role="button">Sign Up</a>
     {% endif %}
     <div style="display: flex; align-items: center; justify-content: center">
         <a href="https://creativecommons.org/licenses/by/4.0/" style="margin-right: 8px">
