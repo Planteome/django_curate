@@ -40,7 +40,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Parent</h4>
-                    <p class="card-text"><a href="/taxon/{{ parent.ncbi_id }}">{{ parent.name }}</a> - NCBI ID: <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ parent.ncbi_id }}">{{ parent.ncbi_id }}</a></p>
+                    <p class="card-text"><a href="/taxon/{{ parent.ncbi_id }}">{{ parent.name }}</a> (rank: {{ parent.rank }}) - NCBI ID: <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ parent.ncbi_id }}">{{ parent.ncbi_id }}</a></p>
                 </div>
             </div>
         {% endif  %}
