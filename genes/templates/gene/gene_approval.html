@@ -7,7 +7,10 @@
 {% block meta_description %}Planteome gene approval{% endblock %}
 
 {% block main %}
-    Gene approval page
+    Gene approval page. Changes that have been submitted to be added will be in <span style="color: green">green</span>,
+    while changes that have been submitted to be removed are in <span style="color: red">red</span>. Replacements will
+    be in a combination of <span style="color:green">green</span>
+     and <span style="color:red">red</span> depending on how it auto-detects the changes
     {% if logged_in and superuser %}
         <form action="" method="post">
         {% csrf_token %}
