@@ -109,12 +109,7 @@ class GeneView(TemplateView):
 class GeneEditView(UpdateView):
     model = Gene
     template_name = 'gene/edit_gene.html'
-    fields = [
-        "synonyms",
-        "summary",
-        "description",
-        "pubmed_id",
-    ]
+    form_class = GeneEditForm
     success_url = reverse_lazy('genes:import_success')
 
     def get_context_data(self, **kwargs):
