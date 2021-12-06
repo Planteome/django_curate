@@ -84,9 +84,6 @@ class TaxonView(TemplateView):
         if taxon.ncbi_id != 1:
             parent = Taxon.objects.get(ncbi_id=taxon.parent)
             context['parent'] = parent
-        # get the last 10 annotations in reverse order
-        annotation_list = Annotation.objects.filter(taxon=taxon).order_by('-id')[:10:1]
-        context['latest_annotations'] = annotation_list
         # get the gene count
         gene_count = Gene.objects.filter(species=taxon).count()
         if gene_count > 0:
