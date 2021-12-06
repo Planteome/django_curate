@@ -46,8 +46,10 @@
         {% endif  %}
     </div>
     <div id="taxon_padding" style="alignment: center; width: 15%"></div>
+{% if latest_annotations %}
     <div id="taxon_latest_annotations" style="alignment: right; width: 30%;">
         {% include 'latest_genes_display/latest_genes_display.html' %}
     </div>
+{% endif %}
 </div>
 {% endblock main %}

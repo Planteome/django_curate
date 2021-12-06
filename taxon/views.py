@@ -45,8 +45,24 @@ class TaxonBaseView(TemplateView):
         # add the annotated field to the json results
         taxonsJS = json.dumps(list(taxons), cls=DjangoJSONEncoder)
         context['taxonsJS'] = taxonsJS
-        annotation_list = Annotation.objects.all().order_by('-id')[:10:1]
-        context['latest_annotations'] = annotation_list
+        # Get the 10 latest unique genes that have annotations
+        # First get the last 100, hopefully there are 10 unique genes in there
+        # If using postgres, could just use a "distinct(db_obj_id)" to the 1st query
+        # Since using mysql, have to manually find the 10 unique genes and do another query
+        # This is copy/pasted from curate/views.py HomeView
+        annotation_list = Annotation.objects.all().order_by('-id')[:100:1]
+        annot_dict = {}
+        for annotation in annotation_list:
+            if annotation.db_obj_id not in annot_dict:
+                annot_dict[annotation.db_obj_id] = annotation.pk
+            else:
+                annot_dict[annotation.db_obj_id] = max(annotation.pk, annot_dict[annotation.db_obj_id])
+            # only get 10 of them
+            if len(annot_dict) is 10:
+                break
+        # now get the actual last 10 annotated genes
+        annotation_10_list = Annotation.objects.filter(pk__in=list(annot_dict.values())).order_by('-id')
+        context['latest_annotations'] = annotation_10_list
         return context
 
 
@@ -75,6 +91,26 @@ class TaxonView(TemplateView):
         gene_count = Gene.objects.filter(species=taxon).count()
         if gene_count > 0:
             context['gene_count'] = gene_count
+
+                # Get the 10 latest unique genes that have annotations
+        # First get the last 100, hopefully there are 10 unique genes in there
+        # If using postgres, could just use a "distinct(db_obj_id)" to the 1st query
+        # Since using mysql, have to manually find the 10 unique genes and do another query
+        # This is copy/pasted from curate/views.py HomeView
+        # with the addition of filtering by taxon
+        annotation_list = Annotation.objects.filter(taxon=taxon).order_by('-id')[:100:1]
+        annot_dict = {}
+        for annotation in annotation_list:
+            if annotation.db_obj_id not in annot_dict:
+                annot_dict[annotation.db_obj_id] = annotation.pk
+            else:
+                annot_dict[annotation.db_obj_id] = max(annotation.pk, annot_dict[annotation.db_obj_id])
+            # only get 10 of them
+            if len(annot_dict) is 10:
+                break
+        # now get the actual last 10 annotated genes
+        annotation_10_list = Annotation.objects.filter(pk__in=list(annot_dict.values())).order_by('-id')
+        context['latest_annotations'] = annotation_10_list
         return context
 
 

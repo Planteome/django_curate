@@ -3,7 +3,13 @@
 {% block title %}Taxon base page{% endblock %}
 
 {% block main %}
-<div id="taxon_display" style="alignment: left; width: 60%;padding-left: 5%" >
-    {% include 'taxonomy_display/taxon_display.html' %}
+<div class="row">
+    <div id="taxon_display" style="alignment: left; width: 50%;padding-left: 5%" >
+        {% include 'taxonomy_display/taxon_display.html' %}
+    </div>
+    <div id="taxon_padding" style="alignment: center; width: 15%"></div>
+    <div id="taxon_latest_annotations" style="alignment: right; width: 30%;">
+        {% include 'latest_genes_display/latest_genes_display.html' %}
+    </div>
 </div>
 {% endblock main %}
