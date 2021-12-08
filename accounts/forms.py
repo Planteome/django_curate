@@ -4,6 +4,9 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 # models import
 from .models import User
 
+# forms helper import
+from crispy_forms.helper import FormHelper
+
 
 # orcID validator function
 def orcIDValidator(url):
@@ -28,20 +31,12 @@ def orcIDValidator(url):
         raise forms.ValidationError("This field is not a valid ORCID")
 
 class UserRegistrationForm(UserCreationForm):
-    ROLE_CHOICES = (
-        ("Requestor", "Requestor"),
-        ("Contributor", "Contributor"),
-        ("Curator", "Curator"),
-        ("Moderator", "Moderator"),
-        ("Superuser", "Superuser")
-    )
     email = forms.EmailField(label='Email address:')
     first_name = forms.CharField(label='First Name:')
     last_name = forms.CharField(label='Last Name:')
     affiliation = forms.CharField(label='Affiliation:')
     orcid = forms.CharField(label='<a href="https://orcid.org">ORCID</a>', validators=[orcIDValidator],
                             help_text="Example: https://orcid.org/0000-0012-3456-7890")
-    role = forms.ChoiceField(choices=ROLE_CHOICES, label='Role')
 
     autofocus = 'email'
 
@@ -57,7 +52,7 @@ class UserRegistrationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['username', 'password1', 'password2', 'email', 'first_name', 'last_name', 'affiliation', 'orcid', 'role']
+        fields = ['username', 'password1', 'password2', 'email', 'first_name', 'last_name', 'affiliation', 'orcid']
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -66,7 +61,7 @@ class UserRegistrationForm(UserCreationForm):
         user.last_name = self.cleaned_data['last_name']
         user.affiliation = self.cleaned_data['affiliation']
         user.orcid = self.cleaned_data['orcid']
-        user.role = self.cleaned_data['role']
+        user.role = "Requestor"
         user.is_active = False
         user.needs_approval = True
         self.approve(user)
@@ -90,8 +85,13 @@ class UserLoginForm(AuthenticationForm):
 
 class UserApprovalForm(forms.ModelForm):
     needs_approval = forms.CheckboxInput(attrs={'class': 'form-control', 'name': 'approvalChkbox'})
+    role = forms.ChoiceField(choices=User.ROLE_CHOICES, label='Role')
 
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'affiliation', 'orcid', 'role', 'needs_approval')
 
+    def __init__(self, *args, **kwargs):
+        super(UserApprovalForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False

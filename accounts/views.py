@@ -68,11 +68,16 @@ class AccountApprovalView(FormView):
     def post(self, request, *args, **kwargs):
         # list of users to approve
         approve_list = request.POST.getlist('approvalChkbox')
+        user_list = request.POST.getlist('username')
+        role_list = request.POST.getlist('role')
+        # dict to store usernames to selected roles
+        role_dict = dict(zip(user_list, role_list))
         for approveUser in approve_list:
             # update the user in the database
             user = User.objects.get(username=approveUser)
             user.is_active = True
             user.needs_approval = False
+            user.role = role_dict[approveUser]
             if user.role is "Superuser":
                 user.is_superuser = True
             user.save()
