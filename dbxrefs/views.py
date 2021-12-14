@@ -154,7 +154,7 @@ class DBXrefEditView(UpdateView):
 class DBXrefAddView(FormView):
     form_class = DBXrefAddForm
     model = DBXref
-    template_name = 'dbxref/add_dbxref.html'
+    template_name = 'dbxrefs/add_dbxref.html'
     success_url = reverse_lazy('dbxrefs:import_success')
 
     def get(self, request):
