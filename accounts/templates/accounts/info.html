@@ -8,28 +8,50 @@
         {% if not user %}
             <h4>No user with that ID or username</h4>
         {% else %}
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Username:</h4>
-                <p class="card-text">{{ user.username }}</p>
+        <div id="userView" class="card" style="width: 60%">
+            <div class="card-header" style="text-align: center">
+                <h2>User: {{ user.username }}
+                {% if self_user %}
+                    <a href="{% url 'accounts:edit_user' pk=user.pk %}" class="btn btn-primary" role="button"style="float: right; margin-left: 10px">Edit user info</a>
+                    <a href="{% url 'accounts:password_change' %}" class="btn btn-primary" role="button" style="float: right">Change password</a>
+                {% endif %}
+                </h2>
             </div>
-        </div>
-        <div class="card" style="width: 40%">
             <div class="card-body">
-                <h4 class="card-title">Name:</h4>
-                <p class="card-text">{{ user.first_name }} {{ user.last_name }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Email:</h4>
-                <p class="card-text">{{ user.email }}</p>
-            </div>
-        </div>
-        <div class="card" style="width: 40%">
-            <div class="card-body">
-                <h4 class="card-title">Date joined:</h4>
-                <p class="card-text">{{ user.date_joined }}</p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item ml-3">
+                        <h4 class="card-title">Username:</h4>
+                        <p class="card-text">{{ user.username }}</p>
+                    </li>
+                    <li class="list-group-item ml-3">
+                        <h4 class="card-title">Name:</h4>
+                        <p class="card-text">{{ user.first_name }} {{ user.last_name }}</p>
+                    </li>
+                    <li class="list-group-item ml-3">
+                        <h4 class="card-title">Email:</h4>
+                        <p class="card-text">{{ user.email }}</p>
+                    </li>
+                    <li class="list-group-item ml-3">
+                        <h4 class="card-title">Affiliation:</h4>
+                        <p class="card-text">{{ user.affiliation }}</p>
+                    </li>
+                    <li class="list-group-item ml-3">
+                        <h4 class="card-title">ORCID:</h4>
+                        <p class="card-text"><a href="{{ user.orcid }}">{{ user.orcid }}</a></p>
+                    </li>
+                    <li class="list-group-item ml-3">
+                        <h4 class="card-title">Role:</h4>
+                        <p class="card-text">{{ user.role }}</p>
+                    </li>
+                    <li class="list-group-item ml-3">
+                        <h4 class="card-title">Date joined:</h4>
+                        <p class="card-text">{{ user.date_joined }}</p>
+                    </li>
+                    <li class="list-group-item ml-3">
+                        <h4 class="card-title">Last login:</h4>
+                        <p class="card-text">{{ user.last_login }}</p>
+                    </li>
+                </ul>
             </div>
         </div>
         {% endif %}

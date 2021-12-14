@@ -10,6 +10,7 @@ urlpatterns = [
     path('submitted/', views.AccountSubmittedView.as_view(), name='submitted'),
     path('approve/', views.AccountApprovalView.as_view(), name='approve'),
     path('info/<slug:user>', views.AccountInfoView.as_view(), name='info'),
+    path('edit/<slug:pk>', views.AccountUpdateView.as_view(), name='edit_user'),
     path('login/', AuthViews.LoginView.as_view(
         template_name='accounts/login.html',
         authentication_form=UserLoginForm),

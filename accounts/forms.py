@@ -95,3 +95,9 @@ class UserApprovalForm(forms.ModelForm):
         super(UserApprovalForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_show_labels = False
+
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'affiliation', 'orcid', 'role']

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Account edit{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% block main %}
+    <div class="container" style="max-width: 40%">
+        <h2>Use this page to edit user info</h2>
+        <form action="{% url 'accounts:edit_user' pk=user.pk %}" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+            <a href="{% url 'accounts:password_change' %}" class="btn btn-dark" style="margin-left: 30px">Change password</a>
+            {% if superuser %}
+                <a href="/admin/accounts/user/{{ user.pk }}/change/" class="btn btn-info" style="margin-left: 30px">Force change password</a>
+            {% endif %}
+        </form>
+    </div>
+{% endblock main %}
