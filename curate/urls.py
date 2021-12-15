@@ -28,5 +28,6 @@ urlpatterns = [
     path('celery-progress/', include('celery_progress.urls')),
     path('about', TemplateView.as_view(template_name='about_us.html'), name='about'),
     path('contact', TemplateView.as_view(template_name='contact.html'), name='contact'),
+    path('import', TemplateView.as_view(template_name='import_base.html'), name='import'),
     path('', HomeView.as_view(template_name='home.html')),
 ]

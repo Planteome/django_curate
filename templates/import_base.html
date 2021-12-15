@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Import pages{% endblock %}
+
+{% block main %}
+    <h2>All import pages</h2>
+    <br>
+    <div class="card" style="width: 70%">
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'dbxrefs:dbxref_import' %}">DB xref import</a></h4>
+            <p class="card-text">Import a dbxrefs.yaml file. Should only be used for initial import</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'taxon:taxon_import' %}">Taxonomy import</a></h4>
+            <p class="card-text">Import a taxonomy.dat file. Should only used for initial import</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'genes:gene_import' %}">Genes import</a></h4>
+            <p class="card-text">Import a Genes import file. Should only used for initial import per species</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'genes:alias_import' %}">Genes aliases import</a></h4>
+            <p class="card-text">Import a Genes aliases/synonyms file. Should only used for initial import per species</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'annotations:annotation_import' %}">Annotations import</a></h4>
+            <p class="card-text">Import a gaf (gene annotation format) file</p>
+        </div>
+    </div>
+{% endblock main %}
