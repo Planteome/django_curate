@@ -29,5 +29,6 @@ urlpatterns = [
     path('about', TemplateView.as_view(template_name='about_us.html'), name='about'),
     path('contact', TemplateView.as_view(template_name='contact.html'), name='contact'),
     path('import', TemplateView.as_view(template_name='import_base.html'), name='import'),
+    path('superuser', TemplateView.as_view(template_name='superuser.html'), name='superuser'),
     path('', HomeView.as_view(template_name='home.html')),
 ]

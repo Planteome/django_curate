@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Superuser page{% endblock %}
+
+{% block main %}
+    <h2>All important pages for a superuser</h2>
+    <br>
+    <div class="card" style="width: 70%">
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'accounts:approve' %}">Account approval page</a></h4>
+            <p class="card-text">Approve user accounts</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'genes:approval' %}">Gene approval page</a></h4>
+            <p class="card-text">Approve new and changed genes</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'annotations:approval' %}">Annotation approval page</a></h4>
+            <p class="card-text">Approve new annotations</p>
+        </div>
+    </div>
+{% endblock main %}
