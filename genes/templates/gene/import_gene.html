@@ -6,6 +6,12 @@
 {% block main %}
     {% if logged_in and superuser %}
         Use this page to import a species genes file
+        <p><strong>File must be in the following format and include the header:</strong></p>
+        <p>Gene stable ID{% verbatim %}{{tab}}{% endverbatim %}Chromosome{% verbatim %}{{tab}}{% endverbatim %}Gene start (bp){% verbatim %}{{tab}}{% endverbatim %}Gene end (bp){% verbatim %}{{tab}}{% endverbatim %}Gene Symbol{% verbatim %}{{tab}}{% endverbatim %}Gene type{% verbatim %}{{tab}}{% endverbatim %}Gene description</p>
+        <p>Files in this format are most easily obtained by downloading via biomart from <a href="https://plants.ensembl.org/biomart/martview">Ensembl Plants biomart</a>.</p>
+        <p>Choose "Ensembl Plants Genes (Version number)
+            Choose species
+            Choose the attributes as above</p>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}

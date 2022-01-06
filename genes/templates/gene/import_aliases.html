@@ -7,6 +7,13 @@
 {% block main %}
     {% if logged_in and superuser %}
         Use this page to import a species gene aliases file
+        <p><strong>File must be in the following format and include the header:</strong></p>
+        <p>locus_name{% verbatim %}{{tab}}{% endverbatim %}symbol{% verbatim %}{{tab}}{% endverbatim %}full_name</p>
+        <p>The "locus_name" must match the "Gene stable ID" and is required.</p>
+        <p>The "symbol" is also required and is the "alias".</p>
+        <p>The "full_name" is optional, but could be another alias</p>
+        <p>Example line with all 3:<br>
+        AT1G04400{% verbatim %}{{tab}}{% endverbatim %}CRY2{% verbatim %}{{tab}}{% endverbatim %}cryptochrome 2</p>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
