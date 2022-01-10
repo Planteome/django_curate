@@ -43,6 +43,13 @@ class Gene(AbstractGene):
         return self.gene_id
 
 
+# imported aliases that didn't find gene in db
+class MissingGenesFromAliasesImport(models.Model):
+    datetime = models.DateTimeField(blank=False)
+    missingGeneList = models.TextField(null=True)
+    aliasCount = models.IntegerField()
+
+
 # Approval model (inherited from abstract gene model)
 class GeneApproval(AbstractGene):
     datetime = models.DateTimeField(blank=False)

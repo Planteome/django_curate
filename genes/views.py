@@ -1,3 +1,5 @@
+import json.decoder
+
 from django.utils import timezone
 
 from django.db.models import Q
@@ -14,7 +16,7 @@ from django.conf import settings
 # models import
 from urllib3.connectionpool import xrange
 
-from .models import Gene, GeneDocument, GeneApproval
+from .models import Gene, GeneDocument, GeneApproval, MissingGenesFromAliasesImport
 from taxon.models import Taxon
 from annotations.models import Annotation
 
@@ -279,7 +281,7 @@ class GeneAliasImportView(FormView):
     model = Gene
     template_name = 'gene/import_aliases.html'
     form_class = GeneImportDocumentForm
-    success_url = reverse_lazy('gene:import_success')
+    success_url = reverse_lazy('genes:import_aliases_success')
 
     def get_context_data(self, **kwargs):
         context = super(GeneAliasImportView, self).get_context_data(**kwargs)
@@ -306,7 +308,29 @@ class GeneAliasImportView(FormView):
             file.save()
             # pass the new uploaded file id so it can be looked up in the task
             alias_lst = process_aliases_task.delay(file.document.name, species.pk)
-            return render(self.request, 'gene/display_progress.html', context={'task_id': alias_lst.task_id})
+            return render(self.request, 'gene/display_progress_aliases.html', context={'task_id': alias_lst.task_id})
+
+
+class AliasSuccessView(TemplateView):
+    model = MissingGenesFromAliasesImport
+    template_name = 'gene/gene_alias_import_success.html'
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(AliasSuccessView, self).get_context_data(**kwargs)
+        last_missing_genes_from_alias = MissingGenesFromAliasesImport.objects.last()
+        # data is stored in json in db, so decode it
+        json_dec = json.decoder.JSONDecoder()
+        missing_gene_list = json_dec.decode(last_missing_genes_from_alias.missingGeneList)
+        missing_alias_count = last_missing_genes_from_alias.aliasCount
+        missing_gene_count = len(missing_gene_list)
+        if missing_gene_count != 0:
+            context['missing_gene_list'] = missing_gene_list
+            context['missing_gene_count'] = missing_gene_count
+            context['missing_alias_count'] = missing_alias_count
+        return context
 
 
 class ApprovalView(TemplateView):

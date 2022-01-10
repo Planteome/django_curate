@@ -12,6 +12,7 @@ urlpatterns = [
     path('import/', views.GeneImportView.as_view(), name='gene_import'),
     path('import_aliases/', views.GeneAliasImportView.as_view(), name='alias_import'),
     path('import_success/', views.TemplateView.as_view(template_name='gene/gene_import_success.html'), name='import_success'),
+    path('import_aliases_success/', views.AliasSuccessView.as_view(template_name='gene/gene_alias_import_success.html'), name='import_aliases_success'),
     path('add/', views.GeneAddView.as_view(), name='gene_add'),
     path('search/', views.SearchView.as_view(), name='search'),
     path('approval/', views.ApprovalView.as_view(), name='approval'),

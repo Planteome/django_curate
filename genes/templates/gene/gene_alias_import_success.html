@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    Gene aliases import success page
+    <br>
+    {% if missing_gene_count %}
+        There were {{ missing_gene_count }} genes that were not found on {{ missing_alias_count }} lines in the import file.
+        <br>
+        <h4>Gene</h4>
+        {% for gene in missing_gene_list %}
+            {{ gene }}<br>
+        {% endfor %}
+    {% else %}
+        All aliases were imported successfully
+    {% endif %}
+{% endblock main %}
+

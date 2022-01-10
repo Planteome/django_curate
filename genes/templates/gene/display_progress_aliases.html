@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+    <div class='progress-wrapper'>
+        The progress bar will go through twice, once for the loading the genes into memory and then again to
+        put in the database.
+      <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+    </div>
+    <div id="progress-bar-message">Waiting for progress to start...</div>
+{% endblock main %}
+
+{% block extra_js %}
+    <script src="{% static 'js/vendor/celery_progress.js' %}"></script>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            let progressURL = "{% url 'celery_progress:task_status' task_id %}";
+            CeleryProgressBar.initProgressBar(progressURL, {
+                onSuccess: function () {window.location.href = "{% url 'genes:import_aliases_success' %}";}
+            });
+        });
+    </script>
+{% endblock extra_js %}

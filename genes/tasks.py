@@ -1,3 +1,4 @@
+import datetime
 import time
 from itertools import islice
 
@@ -8,11 +9,14 @@ from celery_progress.backend import ProgressRecorder
 import pandas
 
 # Models imports
-from .models import Gene, GeneDocument
+from .models import Gene, GeneDocument, MissingGenesFromAliasesImport
 from taxon.models import Taxon
 
 # regex import
 import re
+
+# json import
+import json
 
 #####
 # NOTE!!!!
@@ -71,6 +75,8 @@ def process_aliases_task(self, file_id, species_pk):
     curr_synonym_lst = {}
     aliases = pandas.read_csv(file, sep='\t', na_filter=False)
     total_aliases_to_save = len(aliases)
+    aliases_without_match = 0
+    missing_gene_dict = {}
     for index, line in aliases.iterrows():
         gene_id = line['locus_name']
         symbol = line['symbol']
@@ -99,6 +105,10 @@ def process_aliases_task(self, file_id, species_pk):
                     pass
                 else:
                     curr_synonym_lst[gene_id].append(symbol)
+        else:
+            aliases_without_match += 1
+            if gene_id not in missing_gene_dict:
+                missing_gene_dict[gene_id] = gene_id
         progress_recorder.set_progress(index, total_aliases_to_save, description="Processing aliases from file")
     # Now put them in aliases_dict separated by "|"
     for gene_id in curr_synonym_lst:
@@ -115,10 +125,18 @@ def process_aliases_task(self, file_id, species_pk):
                  range((len(aliases_lst) + batch_size - 1) // batch_size)]
         for index in range(len(batch)):
             progress_recorder.set_progress(index * batch_size, total_aliases_to_save,
-                                           description="Putting aliases in database")
+                                           description="Putting aliases in database. There were " + str(aliases_without_match) + " aliases that didn't have a match in database.")
             Gene.objects.bulk_update(batch[index], ['synonyms'])
     else:
         Gene.objects.bulk_update(aliases_lst, ['synonyms'])
+
+    # put the missing genes in the model to display on success page
+    missing_gene_model = MissingGenesFromAliasesImport()
+    missing_gene_list = list(missing_gene_dict.values())
+    missing_gene_model.missingGeneList = json.dumps(missing_gene_list)
+    missing_gene_model.datetime = datetime.datetime.now()
+    missing_gene_model.aliasCount = aliases_without_match
+    missing_gene_model.save()
 
 
 # testing task
