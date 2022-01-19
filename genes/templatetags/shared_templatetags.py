@@ -17,10 +17,10 @@ def inline_diff(a, b):
 
     def process_tag(tag, i1, i2, j1, j2):
         if tag == 'replace':
-            return '<span style="color:red">' + matcher.a[i1:i2] + '</span><span style="color:green">' + matcher.b[
+            return '<span style="color:red; text-decoration:line-through">' + matcher.a[i1:i2] + '</span><span style="color:green">' + matcher.b[
                                                                                                          j1:j2] + '</span>'
         if tag == 'delete':
-            return '<span style="color:red">' + matcher.a[i1:i2] + '</span>'
+            return '<span style="color:red; text-decoration:line-through">' + matcher.a[i1:i2] + '</span>'
         if tag == 'equal':
             return matcher.a[i1:i2]
         if tag == 'insert':

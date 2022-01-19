@@ -8,9 +8,9 @@
 
 {% block main %}
     Annotation approval page. Changes that have been submitted to be added will be in <span style="color: green">green</span>,
-    while changes that have been submitted to be removed are in <span style="color: red">red</span>. Replacements will
+    while changes that have been submitted to be removed are in <span style="color: red; text-decoration:line-through">red</span>. Replacements will
     be in a combination of <span style="color:green">green</span>
-     and <span style="color:red">red</span> depending on how it auto-detects the changes
+     and <span style="color:red; text-decoration:line-through">red</span> depending on how it auto-detects the changes
     {% if logged_in and superuser %}
         <form action="" method="post">
         {% csrf_token %}
@@ -20,18 +20,7 @@
                 <th>Database</th>
                 <th>Object ID</th>
                 <th>Symbol</th>
-                <th>Qualifier</th>
-                <th>Ontology ID</th>
-                <th>DB Reference</th>
-                <th>Evid. code</th>
-                <th>With/From</th>
-                <th>Aspect</th>
-                <th>Name</th>
-                <th>Synonyms</th>
-                <th>Type</th>
-                <th>Assigned by</th>
-                <th>Annot. Ext.</th>
-                <th>GP Form ID</th>
+                <th>Diff</th>
                 <th>Annotation change comments</th>
                 <th>Requestor</th>
                 <th>Approve?</th>
@@ -52,18 +41,133 @@
                             <td>{{ annotation.db_obj_id }}</td>
                         {% endif %}
                         <td>{% inline_diff org_annotation.db_obj_symbol annotation.db_obj_symbol %}</td>
-                        <td>{% inline_diff org_annotation.qualifier annotation.qualifier %}</td>
-                        <td>{% inline_diff org_annotation.ontology_id annotation.ontology_id %}</td>
-                        <td>{% inline_diff org_annotation.db_reference annotation.db_reference %}</td>
-                        <td>{% inline_diff org_annotation.get_evidence_code_display annotation.get_evidence_code_display %}</td>
-                        <td>{% inline_diff org_annotation.with_from annotation.with_from %}</td>
-                        <td>{% inline_diff org_annotation.get_aspect_display annotation.get_aspect_display %}</td>
-                        <td>{% inline_diff org_annotation.db_obj_name annotation.db_obj_name %}</td>
-                        <td>{% inline_diff org_annotation.db_obj_synonym annotation.db_obj_synonym %}</td>
-                        <td>{% inline_diff org_annotation.get_db_obj_type_display annotation.get_db_obj_type_display %}</td>
-                        <td>{% inline_diff org_annotation.assigned_by annotation.assigned_by %}</td>
-                        <td>{% inline_diff org_annotation.annotation_extension annotation.annotation_extension %}</td>
-                        <td>{% inline_diff org_annotation.gene_product_form_id annotation.gene_product_form_id %}</td>
+                        <!-- Switch to using a modal to display diff -->
+                        <div class="modal fade" id="annotDiffModal{{ annotation.pk }}" tabindex="-1" role="dialog" aria-labelledby="annotDiffModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="annotDiffModalLabel">Diff</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% inline_diff org_annotation.db_obj_symbol annotation.db_obj_symbol as symbol %}
+                                        {% inline_diff org_annotation.qualifier annotation.qualifier as qualifier %}
+                                        {% inline_diff org_annotation.ontology_id annotation.ontology_id as ontology_id%}
+                                        {% inline_diff org_annotation.db_reference annotation.db_reference as db_reference%}
+                                        {% inline_diff org_annotation.get_evidence_code_display annotation.get_evidence_code_display as ev_code %}
+                                        {% inline_diff org_annotation.with_from annotation.with_from as with_from %}
+                                        {% inline_diff org_annotation.get_aspect_display annotation.get_aspect_display as aspect %}
+                                        {% inline_diff org_annotation.db_obj_name annotation.db_obj_name as db_obj_name%}
+                                        {% inline_diff org_annotation.db_obj_synonym annotation.db_obj_synonym as synonym%}
+                                        {% inline_diff org_annotation.get_db_obj_type_display annotation.get_db_obj_type_display as obj_type %}
+                                        {% inline_diff org_annotation.assigned_by annotation.assigned_by as assigned_by %}
+                                        {% inline_diff org_annotation.annotation_extension annotation.annotation_extension as annot_ext %}
+                                        {% inline_diff org_annotation.gene_product_form_id annotation.gene_product_form_id as form_id%}
+                                        {% if '<span' in symbol %}
+                                            <div class="card">
+                                                <div class="card-title">Symbol:</div>
+                                                <div class="card-body">{{ symbol }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in qualifier %}
+                                            <div class="card">
+                                                <div class="card-title">Qualifier:</div>
+                                                <div class="card-body">{{ qualifier }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in ontology_id %}
+                                            <div class="card">
+                                                <div class="card-title">Ontology ID:</div>
+                                                <div class="card-body">{{ ontology_id }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in db_reference %}
+                                            <div class="card">
+                                                <div class="card-title">DB Reference:</div>
+                                                <div class="card-body">{{ db_reference }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in ev_code %}
+                                            <div class="card">
+                                                <div class="card-title">Evidence Code:</div>
+                                                <div class="card-body">{{ ev_code }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in with_from %}
+                                            <div class="card">
+                                                <div class="card-title">With/From:</div>
+                                                <div class="card-body">{{ with_from }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in aspect %}
+                                            <div class="card">
+                                                <div class="card-title">Aspect:</div>
+                                                <div class="card-body">{{ aspect }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in db_obj_name %}
+                                            <div class="card">
+                                                <div class="card-title">DB Obj. Name:</div>
+                                                <div class="card-body">{{ db_obj_name }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in synonym %}
+                                            <div class="card">
+                                                <div class="card-title">Synonym:</div>
+                                                <div class="card-body">{{ synonym }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in obj_type %}
+                                            <div class="card">
+                                                <div class="card-title">Obj Type:</div>
+                                                <div class="card-body">{{ obj_type }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in assigned_by %}
+                                            <div class="card">
+                                                <div class="card-title">Assigned By:</div>
+                                                <div class="card-body">{{ assigned_by }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in annot_ext %}
+                                            <div class="card">
+                                                <div class="card-title">Annotation Extension:</div>
+                                                <div class="card-body">{{ annot_ext }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                        {% if '<span' in form_id %}
+                                            <div class="card">
+                                                <div class="card-title">Product Form ID:</div>
+                                                <div class="card-body">{{ form_id }}</div>
+                                            </div>
+                                            <br>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#annotDiffModal{{ annotation.pk }}">
+                            Diff
+                            </button>
+                        </td>
+                        <!-- End model block -->
                         <td>{{ annotation.comments|linebreaks }}</td>
                         <td><a href="{% url 'accounts:info' annotation.requestor %}">{{ annotation.requestor }}</a></td>
                         <td><input type="checkbox" name="approvalChkbox" value="{{ annotation.pk }}"></td>
