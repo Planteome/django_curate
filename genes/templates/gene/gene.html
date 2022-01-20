@@ -14,7 +14,7 @@
             </div>
             {% if change_count %}
                 <div id="geneChanges" class="d-inline-block">
-                    <a href="{% url 'genes:gene_changes' pk=gene.id %}" class="btn btn-dark" role="button">View {{ change_count }} approved changes</a>
+                    <a href="{% url 'genes:gene_changes' pk=gene.id %}" class="btn btn-dark" role="button">View {{ change_count }} approved change{{ change_count|pluralize }}</a>
                 </div>
             {% endif %}
         </div>

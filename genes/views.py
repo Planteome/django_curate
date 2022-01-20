@@ -101,7 +101,9 @@ class GeneView(TemplateView):
         else:
             context['superuser'] = False
         # Get the count of changes that been approved for this gene
-        change_count = GeneApproval.objects.filter(source_gene=gene, status=choices.ApprovalStates.APPROVED).count()
+        #change_count = GeneApproval.objects.filter(source_gene=gene, status=choices.ApprovalStates.APPROVED).count()
+        # The 1 subtracted is to account for the original being saved as a historicalrecord
+        change_count = gene.history.all().count() - 1
         if change_count > 0:
             context['change_count'] = change_count
 
@@ -149,7 +151,10 @@ class GeneEditView(UpdateView):
         changed_gene.synonyms = request.POST.get('synonyms')
         changed_gene.summary = request.POST.get('summary')
         changed_gene.description = request.POST.get('description')
-        changed_gene.pubmed_id = request.POST.get('pubmed_id')
+        if request.POST.get('pubmed_id'):
+            changed_gene.pubmed_id = request.POST.get('pubmed_id')
+        else:
+            changed_gene.pubmed_id = None
 
         # add new values
         changed_gene.requestor = requestor
@@ -166,6 +171,11 @@ class GeneEditView(UpdateView):
             changed_gene.action = choices.ApprovalActions.APPROVE
             # save it to the db as a GeneApproval model
             changed_gene.save()
+
+            # Save the existing gene once before changes so the initial history is created
+            # if it hasn't already
+            if existing_gene.history.all().count() == 0:
+                existing_gene.save()
 
             # Save the existing gene with the updated fields
             existing_gene.synonyms = changed_gene.synonyms
@@ -366,6 +376,10 @@ class ApprovalView(TemplateView):
             # update the gene in the database
             approved_gene = GeneApproval.objects.get(pk=approved_gene_id)
             org_gene = Gene.objects.get(pk=approved_gene.source_gene_id)
+            # Save the existing gene once before changes so the initial history is created
+            # if it hasn't already
+            if org_gene.history.all().count() == 0:
+                org_gene.save()
             org_gene.synonyms = approved_gene.synonyms
             org_gene.summary = approved_gene.summary
             org_gene.description = approved_gene.description

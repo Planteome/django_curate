@@ -13,6 +13,10 @@ register = template.Library()
 
 @register.simple_tag
 def inline_diff(a, b):
+    if a is None:
+        a = ''
+    if b is None:
+        b = ''
     matcher = difflib.SequenceMatcher(None, a, b)
 
     def process_tag(tag, i1, i2, j1, j2):
