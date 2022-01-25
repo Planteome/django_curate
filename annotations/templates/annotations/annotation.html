@@ -29,6 +29,12 @@
         <br>
         <div class="card" style="width: 50%;">
             <div class="card-body">
+                {% if annotation.internal_gene %}
+                    <div class="row">
+                        <p><strong>Known Planteome gene:</strong>
+                        <a href="{% url 'genes:gene' pk=annotation.internal_gene.id %}">{{ annotation.internal_gene }}</a></p>
+                    </div>
+                {% endif %}
                 <div class="row">
                     <p><strong>Source database:</strong>
                         <a href="{% url 'dbxrefs:dbxref' pk=dbxref.id %}">{{ dbxref.dbname }}</a>
@@ -54,7 +60,7 @@
                 </div>
                 <div class="row">
                     <p><strong>Evidence Code:</strong>
-                        {{ annotation.get_evidence_code_display }}
+                        <a href="https://planteome.org/evidence_codes">{{ annotation.get_evidence_code_display }}</a>
                     </p>
                 </div>
                 <div class="row">
@@ -104,12 +110,6 @@
                 {% if annotation.qualifier %}
                     <div class="row">
                         <p><strong>Qualifier:</strong>{{ annotation.qualifier }}</p>
-                    </div>
-                {% endif %}
-                {% if annotation.internal_gene %}
-                    <div class="row">
-                        <p><strong>Known Planteome gene:</strong>
-                        <a href="{% url 'genes:gene' pk=annotation.internal_gene.id %}">{{ annotation.internal_gene }}</a></p>
                     </div>
                 {% endif %}
             </div>
