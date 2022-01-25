@@ -66,10 +66,15 @@
                     {{ annotation.taxon }}</p>
                 </div>
                 <div class="row">
-                    <p><strong>Database Reference:</strong>
+                    <p><strong>Database Reference{{ db_references_dict|pluralize }}:</strong></p>
+                        <p>
                         {% for db_reference in db_references_dict %}
-                        <a href="{{ db_reference|get_dbxref_url }}">{{ db_reference }}</a></p>
+                            &nbsp;
+                        <a href="{{ db_reference|get_dbxref_url }}">{{ db_reference }}</a>
+                            (<a href="{% url 'annotations:by-reference' id=db_reference|get_id_from_dbxref %}">Search for annotations with same reference</a>)
+                            <br>
                         {% endfor %}
+                        </p>
                 </div>
                 {% if annotation.with_from %}
                     <div class="row">

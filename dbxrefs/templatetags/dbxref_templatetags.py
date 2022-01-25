@@ -22,3 +22,7 @@ def get_dbxref_url(object):
     dbxref = DBXref.objects.get(dbname=db)
     return dbxref_url_replace(dbxref.xrefURL, id)
 
+@register.filter(name='get_id_from_dbxref')
+def get_id_from_dbxref(object):
+    id = object.split(':')[-1]
+    return id

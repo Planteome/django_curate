@@ -497,3 +497,77 @@ class SearchView(ListView):
         else:
             result = None
         return result
+
+
+class SearchByReferenceView(ListView):
+    model = Gene
+    template_name = 'gene/search.html'
+    context_object_name = 'all_search_results'
+    paginate_by = 25
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        # Need to set the context object_list to the query so that pagination works
+        self.object_list = self.get_queryset().order_by('pk')[:10000]
+        context = super(SearchByReferenceView, self).get_context_data(**kwargs)
+        context['count'] = self.object_list.count()
+        context = adjust_pagination(context)
+        return context
+
+    def get_queryset(self):
+        search_term = self.kwargs['id']
+        if search_term:
+            postresult = Gene.objects.filter(Q(pubmed_id__contains=search_term))
+            result = postresult
+        else:
+            result = None
+        return result
+
+
+class SearchByTaxonView(ListView):
+    model = Gene
+    template_name = 'gene/search.html'
+    context_object_name = 'all_search_results'
+    paginate_by = 25
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        # Need to set the context object_list to the query so that pagination works
+        self.object_list = self.get_queryset().order_by('pk')[:10000]
+        context = super(SearchByTaxonView, self).get_context_data(**kwargs)
+        context['count'] = self.object_list.count()
+        context = adjust_pagination(context)
+        return context
+
+    def get_queryset(self):
+        search_term = self.kwargs['id']
+        if search_term:
+            postresult = Gene.objects.filter(Q(species__ncbi_id=search_term))
+            result = postresult
+        else:
+            result = None
+        return result
+
+
+def adjust_pagination(context):
+    adjacent_pages = 2
+    page_number = context['page_obj'].number
+    num_pages = context['paginator'].num_pages
+    start_page = max(page_number - adjacent_pages, 1)
+    if start_page <= 3:
+        start_page = 1
+    end_page = page_number + adjacent_pages + 1
+    if end_page >= num_pages - 1:
+        end_page = num_pages + 1
+    page_numbers = [n for n in xrange(start_page, end_page) \
+            if n > 0 and n <= num_pages]
+    context.update({
+        'page_numbers': page_numbers,
+        'show_first': 1 not in page_numbers,
+        'show_last': num_pages not in page_numbers,
+        })
+    return context
