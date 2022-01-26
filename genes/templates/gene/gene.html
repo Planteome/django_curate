@@ -4,10 +4,10 @@
 {% block meta_description %}Gene view page for the Planteome curate site{% endblock meta_description %}
 
 {% block main %}
-    {% if logged_in %}
-        <div style="text-align: center;">
+    <div style="text-align: center;">
+        {% if logged_in %}
             <div id="singleGeneEdit" class="d-inline-block">
-                <a href="{% url 'genes:gene_edit' pk=gene.id %}" class="btn btn-info" role="button">Edit gene</a>
+                <a href="{% url 'genes:gene_edit' pk=gene.id %}" class="btn btn-info" role="button">Edit gene info</a>
             </div>
             <div id="addGene" class="d-inline-block">
                 <a href="{% url 'genes:gene_add' %}" class="btn btn-primary" role="button">Add new gene</a>
@@ -17,9 +17,12 @@
                     <a href="{% url 'genes:gene_changes' pk=gene.id %}" class="btn btn-dark" role="button">View {{ change_count }} approved change{{ change_count|pluralize }}</a>
                 </div>
             {% endif %}
+        {% endif %}
+        <div id="viewAnnotations" class="d-inline-block">
+            <a href="#Annotations" class="btn btn-secondary" role="button">View Annotations</a>
         </div>
-        <br>
-    {% endif %}
+    </div>
+    <br>
     <div class="row">
         <div style="alignment: left; width: 50%">
             <div id="singleGeneView" class="card">
@@ -149,9 +152,15 @@
         </div>
     </div>
     <br>
-    <div id="annotationList" class="card" style="text-align: center">
-        <div class="card-header">
-            <h1>Annotations</h1>
+    <div id="annotationList" class="card">
+        <div class="card-header" style="text-align: center">
+            <h1 class="d-inline-block align-middle" id="Annotations">Annotations</h1>
+            {% if logged_in %}
+                &nbsp;
+                <div class="d-inline-block align-middle">
+                    <a class="btn-lg btn-primary" role="button" href="{% url 'annotations:annotation_add' %}">Add new annotation</a>
+                </div>
+            {% endif %}
         </div>
     {% if related_annotations %}
         <table class="card-table table table-hover table-striped">
@@ -173,13 +182,13 @@
                 <td><a href="{% url 'annotations:annotation' pk=related_annotation.pk %}">{{ related_annotation.pk }}</a></td>
                 <td>{{ related_annotation.db }}:{{ related_annotation.db_obj_id }}</td>
                 <td>{{ related_annotation.get_aspect_display }}</td>
-                <td><div id="rel_ont_term_{{ forloop.counter }}"></div>
+                <td><span class="row"><a href="https://browser.planteome.org/amigo/term/{{ related_annotation.ontology_id }}">{{ related_annotation.ontology_id }}</a>:&nbsp;<div id="rel_ont_term_{{ forloop.counter }}"></div>
                             <script type="application/javascript">
                             $.getJSON("https://browser.planteome.org/api/entity/terms?entity={{ related_annotation.ontology_id }}", function(json){
                                 const element = document.getElementById("rel_ont_term_{{ forloop.counter }}");
                                 element.innerHTML = json.data[0].annotation_class_label;
                             });
-                            </script></td>
+                            </script></span></td>
                 <td>{{ related_annotation.qualifier }}</td>
                 <td>{{ related_annotation.get_evidence_code_display }}</td>
                 <td>{{ related_annotation.assigned_by }}</td>
