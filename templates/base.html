@@ -26,7 +26,8 @@
         <script type="text/javascript" src="{% static 'js/vendor/jquery-3.6.0.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/vendor/chosen.jquery.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/vendor/bootstrap.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/vendor/font-awesome.js' %}"></script>
+        <!-- The font-awesome by default replaces icons with svg, set it to not do that so they can be aligned -->
+        <script type="text/javascript" src="{% static 'js/vendor/font-awesome.js' %}"  data-auto-replace-svg="false"></script>
         <script type="text/javascript" src="{% static 'js/vendor/jquery-ui.min.js' %}"></script>
     {% endblock js_library %}
 

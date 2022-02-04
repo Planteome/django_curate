@@ -39,7 +39,7 @@ function tree_to_html(tree) {
             htmlText += " - " + '<a href="/annotations/by-taxon/' + node.ncbi_id + '">' + node.num_annotations + "</a> annotations";
         }
         if(node.children) {
-            htmlText += '<i class="fa fa-caret-down" style="float: right; margin-right: 5%"></i>'
+            htmlText += '<i class="fa fa-plus fa-xs" style="line-height: 24px; font-size: 12px; float: right; margin-right: 25px"></i>'
             htmlText += '<ul>' + tree_to_html(node.children) + '</ul>';
         }
 
@@ -51,11 +51,15 @@ function tree_to_html(tree) {
 }
 
 // function to calculate and update the depth of all taxonomy elements
-function update_depth() {
+function update_depth(openLevelVar) {
     const max_depth = 12;
     const max_color = 200;
     $('.taxonElement').each(function(index, element) {
         const depth = $(this).parentsUntil("#taxonomy_tree", 'ul').length;
+        // Set the initial icon to a minus if depth less/equal than openLevelVar (set it taxon_display.html)
+        if(depth <= openLevelVar) {
+            $(this).children('i').first().toggleClass("fa-plus fa-minus");
+        }
         // Make it just alternate colors after max_depth
         let new_opacity;
         if(depth < max_depth) {

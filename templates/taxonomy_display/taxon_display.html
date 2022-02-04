@@ -3,16 +3,15 @@
 {% block extra_css %}
     <style>
     #accordion .has-children.closed a {
-        background: #fff3cd;
     }
     #accordion .has-children {
     }
     #accordion li {
-        background: #f0ad4e;
     }
     ul { /* This controls the indent of the taxonomy tree */
         padding-left: 20px;
     }
+
     </style>
 {% endblock extra_css %}
 
@@ -37,14 +36,19 @@
     </div>
     <script type="text/javascript">
     const taxonsJS = JSON.parse('{{ taxonsJS | safe }}');
+    const openLevelVar = 4;
     document.getElementById("taxonomy_tree").innerHTML = build_tree(taxonsJS);
     // Call the script from jquery.quiccordion.js to pretty up the tree
     $(document).ready(function() {
-        $("#accordion").quiccordion({openLevel: 4, preserveChildren: true});
+        $("#accordion").quiccordion({openLevel: openLevelVar, preserveChildren: true});
     });
     // Call the function to color the different depths of the tree
     $(document).ready(function() {
-        update_depth();
+        update_depth(openLevelVar);
+    });
+    // Change the icon class if taxonElement clicked
+    $('.taxonElement').click(function(e){
+        $(this).children('i').first().toggleClass("fa-plus fa-minus");
     });
     // Function for the text search
     function searchFunction() {
