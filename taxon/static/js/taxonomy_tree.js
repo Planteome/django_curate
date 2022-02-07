@@ -36,7 +36,9 @@ function tree_to_html(tree) {
             htmlText += " - " + '<a href="/gene/by-taxon/' +node.ncbi_id + '">' + node.num_genes + "</a> genes";
         }
         if(node.num_annotations > 0) {
-            htmlText += " - " + '<a href="/annotations/by-taxon/' + node.ncbi_id + '">' + node.num_annotations + "</a> annotations";
+            htmlText += " - " + '<a class="annotationLink" href="/annotations/by-taxon/' + node.ncbi_id + '">' + node.num_annotations + "</a> annotations";
+        } else {
+            htmlText += '<span class="annotationCount"></span>'
         }
         if(node.children) {
             htmlText += '<i class="fa fa-plus fa-xs" style="line-height: 24px; font-size: 12px; float: right; margin-right: 25px"></i>'

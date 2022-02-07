@@ -46,6 +46,10 @@
     $(document).ready(function() {
         update_depth(openLevelVar);
     });
+    // Call the function to fill in the annotation counts for all children
+    $(document).ready(function() {
+        getChildAnnotations();
+    });
     // Change the icon class if taxonElement clicked
     $('.taxonElement').click(function(e){
         $(this).children('i').first().toggleClass("fa-plus fa-minus");
@@ -78,6 +82,27 @@
             parents.push(elem);
         }
         return parents;
+    }
+
+    // Function to propagate the child taxon annotation counts up the tree
+    function getChildAnnotations() {
+        // Get all taxons that don't have annotations directly set. Class is set in taxonomy_tree.js
+        const annotationCounts = document.querySelectorAll('.annotationCount');
+        annotationCounts.forEach(function(element) {
+            let sum = 0;
+            // Find all the taxons that do directly have annotations and sum them for all children
+            // Have to grab the parentElement to get the <li> instead of the <span> we are in so it actually gets children
+            const childrenNodes = element.parentElement.querySelectorAll('.annotationLink');
+            childrenNodes.forEach(function(child) {
+                childText = child.innerHTML;
+                number = childText.replace(/[^\d.]/g, '');
+                sum += parseInt(number);
+            });
+            // Only add the text if there actually are children taxon with annotations
+            if (sum > 0) {
+                element.innerHTML = "   " + sum + " child annotations";
+            }
+        });
     }
     </script>
 {% endblock %}
