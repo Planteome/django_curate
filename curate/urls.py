@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import include, path, reverse_lazy
 from django.views.generic import RedirectView, TemplateView
 from .views import HomeView
@@ -30,5 +31,6 @@ urlpatterns = [
     path('contact', TemplateView.as_view(template_name='contact.html'), name='contact'),
     path('import', TemplateView.as_view(template_name='import_base.html'), name='import'),
     path('superuser', TemplateView.as_view(template_name='superuser.html'), name='superuser'),
+    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('images/favicon.ico'))),
     path('', HomeView.as_view(template_name='home.html')),
 ]
