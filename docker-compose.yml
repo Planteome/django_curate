@@ -17,6 +17,7 @@ services:
     depends_on:
       - db
       - redis
+      - celery
   celery:
     build: .
     command: celery -A curate worker -l info
@@ -25,7 +26,6 @@ services:
     depends_on:
       - db
       - redis
-      - web
   db:
     image: mariadb:10.4
     ports:
