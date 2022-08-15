@@ -5,9 +5,16 @@
         <div class="row" style="align-items: center; justify-content: center">
             <p>Logged in as {{ user.get_username }}
                 <a href="{% url 'accounts:logout' %}" class="btn btn-primary" role="button"
-                style="margin-left: 10px">Logout?</a>
+                style="margin-left: 5px">Logout?</a>
             </p>
         </div>
+        {% if user.is_superuser %}
+            <div class="row" style="align-items: center; justify-content: center">
+                <p>Go to <a href="{% url 'superuser' %}" class="btn btn-secondary" role="button"
+                     style="margin-left: 5px; margin-right: 5px">Superuser</a> page.
+                </p>
+            </div>
+        {% endif %}
     {% else %}
         <a href="{% url 'accounts:login' %}" class="btn btn-info" role="button">Login</a>
         &nbsp;
