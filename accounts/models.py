@@ -49,6 +49,6 @@ class User(AbstractUser):
         default="Requestor",
     )
 
-    needs_approval = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False)
 
 

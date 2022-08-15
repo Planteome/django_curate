@@ -63,7 +63,7 @@ class UserRegistrationForm(UserCreationForm):
         user.orcid = self.cleaned_data['orcid']
         user.role = "Requestor"
         user.is_active = False
-        user.needs_approval = True
+        user.is_approved = True
         self.approve(user)
         if commit:
             user.save()
@@ -84,12 +84,12 @@ class UserLoginForm(AuthenticationForm):
 
 
 class UserApprovalForm(forms.ModelForm):
-    needs_approval = forms.CheckboxInput(attrs={'class': 'form-control', 'name': 'approvalChkbox'})
+    is_approved = forms.CheckboxInput(attrs={'class': 'form-control', 'name': 'approvalChkbox'})
     role = forms.ChoiceField(choices=User.ROLE_CHOICES, label='Role')
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'affiliation', 'orcid', 'role', 'needs_approval')
+        fields = ('username', 'first_name', 'last_name', 'affiliation', 'orcid', 'role', 'is_approved')
 
     def __init__(self, *args, **kwargs):
         super(UserApprovalForm, self).__init__(*args, **kwargs)
