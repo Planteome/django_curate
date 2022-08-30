@@ -63,7 +63,7 @@ class UserRegistrationForm(UserCreationForm):
         user.orcid = self.cleaned_data['orcid']
         user.role = "Requestor"
         user.is_active = False
-        user.is_approved = True
+        user.is_approved = False
         self.approve(user)
         if commit:
             user.save()

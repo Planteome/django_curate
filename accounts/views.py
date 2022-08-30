@@ -52,7 +52,7 @@ class AccountApprovalView(FormView):
             return context
         # get users that are awaiting approval
         try:
-            users = User.objects.filter(is_approved=True)
+            users = User.objects.filter(is_approved=False)
         except User.DoesNotExist:
             users = None
 
@@ -78,7 +78,7 @@ class AccountApprovalView(FormView):
             # update the user in the database
             user = User.objects.get(username=approveUser)
             user.is_active = True
-            user.is_approved = False
+            user.is_approved = True
             user.role = role_dict[approveUser]
             if user.role is "Superuser":
                 user.is_superuser = True
