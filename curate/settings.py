@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 # dotenv import
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+
+    'mozilla_django_oidc',
 
     'celery',
     'django_celery_beat',
@@ -130,6 +133,24 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# Use both the built-in auth and OIDC (ORCID)
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    #'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
+    'accounts.backends.MyOIDCAB',
+]
+
+# OIDC (ORCID) settings
+OIDC_CREATE_USER = False
+OIDC_RP_CLIENT_ID = os.environ.get('ORCID_clientID')
+OIDC_RP_CLIENT_SECRET = os.environ.get('ORCID_secret')
+OIDC_RP_SIGN_ALGO = "RS256"
+
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://orcid.org/oauth/authorize"
+OIDC_OP_TOKEN_ENDPOINT = "https://orcid.org/oauth/token"
+OIDC_OP_USER_ENDPOINT = "https://orcid.org/oauth/userinfo"
+OIDC_OP_JWKS_ENDPOINT = "https://orcid.org/oauth/jwks"
 
 
 # Internationalization

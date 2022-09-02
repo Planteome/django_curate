@@ -29,9 +29,9 @@ def orcIDValidator(url):
 
 # Create your models here.
 class User(AbstractUser):
-    #user = models.OneToOneField(User, on_delete=models.PROTECT, related_name='userprofile')
     affiliation = models.CharField(max_length=255)
     orcid = models.URLField(max_length=40, validators=[URLValidator, orcIDValidator],
+                            unique=True,
                             help_text="Example: https://orcid.org/0000-0001-2345-6789")
     has_temp_password = models.BooleanField(default=False)
 

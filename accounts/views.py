@@ -1,3 +1,4 @@
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -13,7 +14,7 @@ from django.views.generic import TemplateView, FormView, UpdateView
 from .models import User
 
 # forms import
-from .forms import UserRegistrationForm, UserApprovalForm, UserEditForm
+from .forms import UserRegistrationForm, UserApprovalForm, UserEditForm, UserLoginForm
 
 
 # Create your views here.
@@ -37,6 +38,16 @@ class AccountSubmittedView(g.View):
 
     def get(self, request):
         return render(request, 'accounts/submitted.html')
+
+
+class CustomLoginView(LoginView):
+    # Override the LoginView so we can redirect the success_url
+    template_name = 'accounts/login.html'
+    form_class = UserLoginForm
+
+    def get_success_url(self):
+        # Customize the success url to use the oidc (ORCID) auth after logging as 2FA
+        return reverse_lazy('oidc_authentication_init')
 
 
 class AccountApprovalView(FormView):
@@ -80,7 +91,7 @@ class AccountApprovalView(FormView):
             user.is_active = True
             user.is_approved = True
             user.role = role_dict[approveUser]
-            if user.role is "Superuser":
+            if user.role == "Superuser":
                 user.is_superuser = True
                 user.is_staff = True
             user.save()
