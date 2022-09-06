@@ -44,11 +44,20 @@ class CustomLoginView(LoginView):
     # Override the LoginView so we can redirect the success_url
     template_name = 'accounts/login.html'
     form_class = UserLoginForm
+    model = User
 
     def get_success_url(self):
         # Customize the success url to use the oidc (ORCID) auth after logging as 2FA
         return reverse_lazy('oidc_authentication_init')
 
+    def form_valid(self, form):
+        # Make sure the user account has been approved.
+        # if not, send it to the user account submitted page
+        user = form.get_user()
+        if not user.is_approved:
+            return redirect('accounts:submitted')
+        else:
+            return super().form_valid(form)
 
 class AccountApprovalView(FormView):
     model = User
