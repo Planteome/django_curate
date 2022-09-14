@@ -19,6 +19,7 @@ MYSQL_HOST=db
 MYSQL_PASSWORD=
 
 DEBUG=True #False
+ALLOWED_HOSTS=curate.planteome.org #FQDN. Use '*' for wildcard but only in debug mode
 
 DJANGO_SECRET_KEY=
 
