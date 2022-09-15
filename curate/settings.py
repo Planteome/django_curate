@@ -152,6 +152,9 @@ OIDC_OP_TOKEN_ENDPOINT = "https://orcid.org/oauth/token"
 OIDC_OP_USER_ENDPOINT = "https://orcid.org/oauth/userinfo"
 OIDC_OP_JWKS_ENDPOINT = "https://orcid.org/oauth/jwks"
 
+# Use this force logout from local account if ORCID doesn't match
+LOGIN_REDIRECT_URL_FAILURE = '/accounts/bad_orcid'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

@@ -16,6 +16,7 @@ urlpatterns = [
         authentication_form=UserLoginForm),
         name='login'),
     path('logout/', AuthViews.LogoutView.as_view(template_name='accounts/logout.html'), name='logout'),
+    path('bad_orcid/', AuthViews.LogoutView.as_view(template_name='accounts/bad_orcid.html'), name='bad_orcid'),
     path('password_change/', AuthViews.PasswordChangeView.as_view(
         success_url=reverse_lazy('accounts:password_change_done'),
         template_name='accounts/password_reset_form.html'),

@@ -1,6 +1,7 @@
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from .models import User
 
+
 # Subclass the OIDCAuthenticationBackend with our own functions to make sure the orcid matches the user account
 class MyOIDCAB(OIDCAuthenticationBackend):
     def filter_users_by_claims(self, claims):
@@ -20,5 +21,8 @@ class MyOIDCAB(OIDCAuthenticationBackend):
         except User.DoesNotExist:
             user = None
 
-        orcid_match = claims.get('sub',[]) in user.orcid
+        if user is not None:
+            orcid_match = claims.get('sub',[]) in user.orcid
+        else:
+            orcid_match = False
         return orcid_match
