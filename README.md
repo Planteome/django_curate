@@ -29,16 +29,31 @@ ENTREZ_API_KEY=
 with your own values for each. The Entrez API info can be found by following https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/.
 
 ## Run
-Assuming Docker is configured correctly, easiest thing to do is run `docker-compose up` from the directory where the git repo was downloaded
 
-## Configuration
+### Configuration
 Some changes to docker-compose.yml may be required for the database to connect and start properly. Specifically, the volumes may need to be set.
-If starting from scratch (no existing database), the django command `python manage.py makemigrations` and `python manage.py migrate` will need to be run to set up the database.
+
+### Initial setup
+After pulling the repo from git, some steps will need to be followed to initialize the database for the first use.
+1. Some changes to docker-compose.yml may be required for the database to connect and start properly. Specifically, the volumes may need to be set.
+2. Run `docker compose run -d -e MARIADB_ROOT_PASSWORD=password -e MARIADB_DATABASE=curate_web -e MARIADB_USER=curate-user -e MARIADB_PASSWORD=password db` from the directory where the repo was downloaded. This will initialize a MySQL(Mariadb).
+Note: this should just work from the values in the .env file, but doesn't for some reason. Didn't figure out why.
+3. Stop the container. Get the continer ID from `docker ps`, stop it with `docker stop CONTAINER_ID`.
+4. Start all the containers with `docker compose up -d`
+5. Verify all containers are running with `docker ps`
+6. Get in to the "web" container with `docker compose exec web bash` 
+7. Initialize the database with `python manage.py migrate`
+8. Set up the superuser with `python manage.py createsuperuser` - follow the prompts
+9. The account just created will need to be approved before use. Exit the docker container and log in to the mysql with `mysql -u root -p -P 3307 -h 127.0.0.1`
+    ```
+    use curate_web;
+    update accounts_user set is_approved = 1, role = 'Superuser', orcid = 'your_valid_orcid', affiliation = 'whatever', first_name = '', last_name = '' where id = 1;
+    ```
+10. Add the callback URL (site/oidc/callback) to ORCID developer tools (https://orcid.org/developer-tools)
+
 
 # Usage
 When running, the site should be available at http://localhost:8000.
-
-Accounts will need to be created. The initial account may need to be created from the django terminal. The rest can be created and approved via the site.
 
 After accounts, the following should also be imported:
 ```
