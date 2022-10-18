@@ -18,5 +18,21 @@
             <h4 class="card-title"><a href="{% url 'annotations:approval' %}">Annotation approval page</a></h4>
             <p class="card-text">Approve new annotations</p>
         </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'genes:gene_import' %}">Genes bulk import page</a></h4>
+            <p class="card-text">Import new genes</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'annotations:annotation_import' %}">Annotation bulk import page</a></h4>
+            <p class="card-text">Import new annotations</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'dbxrefs:dbxref_import' %}">dbxrefs bulk import page</a></h4>
+            <p class="card-text">Import new dbxrefs (should only be done once)</p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'taxon:taxon_import' %}">Taxonomy bulk import page</a></h4>
+            <p class="card-text">Import new taxonomy (should only be done once)</p>
+        </div>
     </div>
 {% endblock main %}
