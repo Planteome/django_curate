@@ -26,13 +26,14 @@ class GeneAddForm(forms.ModelForm):
     species = forms.ModelChoiceField(
         queryset=Taxon.objects.order_by('name').filter(rank__contains='species'))
 
-    #Limit the gene_type field to only ones that already exist in db
-    # get the distinct attributes from one column
-    entries = Gene.objects.values_list('gene_type', 'gene_type').distinct()
-    # change the entries to a valid format for choice field
-    gene_type_choices = [e for e in entries]
-    gene_type = forms.ChoiceField(
-        choices=gene_type_choices)
+    gene_type = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super(GeneAddForm, self).__init__(*args, **kwargs)
+
+        #Limit the gene_type field to only ones that already exist in db
+        # get the distinct attributes from one column
+        self.fields['gene_type'].choices = Gene.objects.values_list('gene_type', 'gene_type').distinct()
 
 
 class GeneEditForm(forms.ModelForm):
