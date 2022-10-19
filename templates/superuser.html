@@ -3,36 +3,37 @@
 {% block title %}Superuser page{% endblock %}
 
 {% block main %}
-    <h2>All important pages for a superuser</h2>
+    <h2 align="center">All important pages for a superuser</h2>
     <br>
-    <div class="card" style="width: 70%">
-        <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'accounts:approve' %}">Account approval page</a></h4>
-            <p class="card-text">Approve user accounts</p>
+    <div class="card-deck">
+        <div class="card border-primary mb-3">
+            <h3 class="card-title" align="center">Approvals</h3>
+            <div class="card-body">
+                <h4 class="card-title"><a href="{% url 'accounts:approve' %}">Account approval page</a></h4>
+                <p class="card-text">Approve user accounts</p>
+                <br>
+                <h4 class="card-title"><a href="{% url 'genes:approval' %}">Gene approval page</a></h4>
+                <p class="card-text">Approve new and changed genes</p>
+                <br>
+                <h4 class="card-title"><a href="{% url 'annotations:approval' %}">Annotation approval page</a></h4>
+                <p class="card-text">Approve new annotations</p>
+            </div>
         </div>
-        <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'genes:approval' %}">Gene approval page</a></h4>
-            <p class="card-text">Approve new and changed genes</p>
-        </div>
-        <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'annotations:approval' %}">Annotation approval page</a></h4>
-            <p class="card-text">Approve new annotations</p>
-        </div>
-        <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'genes:gene_import' %}">Genes bulk import page</a></h4>
-            <p class="card-text">Import new genes</p>
-        </div>
-        <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'annotations:annotation_import' %}">Annotation bulk import page</a></h4>
-            <p class="card-text">Import new annotations</p>
-        </div>
-        <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'dbxrefs:dbxref_import' %}">dbxrefs bulk import page</a></h4>
-            <p class="card-text">Import new dbxrefs (should only be done once)</p>
-        </div>
-        <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'taxon:taxon_import' %}">Taxonomy bulk import page</a></h4>
-            <p class="card-text">Import new taxonomy (should only be done once)</p>
+        <div class="card border-primary mb-3">
+            <h3 class="card-title" align="center">Imports</h3>
+            <div class="card-body">
+                <h4 class="card-title"><a href="{% url 'genes:gene_import' %}">Genes bulk import page</a></h4>
+                <p class="card-text">Import new genes</p>
+                <br>
+                <h4 class="card-title"><a href="{% url 'annotations:annotation_import' %}">Annotation bulk import page</a></h4>
+                <p class="card-text">Import new annotations</p>
+                <br>
+                <h4 class="card-title"><a href="{% url 'dbxrefs:dbxref_import' %}">dbxrefs bulk import page</a></h4>
+                <p class="card-text">Import new dbxrefs (should only be done once)</p>
+                <br>
+                <h4 class="card-title"><a href="{% url 'taxon:taxon_import' %}">Taxonomy bulk import page</a></h4>
+                <p class="card-text">Import new taxonomy (should only be done once)</p>
+            </div>
         </div>
     </div>
 {% endblock main %}
