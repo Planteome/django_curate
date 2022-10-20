@@ -16,6 +16,10 @@ class GeneImportDocumentForm(forms.ModelForm):
         model = GeneDocument
         fields = ('document', 'species')
 
+    # Limit the species choices to species and subspecies, and order them alphabetically
+    species = forms.ModelChoiceField(
+        queryset=Taxon.objects.order_by('name').filter(rank__contains='species'))
+
 
 class GeneAddForm(forms.ModelForm):
     class Meta:
