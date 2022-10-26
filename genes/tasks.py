@@ -33,12 +33,14 @@ def process_genes_task(self, file_id, species_pk, user_id):
     species = Taxon.objects.get(pk=species_pk)
     genes = pandas.read_csv(file, sep='\t', na_filter=False)
     total_genes_to_save = len(genes)
+    chrLine = genes.columns.str.startswith('Chromosome')
+    symbolLine = genes.columns.str.contains('Gene name|Symbol')
     for index, line in genes.iterrows():
         gene_id = line['Gene stable ID']
-        gene_chr = line['Chromosome']
+        gene_chr = line[chrLine][0]
         gene_start = line['Gene start (bp)']
         gene_end = line['Gene end (bp)']
-        gene_symbol = line['Gene Symbol']
+        gene_symbol = line[symbolLine][0]
         gene_type = line['Gene type']
         gene_desc = line['Gene description']
 
@@ -78,9 +80,9 @@ def process_aliases_task(self, file_id, species_pk):
     aliases_without_match = 0
     missing_gene_dict = {}
     for index, line in aliases.iterrows():
-        gene_id = line['locus_name']
-        symbol = line['symbol']
-        full_name = line['full_name']
+        gene_id = line['Gene stable ID']
+        symbol = line['Gene Synonym']
+        full_name = line['Gene description']
         # Check to make sure we have a matching gene in db
         if gene_id in genes_dict:
             # Get the current gene if it is already in aliases_lst

@@ -8,12 +8,16 @@
     {% if logged_in and superuser %}
         Use this page to import a species gene aliases file
         <p><strong>File must be in the following format and include the header:</strong></p>
-        <p>locus_name{% verbatim %}{{tab}}{% endverbatim %}symbol{% verbatim %}{{tab}}{% endverbatim %}full_name</p>
-        <p>The "locus_name" must match the "Gene stable ID" and is required.</p>
-        <p>The "symbol" is also required and is the "alias".</p>
-        <p>The "full_name" is optional, but could be another alias</p>
+        <p>Gene stable ID{% verbatim %}{{tab}}{% endverbatim %}Gene synonym{% verbatim %}{{tab}}{% endverbatim %}Gene description</p>
+        <p>The "Gene stable ID" must match the "Gene stable ID" from the gene import page and is required.</p>
+        <p>The "Gene synonym" is also required and is the "alias".</p>
+        <p>The "Gene description" is optional, but could be another alias</p>
         <p>Example line with all 3:<br>
         AT1G04400{% verbatim %}{{tab}}{% endverbatim %}CRY2{% verbatim %}{{tab}}{% endverbatim %}cryptochrome 2</p>
+        <p>Files in this format are most easily obtained by downloading via biomart from <a href="https://plants.ensembl.org/biomart/martview">Ensembl Plants biomart</a>.</p>
+        <p>Choose "Ensembl Plants Genes (Version number)
+            Choose species
+            Choose the attributes as above</p>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
