@@ -1,6 +1,6 @@
 {% load static %}
 <div class="container" style="width: 100%">
-    <div class="row">
+    <div class="row d-flex">
         <div>
             <a href="/" title="Home" id="logo">
                 <img src="{% static 'images/Planteome_logo1.png' %}" width="200" style="margin-right: 20px">
@@ -25,5 +25,22 @@
                 </div>
             </form>
         </nav>
+        <div class="ml-auto" style="display: flex; justify-content: center; align-items: center">
+            {% if user.is_authenticated %}
+                <div class="col">
+                    <div style="text-align: center">
+                    <a class="fas fa-2x fa-user-alt" href="{% url 'accounts:edit_user' pk=user.pk %}"login button></a>
+                    </div>
+                    <div style="text-align: center">Edit account</div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <div>
+                    <a class="fas fa-2x fa-sign-in-alt" href="{% url 'accounts:login' %}"login button></a>
+                    </div>
+                    <div>Sign in</div>
+                </div>
+            {% endif %}
+        </div>
     </div>
 </div>
