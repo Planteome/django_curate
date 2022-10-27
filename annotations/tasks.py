@@ -107,7 +107,9 @@ def process_annotations_task(self, file_id, user_id):
 
         evidence_code = ev_code_dict[evidence_code]
         aspect = aspect_code_dict[aspect]
-        db_obj_type = object_type_dict[db_obj_type]
+        #db_obj_type is sometimes empty. Set it to "gene_product" in that case per the gaf 2.0 spec
+        # http://geneontology.org/docs/go-annotation-file-gaf-format-2.0/#db-object-type-column-12
+        db_obj_type = object_type_dict[db_obj_type] if (db_obj_type) else object_type_dict['gene_product']
 
         # convert the date to python date
         date = datetime.strptime(str(date), '%Y%m%d').date()
