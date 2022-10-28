@@ -1,5 +1,7 @@
 from django import template
 
+from django.db.models import Q
+
 # models import
 from dbxrefs.models import DBXref
 
@@ -19,7 +21,7 @@ def example_id_db_remove(id, db):
 def get_dbxref_url(object):
     db = object.split(':')[0]
     id = object.split(':', 1)[1]
-    dbxref = DBXref.objects.get(dbname=db)
+    dbxref = DBXref.objects.get(Q(dbname=db) | Q(synonyms__icontains=db))
     return dbxref_url_replace(dbxref.xrefURL, id)
 
 @register.filter(name='get_id_from_dbxref')

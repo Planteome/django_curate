@@ -103,13 +103,14 @@ class AnnotationView(TemplateView):
             context['superuser'] = False
 
         # get the dbxref so it can be used to generate external link
-        context['dbxref'] = DBXref.objects.get(dbname=annotation.db)
+        context['dbxref'] = DBXref.objects.get(Q(dbname=annotation.db) | Q(synonyms__icontains=annotation.db))
         # get the list of db_references and put it in a dict
         db_reference_dict = {}
         db_references = annotation.db_reference.split("|")
         for db_reference in db_references:
             dbname = db_reference.split(':')[0]
-            db_reference_dict[db_reference] = DBXref.objects.get(dbname=dbname)
+            print("dbname is " + dbname)
+            db_reference_dict[db_reference] = DBXref.objects.get(Q(dbname=dbname) | Q(synonyms__icontains=dbname))
         context['db_references_dict'] = db_reference_dict
         # Get the count of changes that been approved for this annotation
         change_count = AnnotationApproval.objects.filter(source_annotation=annotation, status=choices.ApprovalStates.APPROVED).count()
