@@ -53,7 +53,9 @@ def process_annotations_task(self, file_id, user_id):
     taxon_lst = [int(temp_taxon.replace('T', 't').replace('taxon:', '')) for temp_taxon in taxon_lst]
 
     # Get the objects from the dbs and put in dict
-    db_dict = DBXref.objects.in_bulk(db_lst, field_name='dbname')
+    db_dict = {}
+    for db in db_lst:
+        db_dict[db] = DBXref.objects.get(Q(synonyms__icontains=db) | Q(dbname=db))
     taxon_dict = Taxon.objects.in_bulk(taxon_lst, field_name='ncbi_id')
 
     # finding the internal_gene is a bit tricky, as it can be from db_obj_id, symbol, name, or synonym
