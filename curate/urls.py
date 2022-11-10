@@ -31,6 +31,7 @@ urlpatterns = [
     path('contact', TemplateView.as_view(template_name='contact.html'), name='contact'),
     path('import', TemplateView.as_view(template_name='import_base.html'), name='import'),
     path('superuser', TemplateView.as_view(template_name='superuser.html'), name='superuser'),
+    path('moderator', TemplateView.as_view(template_name='moderator.html'), name='moderator'),
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('images/favicon.ico'))),
     path('oidc/', include('mozilla_django_oidc.urls')),
     path('', HomeView.as_view(template_name='home.html')),

@@ -3,40 +3,44 @@
 {% block title %}Superuser page{% endblock %}
 
 {% block main %}
-    <h2 align="center">All important pages for a superuser</h2>
-    <br>
-    <div class="card-deck">
-        <div class="card border-primary mb-3">
-            <h3 class="card-title" align="center">Approvals</h3>
-            <div class="card-body">
-                <h4 class="card-title"><a href="{% url 'accounts:approve' %}">Account approval page</a></h4>
-                <p class="card-text">Approve user accounts</p>
-                <br>
-                <h4 class="card-title"><a href="{% url 'genes:approval' %}">Gene approval page</a></h4>
-                <p class="card-text">Approve new and changed genes</p>
-                <br>
-                <h4 class="card-title"><a href="{% url 'annotations:approval' %}">Annotation approval page</a></h4>
-                <p class="card-text">Approve new annotations</p>
+    {% if user.role == "Superuser"  %}
+        <h2 align="center">All important pages for a superuser</h2>
+        <br>
+        <div class="card-deck">
+            <div class="card border-primary mb-3">
+                <h3 class="card-title" align="center">Approvals</h3>
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{% url 'accounts:approve' %}">Account approval page</a></h4>
+                    <p class="card-text">Approve user accounts</p>
+                    <br>
+                    <h4 class="card-title"><a href="{% url 'genes:approval' %}">Gene approval page</a></h4>
+                    <p class="card-text">Approve new and changed genes</p>
+                    <br>
+                    <h4 class="card-title"><a href="{% url 'annotations:approval' %}">Annotation approval page</a></h4>
+                    <p class="card-text">Approve new annotations</p>
+                </div>
+            </div>
+            <div class="card border-primary mb-3">
+                <h3 class="card-title" align="center">Imports</h3>
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{% url 'genes:gene_import' %}">Genes bulk import page</a></h4>
+                    <p class="card-text">Import new genes</p>
+                    <br>
+                    <h4 class="card-title"><a href="{% url 'genes:alias_import' %}">Gene aliases/synonyms bulk import page</a></h4>
+                    <p class="card-text">Import new gene aliases/synonyms</p>
+                    <br>
+                    <h4 class="card-title"><a href="{% url 'annotations:annotation_import' %}">Annotation bulk import page</a></h4>
+                    <p class="card-text">Import new annotations</p>
+                    <br>
+                    <h4 class="card-title"><a href="{% url 'dbxrefs:dbxref_import' %}">dbxrefs bulk import page</a></h4>
+                    <p class="card-text">Import new dbxrefs (should only be done once)</p>
+                    <br>
+                    <h4 class="card-title"><a href="{% url 'taxon:taxon_import' %}">Taxonomy bulk import page</a></h4>
+                    <p class="card-text">Import new taxonomy (should only be done once)</p>
+                </div>
             </div>
         </div>
-        <div class="card border-primary mb-3">
-            <h3 class="card-title" align="center">Imports</h3>
-            <div class="card-body">
-                <h4 class="card-title"><a href="{% url 'genes:gene_import' %}">Genes bulk import page</a></h4>
-                <p class="card-text">Import new genes</p>
-                <br>
-                <h4 class="card-title"><a href="{% url 'genes:alias_import' %}">Gene aliases/synonyms bulk import page</a></h4>
-                <p class="card-text">Import new gene aliases/synonyms</p>
-                <br>
-                <h4 class="card-title"><a href="{% url 'annotations:annotation_import' %}">Annotation bulk import page</a></h4>
-                <p class="card-text">Import new annotations</p>
-                <br>
-                <h4 class="card-title"><a href="{% url 'dbxrefs:dbxref_import' %}">dbxrefs bulk import page</a></h4>
-                <p class="card-text">Import new dbxrefs (should only be done once)</p>
-                <br>
-                <h4 class="card-title"><a href="{% url 'taxon:taxon_import' %}">Taxonomy bulk import page</a></h4>
-                <p class="card-text">Import new taxonomy (should only be done once)</p>
-            </div>
-        </div>
-    </div>
+    {% else %}
+        <h2 align="center">You must be a superuser to use this page</h2>
+    {% endif %}
 {% endblock main %}

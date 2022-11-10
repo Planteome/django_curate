@@ -358,7 +358,7 @@ class ApprovalView(TemplateView):
             return context
 
         context['logged_in'] = True
-        if user.is_superuser:
+        if user.is_superuser or user.role == "Moderator":
             context['superuser'] = True
         else:
             context['superuser'] = False
