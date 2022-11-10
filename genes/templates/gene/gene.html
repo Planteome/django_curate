@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}Gene{% endblock title %}
+{% load gene_templatetags %}
 {% block meta_description %}Gene view page for the Planteome curate site{% endblock meta_description %}
 
 {% block main %}
@@ -181,7 +182,7 @@
             <tr>
                 <td><a href="{% url 'annotations:annotation' pk=related_annotation.pk %}">{{ related_annotation.pk }}</a></td>
                 <td>{{ related_annotation.db }}:{{ related_annotation.db_obj_id }}</td>
-                <td>{{ related_annotation.get_aspect_display }}</td>
+                <td><div align="center" title="{{ related_annotation.get_aspect_display }}">{% get_aspect related_annotation.aspect %}</div></td>
                 <td><span class="row"><a href="https://browser.planteome.org/amigo/term/{{ related_annotation.ontology_id }}">{{ related_annotation.ontology_id }}</a>:&nbsp;<div id="rel_ont_term_{{ forloop.counter }}"></div>
                             <script type="application/javascript">
                             $.getJSON("https://browser.planteome.org/api/entity/terms?entity={{ related_annotation.ontology_id }}", function(json){
@@ -190,7 +191,7 @@
                             });
                             </script></span></td>
                 <td>{{ related_annotation.qualifier }}</td>
-                <td>{{ related_annotation.get_evidence_code_display }}</td>
+                <td><div align="center" title="{{ related_annotation.get_evidence_code_display }}">{% get_evCode related_annotation.evidence_code %}</div></td>
                 <td>{{ related_annotation.assigned_by }}</td>
                 <td>{{ related_annotation.date }}</td>
             </tr>
