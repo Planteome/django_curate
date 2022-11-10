@@ -94,9 +94,9 @@ class AnnotationView(TemplateView):
         user = self.request.user
         if not user.is_authenticated:
             context['logged_in'] = False
-            return context
-
-        context['logged_in'] = True
+        else:
+            context['logged_in'] = True
+            
         if user.is_superuser:
             context['superuser'] = True
         else:
@@ -109,7 +109,6 @@ class AnnotationView(TemplateView):
         db_references = annotation.db_reference.split("|")
         for db_reference in db_references:
             dbname = db_reference.split(':')[0]
-            print("dbname is " + dbname)
             db_reference_dict[db_reference] = DBXref.objects.get(Q(dbname=dbname) | Q(synonyms__icontains=dbname))
         context['db_references_dict'] = db_reference_dict
         # Get the count of changes that been approved for this annotation
