@@ -7,7 +7,7 @@
 {% block main %}
     <div class="container" style="max-width: 40%">
         <h2>Use this page to edit user info</h2>
-        <form action="{% url 'accounts:edit_user' pk=user.pk %}" method="post">
+        <form action="{% url 'accounts:edit_user' pk=request.user.pk %}" method="post">
             {% csrf_token %}
             {{ form|crispy }}
             <input type="submit" value="Submit" class="btn btn-primary">

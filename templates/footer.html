@@ -1,21 +1,21 @@
 {% load static %}
 <div class="container" style="background: #e0e0e0; text-align: center">
     <br>
-    {% if user.is_authenticated %}
+    {% if request.user.is_authenticated %}
         <div class="row" style="align-items: center; justify-content: center">
-            <p>Logged in as {{ user.get_username }}
+            <p>Logged in as {{ request.user.username }}
                 <a href="{% url 'accounts:logout' %}" class="btn btn-primary" role="button"
                 style="margin-left: 5px">Logout?</a>
             </p>
         </div>
-        {% if user.role == "Superuser" %}
+        {% if request.user.role == "Superuser" %}
             <div class="row" style="align-items: center; justify-content: center">
                 <p>Go to <a href="{% url 'superuser' %}" class="btn btn-secondary" role="button"
                      style="margin-left: 5px; margin-right: 5px">Superuser</a> page.
                 </p>
             </div>
         {% endif %}
-        {% if user.role == "Moderator" %}
+        {% if request.user.role == "Moderator" %}
             <div class="row" style="align-items: center; justify-content: center">
                 <p>Go to <a href="{% url 'moderator' %}" class="btn btn-secondary" role="button"
                      style="margin-left: 5px; margin-right: 5px">Moderator</a> page.

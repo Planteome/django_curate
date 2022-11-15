@@ -26,10 +26,10 @@
             </form>
         </nav>
         <div class="ml-auto" style="display: flex; justify-content: center; align-items: center">
-            {% if user.is_authenticated %}
+            {% if request.user.is_authenticated %}
                 <div class="col">
                     <div style="text-align: center">
-                    <a class="fas fa-2x fa-user-alt" href="{% url 'accounts:edit_user' pk=user.pk %}"login button></a>
+                    <a class="fas fa-2x fa-user-alt" href="{% url 'accounts:edit_user' pk=request.user.pk %}"login button></a>
                     </div>
                     <div style="text-align: center">Edit account</div>
                 </div>
