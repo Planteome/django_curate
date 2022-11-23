@@ -148,6 +148,8 @@ class GeneEditView(UpdateView):
             setattr(changed_gene, field.name, getattr(existing_gene, field.name))
         # Change the values
         changed_gene.pk = None # will get the next pk available
+        changed_gene.symbol = request.POST.get('symbol')
+        changed_gene.name = request.POST.get('name')
         changed_gene.synonyms = request.POST.get('synonyms')
         changed_gene.summary = request.POST.get('summary')
         changed_gene.description = request.POST.get('description')
@@ -178,6 +180,8 @@ class GeneEditView(UpdateView):
                 existing_gene.save()
 
             # Save the existing gene with the updated fields
+            existing_gene.symbol = changed_gene.symbol
+            existing_gene.name = changed_gene.name
             existing_gene.synonyms = changed_gene.synonyms
             existing_gene.summary = changed_gene.summary
             existing_gene.description = changed_gene.description
