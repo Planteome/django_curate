@@ -58,9 +58,9 @@ class GeneEditForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['symbol'].widget.attrs = {'rows': 2, 'class': 'col-md-8'}
         self.fields['name'].widget.attrs = {'rows': 2, 'class': 'col-md-8'}
-        self.fields['gene_id'].widget.attrs = {'rows': 2, 'class': 'col-md-8'}
+        self.fields['gene_id'].widget.attrs = {'rows': 2, 'class': 'col-md-8', 'readonly': True}
         self.fields['synonyms'].widget.attrs = {'rows': 2, 'class': 'col-md-8'}
         self.fields['summary'].widget.attrs = {'rows': 2, 'class': 'col-md-8'}
         self.fields['description'].widget.attrs = {'rows': 2, 'class': 'col-md-8'}
-        self.fields['location'].widget.attrs = {'class': 'col-md-8'}
+        self.fields['location'].widget.attrs = {'class': 'col-md-8', 'readonly': True}
         self.fields['pubmed_id'].widget.attrs = {'class': 'col-md-8'}
