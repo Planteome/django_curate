@@ -77,6 +77,22 @@
                             <p class="card-text">Object ID: {{ gene.data_source_object_id }}
                             <br>Source Name: {{ gene.data_source_name }}</p>
                         </li>
+                        <li class="list-group-item ml-3">
+                            <h4 class="card-title">EC number:</h4>
+                            <p class="card-text"><div id="ec_number"></div></p>
+                            <script type="application/javascript">
+                                $.getJSON("https://rest.uniprot.org/uniprotkb/search?query={{ gene.gene_id }}&format=json&fields=ec", function(json){
+                                    const element = document.getElementById("ec_number");
+                                    ecNumber = json.results[0].proteinDescription.recommendedName.ecNumbers[0].value;
+                                    uniprotID = json.results[0].primaryAccession;
+                                    if (typeof ecNumber !== 'undefined'){
+                                        element.innerHTML = "<a href='https://www.uniprot.org/uniprotkb/"+uniprotID+"/entry'>"+ecNumber+"</a>";
+                                    }else{
+                                        element.innerHTML = "Not found";
+                                    }
+                                })
+                            </script>
+                        </li>
                 {% if pubmed %}
                         <li class="list-group-item ml-3">
                             <h4 class="card-title">Pubmed links:</h4>
