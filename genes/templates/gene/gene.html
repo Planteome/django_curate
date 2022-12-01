@@ -83,11 +83,15 @@
                             <script type="application/javascript">
                                 $.getJSON("https://rest.uniprot.org/uniprotkb/search?query={{ gene.gene_id }}%20AND%20(taxonomy_id:{{ gene.species_id }})&format=json&fields=ec", function(json){
                                     const element = document.getElementById("ec_number");
-                                    ecNumber = json.results[0].proteinDescription.recommendedName.ecNumbers[0].value;
-                                    uniprotID = json.results[0].primaryAccession;
-                                    if (typeof ecNumber !== 'undefined'){
-                                        element.innerHTML = "<a href='https://www.uniprot.org/uniprotkb/"+uniprotID+"/entry'>"+ecNumber+"</a>";
-                                    }else{
+                                    try {
+                                        ecNumber = json.results[0].proteinDescription.recommendedName.ecNumbers[0].value;
+                                        uniprotID = json.results[0].primaryAccession;
+                                        if (typeof ecNumber !== 'undefined') {
+                                            element.innerHTML = "<a href='https://www.uniprot.org/uniprotkb/" + uniprotID + "/entry'>" + ecNumber + "</a>";
+                                        } else {
+                                            element.innerHTML = "Not found";
+                                        }
+                                    } catch (e) {
                                         element.innerHTML = "Not found";
                                     }
                                 })
