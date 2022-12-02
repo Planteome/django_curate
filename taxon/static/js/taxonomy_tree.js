@@ -7,8 +7,12 @@ function build_tree(taxons) {
     // create the tree array
     let tree = [];
     taxons.forEach(function(node) {
-        // find parent
-        if (node['parent'] != 0) {
+        // skip the root term
+        if (node['parent'] === 0) {
+            return;
+        }
+        // find parent until "cellular organisms" which has parent root with ncbiID == 1
+        if (node['parent'] !== 1) {
             let parent = dataMap[node['parent']];
             // create child array if it doesn't exist
             (parent.children || (parent.children = []))
@@ -20,13 +24,13 @@ function build_tree(taxons) {
         }
     });
     // Send to function to add the html
-    return tree_to_html(tree);
+    return tree_to_html(tree, true);
 }
 
-function tree_to_html(tree) {
+function tree_to_html(tree, first) {
     let htmlText = '';
     tree.forEach(function(node) {
-        if(node.ncbi_id === 1) {
+        if(first) {
             htmlText += '<ul id="accordion">';
         }
         // TODO: pretty up this text some more
@@ -42,10 +46,10 @@ function tree_to_html(tree) {
         }
         if(node.children) {
             htmlText += '<i class="fa fa-plus fa-xs" style="line-height: 24px; font-size: 12px; float: right; margin-right: 25px"></i>'
-            htmlText += '<ul>' + tree_to_html(node.children) + '</ul>';
+            htmlText += '<ul>' + tree_to_html(node.children, false) + '</ul>';
         }
 
-        if(node.ncbi_id === 1) {
+        if(first) {
             htmlText += '</ul>';
         }
     });
