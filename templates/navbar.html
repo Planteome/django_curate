@@ -1,12 +1,12 @@
 {% load static %}
 <div class="container" style="width: 100%">
-    <div class="row d-flex">
+    <div class="row d-flex" style="align-items: center">
         <div>
             <a href="/" title="Home" id="logo">
-                <img src="{% static 'images/Planteome_logo1.png' %}" width="200" style="margin-right: 20px">
+                <img src="{% static 'images/Planteome_logo1.png' %}" width="180" style="margin-right: 10px">
             </a>
         </div>
-        <nav class="navbar navbar-expand navbar-light bg-light" role="navigation">
+        <nav class="navbar navbar-expand navbar-light bg-light" role="navigation" style="height: 100px">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                     <a class="nav-link" href="/">Home</a>
@@ -25,13 +25,27 @@
                 </div>
             </form>
         </nav>
-        <div class="ml-auto" style="display: flex; justify-content: center; align-items: center">
+        <div class="ml-auto" style="display: inline; justify-content: center; align-items: center">
             {% if request.user.is_authenticated %}
-                <div class="col">
-                    <div style="text-align: center">
-                    <a class="fas fa-2x fa-user-alt" href="{% url 'accounts:edit_user' pk=request.user.pk %}"login button></a>
+                <div class="row">
+                    <div class="col-auto">
+                        <div style="text-align: center">
+                        <a class="fas fa-2x fa-user-alt" href="{% url 'accounts:info' user=request.user %}"login button></a>
+                        </div>
+                        <div style="text-align: center; font-size: x-small">Account</div>
                     </div>
-                    <div style="text-align: center">Edit account</div>
+                    <div class="col-auto">
+                        <div style="text-align: center">
+                        <a class="fas fa-2x fa-plus-circle" href="{% url 'genes:gene_add' %}"gene add button></a>
+                        </div>
+                        <div style="text-align: center; font-size: x-small">Add gene</div>
+                    </div>
+                    <div class="col-auto">
+                        <div style="text-align: center">
+                        <a class="fas fa-2x fa-plus-circle" href="{% url 'annotations:annotation_add' %}"annotation add button></a>
+                        </div>
+                        <div style="text-align: center; font-size: x-small">Annotation</div>
+                    </div>
                 </div>
             {% else %}
                 <div class="col">
