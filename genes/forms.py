@@ -24,7 +24,7 @@ class GeneImportDocumentForm(forms.ModelForm):
 class GeneAddForm(forms.ModelForm):
     class Meta:
         model = Gene
-        fields = '__all__'
+        exclude = ['data_source_name', 'data_source_object_id', 'phenotype']
 
     # Limit the species choices to species and subspecies, and order them alphabetically
     species = forms.ModelChoiceField(
