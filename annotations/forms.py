@@ -2,6 +2,7 @@ from django import forms
 
 # models import
 from .models import Annotation, AnnotationDocument, AnnotationApproval
+from taxon.models import Taxon
 
 
 # classes
@@ -17,6 +18,9 @@ class AnnotationAddForm(forms.ModelForm):
         model = AnnotationApproval
         exclude = ['datetime', 'action', 'status', 'requestor', 'internal_gene', 'source_annotation', 'assigned_by', 'date']
         #TODO: add search for gene in db
+
+    taxon = forms.ModelChoiceField(
+        queryset=Taxon.objects.order_by('name').filter(rank__contains='species'))
 
 
 class AnnotationEditForm(forms.ModelForm):

@@ -258,13 +258,6 @@ class AnnotationAddView(FormView):
         else:
             context['superuser'] = False
 
-        # Get the current species so we can find the species with the form
-        # TODO: add autocomplete to the form for the species
-        species = Taxon.objects.all()
-        species_dict = {}
-        for taxon in species:
-            species_dict[taxon.name] = taxon.ncbi_id
-        context['species'] = species_dict
         return context
 
     def post(self, request, *args, **kwargs):
