@@ -201,6 +201,7 @@ class AnnotationEditView(UpdateView):
         changed_annotation.action = choices.ApprovalActions.INITIAL
         changed_annotation.requestor = requestor
         changed_annotation.datetime = curr_time
+        changed_annotation.date = curr_time
         changed_annotation.comments = comments
         changed_annotation.source_annotation = existing_annotation
 
