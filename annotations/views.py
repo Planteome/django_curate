@@ -103,7 +103,7 @@ class AnnotationView(TemplateView):
             context['superuser'] = False
 
         # get the dbxref so it can be used to generate external link
-        context['dbxref'] = DBXref.objects.get(Q(dbname=annotation.db) | Q(synonyms__icontains=annotation.db))
+        context['dbxref'] = DBXref.objects.filter(Q(dbname=annotation.db) | Q(synonyms__icontains=annotation.db))[0]
         # get the list of db_references and put it in a dict
         db_reference_dict = {}
         db_references = annotation.db_reference.split("|")
@@ -279,8 +279,10 @@ class AnnotationAddView(FormView):
             new_annotation.db_reference = form.cleaned_data['db_reference']
             new_annotation.evidence_code = form.cleaned_data['evidence_code']
             new_annotation.with_from = form.cleaned_data['with_from']
+            new_annotation.aspect = form.cleaned_data['aspect']
             new_annotation.db_obj_name = form.cleaned_data['db_obj_name']
             new_annotation.db_obj_synonym = form.cleaned_data['db_obj_synonym']
+            new_annotation.db_obj_type = form.cleaned_data['db_obj_type']
             new_annotation.taxon = form.cleaned_data['taxon']
             new_annotation.date = timezone.now().date()
             new_annotation.assigned_by = assigned_by
