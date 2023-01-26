@@ -276,15 +276,13 @@ class GeneAddView(FormView):
             location = form.cleaned_data['location']
             summary = form.cleaned_data['summary']
             description = form.cleaned_data['description']
-            phenotype = form.cleaned_data['phenotype']
-            data_source_object_id = form.cleaned_data['data_source_object_id']
-            data_source_name = form.cleaned_data['data_source_name']
+            #phenotype = form.cleaned_data['phenotype']
+            #data_source_object_id = form.cleaned_data['data_source_object_id']
+            #data_source_name = form.cleaned_data['data_source_name']
             pubmed_id = form.cleaned_data['pubmed_id']
             Gene.objects.create(symbol=symbol, name=name, gene_id=gene_id, gene_type=gene_type, species=species,
                                 synonyms=synonyms, location=location, summary=summary, description=description,
-                                phenotype=phenotype, data_source_object_id=data_source_object_id,
-                                data_source_name=data_source_name, pubmed_id=pubmed_id,
-                                changed_by=self.request.user)
+                                pubmed_id=pubmed_id, changed_by=self.request.user)
 
             return HttpResponseRedirect('/gene/import_success/')
         else:
