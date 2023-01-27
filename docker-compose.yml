@@ -18,6 +18,7 @@ services:
       - db
       - redis
       - celery
+      - es
   celery:
     build: .
     command: celery -A curate worker -l info
@@ -35,4 +36,11 @@ services:
     volumes:
       - /docker/curate/mysqldata:/var/lib/mysql
       - /docker/curate/mysqld:/var/run/mysql
-
+  es:
+    image: elasticsearch:7.17.8
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - /docker/curate/es:/usr/share/elasticsearch/data:rw
+    ports:
+      - "9200:9200"

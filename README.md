@@ -25,6 +25,8 @@ DJANGO_SECRET_KEY=
 
 ENTREZ_EMAIL=""
 ENTREZ_API_KEY=
+
+ELASTICSEARCH_DSL_HOSTS=es:9200
 ```
 with your own values for each. The Entrez API info can be found by following https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/.
 
@@ -50,6 +52,7 @@ Note: this should just work from the values in the .env file, but doesn't for so
     update accounts_user set is_approved = 1, role = 'Superuser', orcid = 'your_valid_orcid', affiliation = 'whatever', first_name = '', last_name = '' where id = 1;
     ```
 10. Add the callback URL (site/oidc/callback) to ORCID developer tools (https://orcid.org/developer-tools)
+11. May need to fix the permissions for the docker volumes for mysql and elasticsearch. Temporarily set them to be world-writeable, figure out the user that is writing to them, and change the ownership.
 
 
 # Usage

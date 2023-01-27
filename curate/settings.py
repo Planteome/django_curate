@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
+    'django_elasticsearch_dsl',
+
     'mozilla_django_oidc',
 
     'celery',
@@ -187,6 +189,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery settings
 CELERY_RESULT_BACKEND = "redis://redis:6379"
+
+# Elasticsearch settings
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS",
+                           'localhost:9200')
+    },
+}
 
 # Custom planteome settings
 SITE_NAME = "Planteome Curate"
