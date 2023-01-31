@@ -16,6 +16,9 @@ from taxon.models import Taxon
 from dbxrefs.models import DBXref
 from genes.models import Gene
 
+# Elasticsearch imports
+from .documents import AnnotationDocument as ESAnnotationDocument
+
 # choice import
 import curate.choices as choices
 
@@ -128,7 +131,8 @@ def process_annotations_task(self, file_id, user_id):
                                           internal_gene=internal_gene, changed_by_id=user_id,))
         progress_recorder.set_progress(index, total_annotations_to_save,
                                        description="Processing annotations from file")
-
+    # Get the latest DB id so that we know how many to update in Elasticsearch
+    annotation_last_id = Annotation.objects.last().id
     # Now put them in the database
     # batch load them if there are many
     batch_size = 1000
@@ -140,3 +144,11 @@ def process_annotations_task(self, file_id, user_id):
             Annotation.objects.bulk_create(batch[index])
     else:
         Annotation.objects.bulk_create(annotations_lst)
+
+    # bulk_create doesn't trigger the Elasticsearch indexing, so do it manually
+    # as described at https://github.com/django-es/django-elasticsearch-dsl/issues/32#issuecomment-736046572
+    # except that mysql doesn't return DB ids like postgres, so have to build list manually
+    new_annotation_last_id = Annotation.objects.last().id
+    annotations_id = [num for num in range(annotation_last_id, new_annotation_last_id)]
+    new_annotations_qs = Annotation.objects.filter(id__in=annotations_id)
+    ESAnnotationDocument().update(new_annotations_qs)

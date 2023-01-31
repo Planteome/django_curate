@@ -12,6 +12,9 @@ import pandas
 from .models import Gene, GeneDocument, MissingGenesFromAliasesImport
 from taxon.models import Taxon
 
+# Elasticsearch imports
+from .documents import GeneDocument as ESGeneDocument
+
 # regex import
 import re
 
@@ -50,6 +53,8 @@ def process_genes_task(self, file_id, species_pk, user_id):
                               location=gene_location, description=gene_desc, changed_by_id=user_id))
         progress_recorder.set_progress(index, total_genes_to_save, description="Processing genes from file")
 
+    # Get the latest DB id so that we know how many to update in Elasticsearch
+    gene_last_id = Gene.objects.last().id
     # Now put them in the database
     # batch load them if there are many
     batch_size = 1000
@@ -61,6 +66,13 @@ def process_genes_task(self, file_id, species_pk, user_id):
     else:
         Gene.objects.bulk_create(genes_lst)
 
+    # bulk_create doesn't trigger the Elasticsearch indexing, so do it manually
+    # as described at https://github.com/django-es/django-elasticsearch-dsl/issues/32#issuecomment-736046572
+    # except that mysql doesn't return DB ids like postgres, so have to build list manually
+    new_gene_last_id = Gene.objects.last().id
+    genes_id = [num for num in range(gene_last_id, new_gene_last_id)]
+    new_genes_qs = Gene.objects.filter(id__in=genes_id)
+    ESGeneDocument().update(new_genes_qs)
 
 # aliases task
 @shared_task(bind=True)
@@ -117,8 +129,11 @@ def process_aliases_task(self, file_id, species_pk):
         aliases_dict[gene_id] = "|".join(curr_synonym_lst[gene_id])
     # put them in list format
     aliases_lst = []
+    # keep a list of the gene_ids to update
+    aliases_gene_id_lst = []
     for k, v in aliases_dict.items():
         aliases_lst.append(Gene(pk=genes_dict[k]['pk'], gene_id=k, synonyms=v))
+        aliases_gene_id_lst.append(k)
     # Now put them in the database
     # batch load them if there are many
     batch_size = 1000
@@ -139,6 +154,10 @@ def process_aliases_task(self, file_id, species_pk):
     missing_gene_model.datetime = datetime.datetime.now()
     missing_gene_model.aliasCount = aliases_without_match
     missing_gene_model.save()
+
+    # Use the list of updated gene_ids to repopulate the Elasticsearch index
+    new_genes_qs = Gene.objects.filter(id__in=aliases_gene_id_lst)
+    ESGeneDocument().update(new_genes_qs)
 
 
 # testing task
