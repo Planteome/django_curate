@@ -14,6 +14,9 @@ from .models import Taxon, TaxonomyDocument
 from annotations.models import Annotation
 from genes.models import Gene
 
+# ElasticSearch import
+from documents import TaxonDocument as ESTaxonDocument
+
 # views import
 from curate.views import HomeView
 
@@ -198,6 +201,11 @@ class TaxonImportView(FormView):
         # Now put them all in the db at once
         Taxon.objects.bulk_create(taxon_lst)
 
+        # Create the ElasticSearch document for all taxon
+        last_taxon_id = Taxon.objects.last().id + 1
+        taxon_ids = [num for num in range(1, last_taxon_id)]
+        new_taxons_qs = Taxon.objects.filter(id__in=taxon_ids)
+        ESTaxonDocument().update(new_taxons_qs)
 
 class TaxonAddView(FormView):
     model = Taxon
