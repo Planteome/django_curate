@@ -207,6 +207,7 @@ class TaxonImportView(FormView):
         new_taxons_qs = Taxon.objects.filter(id__in=taxon_ids)
         ESTaxonDocument().update(new_taxons_qs)
 
+
 class TaxonAddView(FormView):
     model = Taxon
     form_class = TaxonomyAddForm
