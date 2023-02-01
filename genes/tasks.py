@@ -54,7 +54,10 @@ def process_genes_task(self, file_id, species_pk, user_id):
         progress_recorder.set_progress(index, total_genes_to_save, description="Processing genes from file")
 
     # Get the latest DB id so that we know how many to update in Elasticsearch
-    gene_last_id = Gene.objects.last().id
+    try:
+        gene_start_id = Gene.objects.last().id + 1
+    except AttributeError:
+        gene_start_id = 1
     # Now put them in the database
     # batch load them if there are many
     batch_size = 1000
@@ -69,8 +72,8 @@ def process_genes_task(self, file_id, species_pk, user_id):
     # bulk_create doesn't trigger the Elasticsearch indexing, so do it manually
     # as described at https://github.com/django-es/django-elasticsearch-dsl/issues/32#issuecomment-736046572
     # except that mysql doesn't return DB ids like postgres, so have to build list manually
-    new_gene_last_id = Gene.objects.last().id
-    genes_id = [num for num in range(gene_last_id, new_gene_last_id)]
+    new_gene_last_id = Gene.objects.last().id + 1
+    genes_id = [num for num in range(gene_start_id, new_gene_last_id)]
     new_genes_qs = Gene.objects.filter(id__in=genes_id)
     ESGeneDocument().update(new_genes_qs)
 

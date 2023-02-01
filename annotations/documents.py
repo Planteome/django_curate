@@ -6,11 +6,17 @@ from .models import Annotation
 from taxon.models import Taxon
 from genes.models import Gene
 
+# json import for ontology term lookup
+import requests
+
+## NOTE!!!
+# changes in this file seem to require a restart of celery to be picked up by the bulk insert process
+
 
 @registry.register_document
 class AnnotationDocument(Document):
     # Foreign keys need to be treated special or get error
-    species = fields.ObjectField(properties={
+    taxon = fields.ObjectField(properties={
         'name': fields.TextField(),
         'pk': fields.IntegerField(),
     })
@@ -19,6 +25,8 @@ class AnnotationDocument(Document):
         'fullname': fields.TextField(),
         'pk': fields.IntegerField(),
     })
+
+    ont_term = fields.TextField()
 
     class Index:
         name = 'annotations'
@@ -39,3 +47,9 @@ class AnnotationDocument(Document):
             'gene_product_form_id',
         ]
         related_models = [Taxon, Gene]
+
+    def prepare_ont_term(self, instance):
+        req = requests.get('https://browser.planteome.org/api/entity/terms?entity=' + instance.ontology_id)
+        result = req.json()
+        ont_term = result["data"][0]["annotation_class_label"]
+        return ont_term
