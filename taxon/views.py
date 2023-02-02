@@ -15,7 +15,7 @@ from annotations.models import Annotation
 from genes.models import Gene
 
 # ElasticSearch import
-from documents import TaxonDocument as ESTaxonDocument
+from .documents import TaxonDocument as ESTaxonDocument
 
 # views import
 from curate.views import HomeView
@@ -61,7 +61,7 @@ class TaxonBaseView(TemplateView):
             else:
                 annot_dict[annotation.db_obj_id] = max(annotation.pk, annot_dict[annotation.db_obj_id])
             # only get 10 of them
-            if len(annot_dict) is 10:
+            if len(annot_dict) == 10:
                 break
         # now get the actual last 10 annotated genes
         annotation_10_list = Annotation.objects.filter(pk__in=list(annot_dict.values())).order_by('-id')
@@ -106,7 +106,7 @@ class TaxonView(TemplateView):
             else:
                 annot_dict[annotation.db_obj_id] = max(annotation.pk, annot_dict[annotation.db_obj_id])
             # only get 10 of them
-            if len(annot_dict) is 10:
+            if len(annot_dict) == 10:
                 break
         # now get the actual last 10 annotated genes
         annotation_10_list = Annotation.objects.filter(pk__in=list(annot_dict.values())).order_by('-id')
