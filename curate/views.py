@@ -6,6 +6,9 @@ from django.views.generic import TemplateView, FormView
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.serializers.json import DjangoJSONEncoder
 
+# settings import
+from django.conf import settings
+
 # models import
 from taxon.models import Taxon
 from annotations.models import Annotation
@@ -20,6 +23,7 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
         #taxons = Taxon.objects.annotate(num_annotations=Count('annotation')).values()
         # Had to switch to using subqueries for the annotate counts so I could also get the gene counts
         # Otherwise the query took way too long because it does a bunch of unneeded joins

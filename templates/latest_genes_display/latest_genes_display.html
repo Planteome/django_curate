@@ -17,7 +17,7 @@
             <a href="{% url 'taxon:taxon' ncbiID=annotation.taxon.pk %}">{{ annotation.taxon }}</a>
         </td>
         <td>
-            <a href="https://browser.planteome.org/amigo/term/{{ annotation.ontology_term.onto_term }}">{{ annotation.ontology_term.onto_term }}</a>
+            <a href="{{ amigo_base_url }}amigo/term/{{ annotation.ontology_term.onto_term }}">{{ annotation.ontology_term.onto_term }}</a>
         </td>
         <td style="text-align: left">
             {{ annotation.db_obj_synonym|truncatechars:12 }}

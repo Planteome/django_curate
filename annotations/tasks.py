@@ -10,6 +10,9 @@ from celery_progress.backend import ProgressRecorder
 # pandas import
 import pandas
 
+# settings import
+from django.conf import settings
+
 # Models imports
 from .models import Annotation, AnnotationDocument, AnnotationOntologyTerm
 from taxon.models import Taxon
@@ -202,7 +205,7 @@ def update_ontology_terms(terms_lst, progress_recorder):
     if len(terms_lst) > batch_size:
         batch = [terms_lst[i:i + batch_size] for i in range(0, len(terms_lst), batch_size)]
         for index in range(len(batch)):
-            search_string = "https://browser.planteome.org/api/entity/terms?"
+            search_string = settings.AMIGO_BASE_URL + "api/entity/terms?"
             # progress_recorder line here
             progress_recorder.set_progress(index * batch_size, len(terms_lst),
                                            description="Updating ontology terms in database")
@@ -223,7 +226,7 @@ def update_ontology_terms(terms_lst, progress_recorder):
                                              'synonym': term.get('synonym', '')
                                              }
     else:
-        search_string = "https://browser.planteome.org/api/entity/terms?"
+        search_string = settings.AMIGO_BASE_URL + "api/entity/terms?"
         for term in terms_lst:
             search_string += "&entity=" + term
         s = requests.Session()

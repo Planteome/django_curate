@@ -50,6 +50,7 @@ class BaseGeneView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(BaseGeneView, self).get_context_data()
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
         # get the last 10 genes in reverse order
         gene_list = Gene.objects.all().order_by('-id')[:10:-1]
         context['latest_genes'] = gene_list
@@ -66,6 +67,7 @@ class GeneView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(GeneView, self).get_context_data(**kwargs)
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
         gene = Gene.objects.get(pk=self.kwargs['pk'])
         context['gene'] = gene
 

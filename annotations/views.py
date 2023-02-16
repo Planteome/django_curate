@@ -8,6 +8,9 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView, ListView
 from django.views.generic.edit import UpdateView
 
+# settings import
+from django.conf import settings
+
 # models import
 from urllib3.connectionpool import xrange
 
@@ -93,6 +96,7 @@ class AnnotationView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(AnnotationView, self).get_context_data(**kwargs)
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
         annotation = Annotation.objects.get(pk=self.kwargs['pk'])
         context['annotation'] = annotation
         user = self.request.user
@@ -580,6 +584,7 @@ class SearchView(ListView):
         self.object_list = self.get_queryset().order_by('pk')[:10000]
         context = super(SearchView, self).get_context_data(**kwargs)
         context['count'] = self.object_list.count()
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
         context = adjust_pagination(context)
         return context
 

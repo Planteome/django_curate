@@ -22,11 +22,11 @@
             {% endif %}
         </td>
         <td>
-            <a href="https://browser.planteome.org/amigo/term/{{ annotation.ontology_term.onto_term }}">{{ annotation.ontology_term.onto_term }}</a>
+            <a href="{{ amigo_base_url }}amigo/term/{{ annotation.ontology_term.onto_term }}">{{ annotation.ontology_term.onto_term }}</a>
                 &nbsp;-&nbsp;
                 <div style="display: inline-block" id="{{ annotation.pk }}_ont_term"></div>
                 <script type="application/javascript">
-                    $.getJSON("https://browser.planteome.org/api/entity/terms?entity={{ annotation.ontology_term.onto_term }}", function(json){
+                    $.getJSON("{{ amigo_base_url }}api/entity/terms?entity={{ annotation.ontology_term.onto_term }}", function(json){
                         const element = document.getElementById("{{ annotation.pk }}_ont_term");
                         element.innerHTML = json.data[0].annotation_class_label;
                     });

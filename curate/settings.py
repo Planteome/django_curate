@@ -206,3 +206,4 @@ LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ENTREZ_EMAIL = os.environ.get('ENTREZ_EMAIL')
 ENTREZ_API_KEY = os.environ.get('ENTREZ_API_KEY')
+AMIGO_BASE_URL = os.environ.get('AMIGO_BASE_URL')

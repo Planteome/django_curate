@@ -27,6 +27,8 @@ ENTREZ_EMAIL=""
 ENTREZ_API_KEY=
 
 ELASTICSEARCH_DSL_HOSTS=es:9200
+
+AMIGO_BASE_URL="https://browser.planteome.org"
 ```
 with your own values for each. The Entrez API info can be found by following https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/.
 
