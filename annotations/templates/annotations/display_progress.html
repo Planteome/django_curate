@@ -3,8 +3,9 @@
 
 {% block main %}
     <div class='progress-wrapper'>
-        The progress bar will go through twice, once for the loading the annotations into memory and then again to
-        put in the database.
+        The progress bar may go through a few times, depending on what is being done. A full annotation file import will
+        include loading the annotations in to memory, putting them into the database, updating or creating any ontology
+        terms, and finally updating the ElasticSearch documents.
       <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
     </div>
     <div id="progress-bar-message">Waiting for progress to start...</div>

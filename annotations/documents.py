@@ -1,7 +1,7 @@
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 
-from .models import Annotation
+from .models import Annotation, AnnotationOntologyTerm
 
 from taxon.models import Taxon
 from genes.models import Gene
@@ -26,7 +26,13 @@ class AnnotationDocument(Document):
         'pk': fields.IntegerField(),
     })
 
-    ont_term = fields.TextField()
+    ontology_term = fields.ObjectField(properties={
+        'onto_term': fields.TextField(),
+        'term_definition': fields.TextField(),
+        'term_synonyms': fields.TextField(),
+        'is_obsolete': fields.BooleanField(),
+        'pk': fields.IntegerField(),
+    })
 
     class Index:
         name = 'annotations'
@@ -36,7 +42,6 @@ class AnnotationDocument(Document):
         fields = [
             'db_obj_id',
             'db_obj_symbol',
-            'ontology_id',
             'db_reference',
             'evidence_code',
             'aspect',
@@ -46,10 +51,4 @@ class AnnotationDocument(Document):
             'assigned_by',
             'gene_product_form_id',
         ]
-        related_models = [Taxon, Gene]
-
-    def prepare_ont_term(self, instance):
-        req = requests.get('https://browser.planteome.org/api/entity/terms?entity=' + instance.ontology_id)
-        result = req.json()
-        ont_term = result["data"][0]["annotation_class_label"]
-        return ont_term
+        related_models = [Taxon, Gene, AnnotationOntologyTerm]

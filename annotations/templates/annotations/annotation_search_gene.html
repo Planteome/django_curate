@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Search for gene to use for annotation{% endblock title %}
+
+{% block main %}
+    {% if logged_in %}
+        Use this page to search for a gene to use for annotation
+        {% for gene in search_genes %}
+            <br>
+            gene is {{ gene.db_obj_symbol }} with species {{ gene.taxon.name }} and id {{ gene.meta.id }}
+        {% endfor %}
+    {% else %}
+        <h2>You must be a logged in user to use this page</h2>
+    {% endif %}
+{% endblock main %}

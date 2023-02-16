@@ -54,7 +54,7 @@
                                     <div class="modal-body">
                                         {% inline_diff org_annotation.db_obj_symbol annotation.db_obj_symbol as symbol %}
                                         {% inline_diff org_annotation.qualifier annotation.qualifier as qualifier %}
-                                        {% inline_diff org_annotation.ontology_id annotation.ontology_id as ontology_id%}
+                                        {% inline_diff org_annotation.ontology_term.onto_term annotation.ontology_term.onto_term as ontology_term%}
                                         {% inline_diff org_annotation.db_reference annotation.db_reference as db_reference%}
                                         {% inline_diff org_annotation.get_evidence_code_display annotation.get_evidence_code_display as ev_code %}
                                         {% inline_diff org_annotation.with_from annotation.with_from as with_from %}
@@ -79,10 +79,10 @@
                                             </div>
                                             <br>
                                         {% endif %}
-                                        {% if '<span' in ontology_id %}
+                                        {% if '<span' in ontology_term %}
                                             <div class="card">
                                                 <div class="card-title">Ontology ID:</div>
-                                                <div class="card-body">{{ ontology_id }}</div>
+                                                <div class="card-body">{{ ontology_term.onto_term }}</div>
                                             </div>
                                             <br>
                                         {% endif %}

@@ -11,18 +11,22 @@ from django.views.generic.edit import UpdateView
 # models import
 from urllib3.connectionpool import xrange
 
-from .models import Annotation, AnnotationDocument, AnnotationApproval
+from .models import Annotation, AnnotationDocument, AnnotationApproval, AnnotationOntologyTerm
 from taxon.models import Taxon
 from dbxrefs.models import DBXref
 
 # forms import
 from .forms import AnnotationImportDocumentForm, AnnotationAddForm
 
+# ElasticSearch import
+from .documents import AnnotationDocument as ESAnnotationDocument
+from django_elasticsearch_dsl.search import Search
+
 # choices import
 import curate.choices as choices
 
 # tasks import
-from .tasks import process_annotations_task
+from .tasks import process_annotations_task, process_all_ontology_terms_task
 
 # itertools import
 from itertools import tee, chain
@@ -127,7 +131,7 @@ class AnnotationEditView(UpdateView):
         "db_obj_id",
         "db_obj_symbol",
         "qualifier",
-        "ontology_id",
+        #"ontology_term", TODO: change this so that it does the look up in elasticsearch and only shows the current
         "db_reference",
         "evidence_code",
         "with_from",
@@ -183,7 +187,7 @@ class AnnotationEditView(UpdateView):
         changed_annotation.db_obj_id = request.POST.get('db_obj_id')
         changed_annotation.db_obj_symbol = request.POST.get('db_obj_symbol')
         changed_annotation.qualifier = request.POST.get('qualifier')
-        changed_annotation.ontology_id = request.POST.get('ontology_id')
+        changed_annotation.ontology_term.onto_term = request.POST.get('ontology_term')
         changed_annotation.db_reference = request.POST.get('db_reference')
         changed_annotation.evidence_code = request.POST.get('evidence_code')
         changed_annotation.with_from = request.POST.get('with_from')
@@ -214,7 +218,7 @@ class AnnotationEditView(UpdateView):
                                       db_obj_id=changed_annotation.db_obj_id,
                                       db_obj_symbol=changed_annotation.db_obj_symbol,
                                       qualifier=changed_annotation.qualifier,
-                                      ontology_id=changed_annotation.ontology_id,
+                                      ontology_term=changed_annotation.ontology_term,
                                       db_reference=changed_annotation.db_reference,
                                       evidence_code=changed_annotation.evidence_code,
                                       with_from=changed_annotation.with_from,
@@ -235,6 +239,28 @@ class AnnotationEditView(UpdateView):
         # go to the request submitted page
         return render(self.request, 'annotations/annotation_request.html')
 
+
+class AnnotationSearchGeneView(TemplateView):
+    template_name = 'annotations/annotation_search_gene.html'
+
+    def get(self, request):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(AnnotationSearchGeneView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if not user.is_authenticated:
+            context['logged_in'] = False
+            return context
+
+        context['logged_in'] = True
+
+        s = ESAnnotationDocument.search().query("match", db_obj_symbol="FBP")
+        hit_list = []
+        for hit in s:
+            hit_list.append(hit)
+        context['search_genes'] = hit_list
+        return context
 
 class AnnotationAddView(FormView):
     form_class = AnnotationAddForm
@@ -275,7 +301,7 @@ class AnnotationAddView(FormView):
             new_annotation.db_obj_id = form.cleaned_data['db_obj_id']
             new_annotation.db_obj_symbol = form.cleaned_data['db_obj_symbol']
             new_annotation.qualifier = form.cleaned_data['qualifier']
-            new_annotation.ontology_id = form.cleaned_data['ontology_id']
+            new_annotation.ontology_term = form.cleaned_data['ontology_term']
             new_annotation.db_reference = form.cleaned_data['db_reference']
             new_annotation.evidence_code = form.cleaned_data['evidence_code']
             new_annotation.with_from = form.cleaned_data['with_from']
@@ -296,7 +322,7 @@ class AnnotationAddView(FormView):
                                           db_obj_id=new_annotation.db_obj_id,
                                           db_obj_symbol=new_annotation.db_obj_symbol,
                                           qualifier=new_annotation.qualifier,
-                                          ontology_id=new_annotation.ontology_id,
+                                          ontology_term=new_annotation.ontology_term,
                                           db_reference=new_annotation.db_reference,
                                           evidence_code=new_annotation.evidence_code,
                                           with_from=new_annotation.with_from,
@@ -369,7 +395,7 @@ class ApprovalView(ListView):
                                       db_obj_id=approved_annotation.db_obj_id,
                                       db_obj_symbol=approved_annotation.db_obj_symbol,
                                       qualifier=approved_annotation.qualifier,
-                                      ontology_id=approved_annotation.ontology_id,
+                                      ontology_term=approved_annotation.ontology_term,
                                       db_reference=approved_annotation.db_reference,
                                       evidence_code=approved_annotation.evidence_code,
                                       with_from=approved_annotation.with_from,
@@ -507,6 +533,37 @@ class AnnotationChangeView(TemplateView):
             self.changed_fields = changed_fields
             self.old_record = old_record
             self.new_record = new_record
+
+
+class OntologyUpdateView(TemplateView):
+    model = AnnotationOntologyTerm
+    template_name = 'annotations/ontology_update.html'
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(OntologyUpdateView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if not user.is_authenticated:
+            context['logged_in'] = False
+            return context
+
+        context['logged_in'] = True
+        if user.is_superuser:
+            context['superuser'] = True
+        else:
+            context['superuser'] = False
+        return context
+
+    def post(self, request, *args, **kwargs):
+        button_clicked = self.request.POST['update']
+        if button_clicked:
+            ontology_terms_lst = process_all_ontology_terms_task.delay()
+            return render(self.request, 'annotations/display_progress.html',
+                          context={'task_id': ontology_terms_lst.task_id})
+        else:
+            return HttpResponse("Something is dreadfully wrong")
 
 
 class SearchView(ListView):

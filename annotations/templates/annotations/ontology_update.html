@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Planteome ontology terms update page{% endblock %}
+{% block meta_description %}Planteome ontology terms update page{% endblock %}
+
+{% block main %}
+    {% if logged_in and superuser %}
+        <span style="text-align: center">
+            <h5>Use this page to update/refresh <strong>ALL</strong> the ontology terms in the local database</h5>
+            <br>
+            <h6>Probably only needs to be done if there has been a new release on the ontologies.</h6>
+            <br>
+            <form action={% url 'annotations:ontology-update' %} method='post'>
+                {% csrf_token %}
+                <input type="submit" name='update' value="Update all Ontology terms" class="btn btn-primary">
+            </form>
+        </span>
+    {% else %}
+        <h2>You must be a logged in superuser to use this update page</h2>
+    {% endif %}
+
+{% endblock %}
