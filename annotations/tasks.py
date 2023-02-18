@@ -190,7 +190,22 @@ def process_all_ontology_terms_task(self):
     onto_terms_dict = AnnotationOntologyTerm.objects.in_bulk(field_name='onto_term')
 
     terms_lst = list(onto_terms_dict.keys())
-    update_ontology_terms(terms_lst, progress_recorder)
+    terms_to_update = update_ontology_terms(terms_lst, progress_recorder)
+
+    if terms_to_update:
+        # Need to manually update the ES documents because they won't be for bulk_update
+        # TODO: this works, but is a bit slow. Might need to optimize
+        batch_size = 100
+        if len(terms_to_update) > batch_size:
+            batch = [terms_to_update[i:i + batch_size] for i in range(0, len(terms_to_update), batch_size)]
+            for index in range(len(batch)):
+                progress_recorder.set_progress(index * batch_size, len(terms_to_update),
+                                               description="Updating ElasticSearch documents")
+                batch_qs = Annotation.objects.filter(ontology_term_id__in=batch[index])
+                ESAnnotationDocument().update(batch_qs)
+        else:
+            batch_qs = Annotation.objects.filter(ontology_term_id__in=terms_to_update)
+            ESAnnotationDocument().update(batch_qs)
 
 
 # shared function for updating ontology terms to current
@@ -265,4 +280,8 @@ def update_ontology_terms(terms_lst, progress_recorder):
     if terms_to_update:
         AnnotationOntologyTerm.objects.bulk_update(terms_to_update, ['term_definition', 'term_is_obsolete',
                                                                      'term_synonyms'])
-    return
+        # return the list of changed ids
+        terms_ids = [term.id for term in terms_to_update]
+        return terms_ids
+    else:
+        return None
