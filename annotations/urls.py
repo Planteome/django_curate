@@ -13,6 +13,7 @@ urlpatterns = [
     path('import_success/', views.TemplateView.as_view(template_name='annotations/annotation_import_success.html'), name='import_success'),
     path('request/', views.TemplateView.as_view(template_name='annotations/annotation_request.html'), name='request_success'),
     path('add/', views.AnnotationAddView.as_view(), name='annotation_add'),
+    path('add_by_gene/<int:pk>', views.AnnotationAddByGeneView.as_view(), name='annotation_add_by_gene'),
     path('add_search_gene/', views.AnnotationSearchGeneView.as_view(), name='annotation_add_search'),
     path('search/', views.SearchView.as_view(), name='search'),
     path('approval/', views.ApprovalView.as_view(), name='approval'),

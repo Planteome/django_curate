@@ -17,12 +17,14 @@ from urllib3.connectionpool import xrange
 from .models import Annotation, AnnotationDocument, AnnotationApproval, AnnotationOntologyTerm
 from taxon.models import Taxon
 from dbxrefs.models import DBXref
+from genes.models import Gene
 
 # forms import
-from .forms import AnnotationImportDocumentForm, AnnotationAddForm
+from .forms import AnnotationImportDocumentForm, AnnotationAddForm, AnnotationAddByGeneForm
 
 # ElasticSearch import
 from .documents import AnnotationDocument as ESAnnotationDocument
+from genes.documents import GeneDocument as ESGeneDocument
 from django_elasticsearch_dsl.search import Search
 
 # choices import
@@ -259,12 +261,24 @@ class AnnotationSearchGeneView(TemplateView):
 
         context['logged_in'] = True
 
-        s = ESAnnotationDocument.search().query("match", db_obj_symbol="FBP")
-        hit_list = []
-        for hit in s:
-            hit_list.append(hit)
-        context['search_genes'] = hit_list
+        if self.request.GET.get('search'):
+            s = self.get_queryset()
+            hit_list = []
+            for hit in s:
+                hit_list.append(hit)
+            context['search_genes'] = hit_list
         return context
+
+    def get_queryset(self, **kwargs):
+        search_term = self.request.GET.get('search')
+        if search_term:
+            search_term = "*" + search_term + "*"
+            postresult = ESGeneDocument.search().query("query_string", query=search_term,
+                                                             fields=["symbol", "name", "gene_id"])
+            result = postresult
+        else:
+            result = None
+        return result
 
 class AnnotationAddView(FormView):
     form_class = AnnotationAddForm
@@ -355,6 +369,103 @@ class AnnotationAddView(FormView):
         else:
             return self.render_to_response(self.get_context_data())
 
+
+
+class AnnotationAddByGeneView(FormView):
+    form_class = AnnotationAddByGeneForm
+    model = Annotation
+    template_name = 'annotations/annotation_add.html'
+    success_url = reverse_lazy('annotations:import_success')
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(AnnotationAddByGeneView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if not user.is_authenticated:
+            context['logged_in'] = False
+            return context
+
+        context['logged_in'] = True
+        if user.is_superuser:
+            context['superuser'] = True
+        else:
+            context['superuser'] = False
+
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(AnnotationAddByGeneView, self).get_form_kwargs()
+        gene = Gene.objects.get(pk=self.kwargs['pk'])
+        kwargs['db_obj_id'] = gene.gene_id
+        kwargs['taxon'] = gene.species
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        form = AnnotationAddForm(request.POST)
+        assigned_by = "Planteome_curate:" + self.request.user.username
+        if form.is_valid():
+            new_annotation = AnnotationApproval()
+            new_annotation.datetime = timezone.now()
+            new_annotation.comments = form.cleaned_data['comments']
+            new_annotation.action = choices.ApprovalActions.INITIAL
+            new_annotation.status = choices.ApprovalStates.PENDING
+            new_annotation.requestor = self.request.user
+            new_annotation.source_annotation = None
+            new_annotation.db = form.cleaned_data['db']
+            new_annotation.db_obj_id = form.cleaned_data['db_obj_id']
+            new_annotation.db_obj_symbol = form.cleaned_data['db_obj_symbol']
+            new_annotation.qualifier = form.cleaned_data['qualifier']
+            new_annotation.ontology_term = form.cleaned_data['ontology_term']
+            new_annotation.db_reference = form.cleaned_data['db_reference']
+            new_annotation.evidence_code = form.cleaned_data['evidence_code']
+            new_annotation.with_from = form.cleaned_data['with_from']
+            new_annotation.aspect = form.cleaned_data['aspect']
+            new_annotation.db_obj_name = form.cleaned_data['db_obj_name']
+            new_annotation.db_obj_synonym = form.cleaned_data['db_obj_synonym']
+            new_annotation.db_obj_type = form.cleaned_data['db_obj_type']
+            new_annotation.taxon = form.cleaned_data['taxon']
+            new_annotation.date = timezone.now().date()
+            new_annotation.assigned_by = assigned_by
+            new_annotation.annotation_extension = form.cleaned_data['annotation_extension']
+            new_annotation.gene_product_form_id = form.cleaned_data['gene_product_form_id']
+            # TODO: add lookup for internal_gene
+
+            if self.request.user.is_superuser:
+                # go ahead and save it as a new annotation
+                Annotation.objects.create(db=new_annotation.db,
+                                          db_obj_id=new_annotation.db_obj_id,
+                                          db_obj_symbol=new_annotation.db_obj_symbol,
+                                          qualifier=new_annotation.qualifier,
+                                          ontology_term=new_annotation.ontology_term,
+                                          db_reference=new_annotation.db_reference,
+                                          evidence_code=new_annotation.evidence_code,
+                                          with_from=new_annotation.with_from,
+                                          aspect=new_annotation.aspect,
+                                          db_obj_name=new_annotation.db_obj_name,
+                                          db_obj_synonym=new_annotation.db_obj_synonym,
+                                          db_obj_type=new_annotation.db_obj_type,
+                                          taxon=new_annotation.taxon,
+                                          date=new_annotation.date,
+                                          assigned_by=new_annotation.assigned_by,
+                                          gene_product_form_id=new_annotation.gene_product_form_id,
+                                          internal_gene=None,
+                                          changed_by=new_annotation.requestor,
+                                          )
+                # change the AnnotationApproval model
+                new_annotation.action = choices.ApprovalActions.APPROVE
+                new_annotation.status = choices.ApprovalStates.APPROVED
+
+                # Go ahead and save
+                new_annotation.save()
+                return HttpResponseRedirect('/annotations/import_success/')
+            else:
+                new_annotation.save()
+                return HttpResponseRedirect('/annotations/request_success/')
+
+        else:
+            return self.render_to_response(self.get_context_data())
 
 class ApprovalView(ListView):
     model = AnnotationApproval

@@ -6,10 +6,33 @@
 {% block main %}
     {% if logged_in %}
         Use this page to search for a gene to use for annotation
-        {% for gene in search_genes %}
+        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'annotations:annotation_add_search' %}">
+            <div id="search_box">
+                <input class="form-control mr-sm-2" placeholder="Search for genes: CONSTANS, AT5G15850" type="search" name="search" size="40">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
+            </div>
+        </form>
+        {%  if search_genes %}
             <br>
-            gene is {{ gene.db_obj_symbol }} with species {{ gene.taxon.name }} and id {{ gene.meta.id }}
-        {% endfor %}
+            Please pick one of these genes to annotate:
+            <br>
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <th>Gene Symbol</th>
+                    <th>Gene Name</th>
+                    <th>Gene ID</th>
+                    <th>Species</th>
+                </thead>
+            {% for gene in search_genes %}
+                <tr>
+                <td><a href="{% url 'annotations:annotation_add_by_gene' pk=gene.meta.id %}">{{ gene.symbol }}</a></td>
+                <td>{{ gene.name }}</td>
+                <td>{{ gene.gene_id }}</td>
+                <td>{{ gene.species.name }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% endif %}
     {% else %}
         <h2>You must be a logged in user to use this page</h2>
     {% endif %}
