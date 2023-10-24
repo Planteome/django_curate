@@ -19,9 +19,14 @@ import curate.choices as choices
 # Not looking for full tree or anything, just want to be able to search for them by keywords
 class AnnotationOntologyTerm(models.Model):
     onto_term = models.CharField(max_length=16, blank=False, unique=True, help_text='GO:0003993', verbose_name='Ontology ID')
+    term_name = models.TextField(max_length=1000, blank=True, help_text='Term name', verbose_name='Ontology term name')
     term_definition = models.TextField(max_length=1000, blank=True, help_text='Definition of ontology term', verbose_name='Ontology Term definition')
     term_synonyms = models.TextField(max_length=1000, blank=True, help_text='Term synonyms', verbose_name='Ontology Term synonym')
     term_is_obsolete = models.BooleanField(default=False)
+    aspect = models.PositiveSmallIntegerField(choices=choices.AspectCode.choices, blank=False, default=99)
+
+    def __str__(self):
+        return self.onto_term
 
 
 # abstract model for both annotations and those awaiting approval

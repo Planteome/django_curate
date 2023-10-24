@@ -21,6 +21,7 @@ from genes.models import Gene
 
 # Elasticsearch imports
 from .documents import AnnotationDocument as ESAnnotationDocument
+from .documents import OntologyTermDocument as ESOntologyTermDocument
 
 # choice import
 import curate.choices as choices
@@ -203,15 +204,30 @@ def process_all_ontology_terms_task(self):
                                                description="Updating ElasticSearch documents")
                 batch_qs = Annotation.objects.filter(ontology_term_id__in=batch[index])
                 ESAnnotationDocument().update(batch_qs)
+                # Also need to update the root ontology terms documents in ES
+                ESOntologyTermDocument().update(batch_qs)
         else:
             batch_qs = Annotation.objects.filter(ontology_term_id__in=terms_to_update)
             ESAnnotationDocument().update(batch_qs)
+            ESOntologyTermDocument().update(batch_qs)
 
 
 # shared function for updating ontology terms to current
 def update_ontology_terms(terms_lst, progress_recorder):
     # Get all terms in DB
     onto_terms_dict = AnnotationOntologyTerm.objects.in_bulk(terms_lst, field_name='onto_term')
+    # AmiGO uses its own abbreviations that are different for the aspect codes
+    amigo_aspect_code_dict = {
+        "plant_anatomy": 1,
+        "plant_structure_development_stage": 2,
+        "plant_trait_ontology": 3,
+        "plant_experimental_conditions_ontology": 4,
+        "plant_stress_ontology": 5,
+        "biological_process": 6,
+        "cellular_component": 7,
+        "molecular_function": 8,
+        "not_defined": 99,
+    }
 
     # set the number to get from API at once. There is a limit to how many the API can handle
     batch_size = 50
@@ -236,9 +252,11 @@ def update_ontology_terms(terms_lst, progress_recorder):
             req = s.get(search_string)
             result = req.json()
             for term in result["data"]:
-                current_terms[term["id"]] = {'definition': term.get('annotation_class_label', ''),
+                current_terms[term["id"]] = {'name': term.get('annotation_class_label', ''),
+                                             'definition': term.get('description', ''),
                                              'is_obsolete': term.get('is_obsolete', False),
-                                             'synonym': term.get('synonym', '')
+                                             'synonym': term.get('synonym', ''),
+                                             'aspect': term.get('source', "not_defined")
                                              }
     else:
         search_string = settings.AMIGO_BASE_URL + "api/entity/terms?"
@@ -252,14 +270,18 @@ def update_ontology_terms(terms_lst, progress_recorder):
         req = s.get(search_string)
         result = req.json()
         for term in result["data"]:
-            current_terms[term["id"]] = {'definition': term.get('annotation_class_label', ''),
+            current_terms[term["id"]] = {'name': term.get('annotation_class_label', ''),
+                                         'definition': term.get('description', ''),
                                          'is_obsolete': term.get('is_obsolete', False),
-                                         'synonym': term.get('synonym', '')
+                                         'synonym': term.get('synonym', ''),
+                                         'aspect': term.get('source', "not_defined")
                                          }
 
     # compare the terms in local DB and from API to see which ones need to be updated
     terms_to_update = []
     for term in onto_terms_dict:
+        local_name = onto_terms_dict[term].term_name
+        amigo_name = current_terms[term]['name']
         local_definition = onto_terms_dict[term].term_definition
         amigo_definition = current_terms[term]['definition']
         local_is_obsolete = onto_terms_dict[term].term_is_obsolete
@@ -268,18 +290,23 @@ def update_ontology_terms(terms_lst, progress_recorder):
         amigo_synonyms = current_terms[term]['synonym']
         # convert the synonyms list to a string
         amigo_synonyms = ', '.join(amigo_synonyms)
+        local_aspect = onto_terms_dict[term].aspect
+        # Use the amigo_aspect_code_dict to translate to mysql int choice
+        amigo_aspect = amigo_aspect_code_dict[current_terms[term]['aspect']]
         # put in list to check all at the same time
-        local_term = [local_definition, local_is_obsolete, local_synonyms]
-        amigo_term = [amigo_definition, amigo_is_obsolete, amigo_synonyms]
+        local_term = [local_name, local_definition, local_is_obsolete, local_synonyms, local_aspect]
+        amigo_term = [amigo_name, amigo_definition, amigo_is_obsolete, amigo_synonyms, amigo_aspect]
         # if anything is different, update term
         if local_term != amigo_term:
+            onto_terms_dict[term].term_name = amigo_name
             onto_terms_dict[term].term_definition = amigo_definition
             onto_terms_dict[term].term_is_obsolete = amigo_is_obsolete
             onto_terms_dict[term].term_synonyms = amigo_synonyms
+            onto_terms_dict[term].aspect = amigo_aspect
             terms_to_update.append(onto_terms_dict[term])
     if terms_to_update:
-        AnnotationOntologyTerm.objects.bulk_update(terms_to_update, ['term_definition', 'term_is_obsolete',
-                                                                     'term_synonyms'])
+        AnnotationOntologyTerm.objects.bulk_update(terms_to_update, ['term_name', 'term_definition', 'term_is_obsolete',
+                                                                     'term_synonyms', 'aspect'])
         # return the list of changed ids
         terms_ids = [term.id for term in terms_to_update]
         return terms_ids
