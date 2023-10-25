@@ -2,7 +2,7 @@
 import django.db.models as models
 
 #### NOTE!!!! ####
-# Any changes to any of these will require a a 'makemigrations' and 'migrate' to be
+# Any changes to any of these will require a 'makemigrations' and 'migrate' to be
 #  run to propagate to the db
 #################
 
@@ -64,6 +64,17 @@ class AspectCode(models.IntegerChoices):
     P = 6, "GO Biological Process"
     C = 7, "GO Cellular Component"
     F = 8, "GO Molecular Function"
+
+
+class AspectCodeAmigo(models.IntegerChoices):
+    plant_anatomy = 1, "plant_anatomy"
+    plant_structure_development_stage = 2, "plant_structure_development_stage"
+    plant_trait = 3, "plant_trait"
+    plant_experimental_conditions_ontology = 4, "plant_experimental_conditions_ontology"
+    plant_stress_ontology = 5, "plant_stress_ontology"
+    biological_process = 6, "biological_process"
+    cellular_component = 7, "cellular_component"
+    molecular_function = 8, "molecular_function"
 
 
 # annotation object types

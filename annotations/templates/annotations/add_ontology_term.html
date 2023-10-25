@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Add individual Ontology term{% endblock title %}
+
+{% block extra_js %}
+    <script>
+        $(function() {
+            $("#id_ontology_term").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "{{ amigo_base_url }}/api/autocomplete/ontology",
+                        dataType: "json",
+                        data: {
+                            q: request.term
+                        },
+                        success: function(data) {
+                            response($.map(data.data, function (item) {
+                              return {
+                                  label: item.id + " - " + item.annotation_class_label,
+                                  value: item.id,
+                                  aspect: item.source,
+                              };
+                            }));
+                        }
+                    })
+                },
+                minLength: 3,
+                open: function() {
+                    $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+                },
+                close: function() {
+                    $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+                },
+                select: function(event, ui) {
+                    event.preventDefault();
+                    $(this).val(ui.item.label);
+                    $("#hidden-auto").val(ui.item.value);
+                },
+                focus: function(event, ui) {
+                    event.preventDefault();
+                    $(this).val(ui.item.label);
+                    $("#hidden-auto").val(ui.item.value);
+                }
+            })
+        });
+    </script>
+
+{% endblock %}
+
+
+{% block main %}
+    {% if logged_in %}
+        Use this page to add a single ontology term. Data must be in the <a href="{{ amigo_base_url }}">Planteome AmiGO browser</a> to be pulled in.
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input id="id_ontology_term" type="text" size="100">
+            <input type="submit" value="Add term" class="btn btn-primary">
+            <input type="hidden" name="term_id" id="hidden-auto">
+        </form>
+    {% else %}
+        <h2>You must be a logged in user to use this page</h2>
+    {% endif %}
+{% endblock main %}

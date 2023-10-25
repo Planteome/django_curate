@@ -20,6 +20,7 @@ urlpatterns = [
     path('by-reference/<slug:id>', views.SearchByReferenceView.as_view(), name='by-reference'),
     path('by-taxon/<int:id>', views.SearchByTaxonView.as_view(), name='by-taxon'),
     path('ontology_update/', views.OntologyUpdateView.as_view(), name='ontology-update'),
+    path('add_ontology_term/', views.OntologyTermAddView.as_view(), name='add_onto_term'),
     path('autocomplete/', views.OntologyTermAPIView.as_view(), name='autocomplete'),
     path('', views.BaseAnnotationView.as_view(), name='base_annotation')
 

@@ -217,17 +217,7 @@ def update_ontology_terms(terms_lst, progress_recorder):
     # Get all terms in DB
     onto_terms_dict = AnnotationOntologyTerm.objects.in_bulk(terms_lst, field_name='onto_term')
     # AmiGO uses its own abbreviations that are different for the aspect codes
-    amigo_aspect_code_dict = {
-        "plant_anatomy": 1,
-        "plant_structure_development_stage": 2,
-        "plant_trait_ontology": 3,
-        "plant_experimental_conditions_ontology": 4,
-        "plant_stress_ontology": 5,
-        "biological_process": 6,
-        "cellular_component": 7,
-        "molecular_function": 8,
-        "not_defined": 99,
-    }
+    amigo_aspect_code_dict = {e.name: e.value for e in choices.AspectCodeAmigo}
 
     # set the number to get from API at once. There is a limit to how many the API can handle
     batch_size = 50

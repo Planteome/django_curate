@@ -1,3 +1,5 @@
+import json
+
 from django.forms import model_to_dict
 from django.utils import timezone
 
@@ -41,6 +43,11 @@ from .tasks import process_annotations_task, process_all_ontology_terms_task
 
 # itertools import
 from itertools import tee, chain
+
+#requests import
+from requests.packages.urllib3 import Retry
+from requests.adapters import HTTPAdapter
+import requests
 
 
 # Create your views here.
@@ -472,6 +479,59 @@ class AnnotationAddByGeneView(FormView):
 
         else:
             return self.render_to_response(self.get_context_data())
+
+
+class OntologyTermAddView(TemplateView):
+    template_name = 'annotations/add_ontology_term.html'
+
+    def get(self, request):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(OntologyTermAddView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if not user.is_authenticated:
+            context['logged_in'] = False
+            return context
+
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
+        context['logged_in'] = True
+        return context
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        term_id = request.POST.get('term_id')
+        # Get the info from the AmiGO API needed to create the ontology term
+        search_string = settings.AMIGO_BASE_URL + "api/entity/terms?"
+        search_string += "&entity=" + term_id
+        # use the urllib3/requests to retry in case the API doesn't respond correctly right away
+        s = requests.Session()
+        https_retries = Retry(connect=3, backoff_factor=2, status_forcelist=[502, 503, 504])
+        adapter = HTTPAdapter(max_retries=https_retries)
+        s.mount('http://', adapter)
+        s.mount('https://', adapter)
+        req = s.get(search_string)
+        result = req.json()
+        term_dict = result['data'][0]
+        aspect_code_dict = {e.name: e.value for e in choices.AspectCodeAmigo}
+        aspect = aspect_code_dict[term_dict['source']]
+        if 'synonym' in term_dict:
+            synonyms = ', '.join(term_dict['synonym'])
+        else:
+            synonyms = ''
+        if term_dict['is_obsolete']:
+            return HttpResponse("Term is obsolete, only non-obsolete terms can be added.")
+
+        AnnotationOntologyTerm.objects.create(
+            onto_term=term_dict['annotation_class'],
+            term_name=term_dict['annotation_class_label'],
+            term_definition=term_dict['description'],
+            term_is_obsolete=term_dict['is_obsolete'],
+            term_synonyms=synonyms,
+            aspect=aspect,
+        )
+        return HttpResponseRedirect('/annotations/import_success/')
+
 
 class ApprovalView(ListView):
     model = AnnotationApproval

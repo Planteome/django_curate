@@ -62,6 +62,10 @@ class AnnotationDocument(Document):
         ]
         related_models = [Taxon, Gene, AnnotationOntologyTerm]
 
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, AnnotationOntologyTerm):
+            return Annotation.objects.filter(ontology_term=related_instance)
+
 
 @registry.register_document
 class OntologyTermDocument(Document):
