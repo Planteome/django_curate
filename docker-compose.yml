@@ -33,6 +33,9 @@ services:
       - "3307:3306"
     env_file:
       - .env
+    command: [
+      '--wait_timeout=28800',
+    ]
     volumes:
       - /docker/curate/mysqldata:/var/lib/mysql
       - /docker/curate/mysqld:/var/run/mysql

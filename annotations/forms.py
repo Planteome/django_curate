@@ -1,7 +1,7 @@
 from django import forms
 
 # models import
-from .models import Annotation, AnnotationDocument, AnnotationApproval
+from .models import Annotation, AnnotationDocument, AnnotationApproval, AnnotationOntologyTerm
 from taxon.models import Taxon
 
 
@@ -14,6 +14,8 @@ class AnnotationImportDocumentForm(forms.ModelForm):
 
 
 class AnnotationAddForm(forms.ModelForm):
+    ontology_term = forms.CharField(widget=forms.TextInput)
+    onto_pk = forms.IntegerField(widget=forms.HiddenInput)
     class Meta:
         model = AnnotationApproval
         exclude = ['datetime', 'action', 'status', 'requestor', 'internal_gene', 'source_annotation', 'assigned_by', 'date']
@@ -22,14 +24,34 @@ class AnnotationAddForm(forms.ModelForm):
     taxon = forms.ModelChoiceField(
         queryset=Taxon.objects.order_by('name').filter(rank__contains='species'))
 
+    def clean(self):
+        cleaned_data = super().clean()
+        # Need to get the ontology term pk from the hidden field in the form filled in by the autocomplete
+        onto_pk = cleaned_data.get('onto_pk')
+        if onto_pk:
+            ontology_term = AnnotationOntologyTerm.objects.get(pk=onto_pk)
+            self.cleaned_data['ontology_term']=ontology_term
+        return  self.cleaned_data
+
 
 class AnnotationAddByGeneForm(forms.ModelForm):
+    ontology_term = forms.CharField(widget=forms.TextInput())
+    onto_pk = forms.IntegerField(widget=forms.HiddenInput)
     class Meta:
         model = AnnotationApproval
         exclude = ['datetime', 'action', 'status', 'requestor', 'internal_gene', 'source_annotation', 'assigned_by', 'date']
 
     taxon = forms.ModelChoiceField(
         queryset=Taxon.objects.order_by('name').filter(rank__contains='species'))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Need to get the ontology term pk from the hidden field in the form filled in by the autocomplete
+        onto_pk = cleaned_data.get('onto_pk')
+        if onto_pk:
+            ontology_term = AnnotationOntologyTerm.objects.get(pk=onto_pk)
+            self.cleaned_data['ontology_term']=ontology_term
+        return  self.cleaned_data
 
     def __init__(self, *args, **kwargs):
         db_obj_id = kwargs.pop('db_obj_id', None)

@@ -3,6 +3,55 @@
 
 {% block title %}Add individual Annotation{% endblock title %}
 
+{% block extra_js %}
+    <script>
+        $(function() {
+            $("#id_ontology_term").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "{% url 'annotations:autocomplete' %}",
+                        dataType: "json",
+                        data: {
+                            q: request.term
+                        },
+                        success: function(data) {
+                            response($.map(data, function (item) {
+                              return {
+                                  label: item.term_name + " - " + item.onto_term,
+                                  value: item.id,
+                                  aspect: item.aspect,
+                              };
+                            }));
+                        }
+                    })
+                },
+                minLength: 3,
+                open: function() {
+                    $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+                },
+                close: function() {
+                    $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+                },
+                select: function(event, ui) {
+                    event.preventDefault();
+                    $(this).val(ui.item.label);
+                    $("#hidden-auto").val(ui.item.value);
+                    $("#id_aspect").val(ui.item.aspect);
+                    //document.querySelector("label[for='id_aspect']").textContent = "Aspect (already selected by ontology term)";
+                },
+                focus: function(event, ui) {
+                    event.preventDefault();
+                    $(this).val(ui.item.label);
+                    $("#hidden-auto").val(ui.item.value);
+                    $("#id_aspect").val(ui.item.aspect);
+                    //document.querySelector("label[for='id_aspect']").textContent = "Aspect (already selected by ontology term)";
+                }
+            })
+        });
+    </script>
+
+{% endblock %}
+
 {% block main %}
     {% if logged_in and superuser %}
         Use this page to add a single annotation
@@ -10,6 +59,7 @@
             {% csrf_token %}
             {{ form|crispy }}
             <input type="submit" value="Submit" class="btn btn-primary">
+            <input id="hidden-auto" name="onto_pk" type="hidden">
         </form>
     {% else %}
         <h2>You must be a logged in superuser to use this import page</h2>

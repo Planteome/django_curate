@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
 
     'mozilla_django_oidc',
 

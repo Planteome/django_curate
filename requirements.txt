@@ -23,6 +23,7 @@ django-timezone-field==4.2.1
 djangorestframework==3.12.4
 elasticsearch-dsl>=7.0.0,<8.0.0
 django-elasticsearch-dsl
+django-elasticsearch-dsl-drf
 idna==3.2
 importlib-metadata==4.8.1
 kombu==5.1.0
