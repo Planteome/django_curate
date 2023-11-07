@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'genes',
     'dbxrefs',
     'annotations',
+    'api',
 ]
 
 MIDDLEWARE = [

@@ -9,7 +9,7 @@
             $("#id_ontology_term").autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: "{% url 'annotations:autocomplete' %}",
+                        url: "{% url 'api:autocomplete_onto_term' %}",
                         dataType: "json",
                         data: {
                             q: request.term
