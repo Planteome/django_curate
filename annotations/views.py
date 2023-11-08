@@ -438,7 +438,6 @@ class AnnotationAddByGeneView(FormView):
             new_annotation.assigned_by = assigned_by
             new_annotation.annotation_extension = form.cleaned_data['annotation_extension']
             new_annotation.gene_product_form_id = form.cleaned_data['gene_product_form_id']
-            # TODO: add lookup for internal_gene
             new_annotation.internal_gene = form.cleaned_data['internal_gene']
 
             if self.request.user.is_superuser:
