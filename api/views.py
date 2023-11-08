@@ -1,10 +1,13 @@
 from django.shortcuts import render
 
+from django.db.models import Q
+
 from annotations.documents import AnnotationDocument as ESAnnotationDocument
 from annotations.documents import OntologyTermDocument as ESOntologyTermDocument
 from genes.documents import GeneDocument as ESGeneDocument
+from dbxrefs.models import DBXref
 
-from .serializers import OntologyTermDocumentSerializer, GeneDocumentSerializer
+from .serializers import OntologyTermDocumentSerializer, GeneDocumentSerializer, DBXrefSerializer
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -51,6 +54,25 @@ class GeneAPIView(APIView):
                                                                   "summary", "description", "synonyms"])
             #Convert to JSON
             serializers = GeneDocumentSerializer(terms, many=True)
+            return Response(serializers.data)
+        else:
+            return Response(None)
+
+
+#DBXrefs are few enough in number no need to index in elasticsearch, but an autocomplete endpoint might still be nice
+class DBXrefAPIView(APIView):
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, *args, **kwargs):
+        max_items = 5
+        search_term = request.GET.get('q')
+
+        if search_term:
+            queryset = DBXref.objects.filter(
+                Q(dbname__icontains=search_term) |
+                Q(fullname__icontains=search_term)
+            )[:max_items]
+            serializers = DBXrefSerializer(queryset, many=True)
             return Response(serializers.data)
         else:
             return Response(None)

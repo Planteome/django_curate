@@ -1,7 +1,9 @@
 from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
+from rest_framework import serializers
 
 from annotations import documents as annotations_documents
 from genes import documents as genes_documents
+from dbxrefs.models import DBXref
 
 
 class OntologyTermDocumentSerializer(DocumentSerializer):
@@ -29,4 +31,13 @@ class GeneDocumentSerializer(DocumentSerializer):
             'summary',
             'description',
             'synonyms',
+        )
+
+
+class DBXrefSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DBXref
+        fields = (
+            'dbname',
+            'fullname',
         )
