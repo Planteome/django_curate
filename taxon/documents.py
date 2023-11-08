@@ -21,4 +21,3 @@ class TaxonDocument(Document):
             'exact_synonyms',
             'ncbi_id',
         ]
-        related_models = [Gene, Annotation]

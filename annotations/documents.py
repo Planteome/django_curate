@@ -117,5 +117,4 @@ class OntologyTermDocument(Document):
 
     class Django:
         model = AnnotationOntologyTerm
-        related_models = [Annotation]
 

@@ -23,9 +23,9 @@ class GeneDocument(Document):
         'name': fields.TextField(),
         'pk': fields.IntegerField(),
     })
-    
+
     id = fields.IntegerField(attr='id')
-    
+
     symbol = fields.TextField(
         analyzer=html_strip,
         fields={
@@ -33,7 +33,7 @@ class GeneDocument(Document):
             'keyword': fields.Keyword(),
         }
     )
-    
+
     name = fields.TextField(
         analyzer=html_strip,
         fields={
@@ -41,7 +41,7 @@ class GeneDocument(Document):
             'keyword': fields.Keyword(),
         }
     )
-    
+
     gene_id = fields.TextField(
         analyzer=html_strip,
         fields={
@@ -49,7 +49,7 @@ class GeneDocument(Document):
             'keyword': fields.Keyword(),
         }
     )
-    
+
     summary = fields.TextField(
         analyzer=html_strip,
         fields={
@@ -57,7 +57,7 @@ class GeneDocument(Document):
             'keyword': fields.Keyword(),
         }
     )
-    
+
     description = fields.TextField(
         analyzer=html_strip,
         fields={
@@ -65,7 +65,7 @@ class GeneDocument(Document):
             'keyword': fields.Keyword(),
         }
     )
-    
+
     synonyms = fields.TextField(
         analyzer=html_strip,
         fields={
@@ -80,3 +80,7 @@ class GeneDocument(Document):
     class Django:
         model = Gene
         related_models = [Taxon, Annotation]
+
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, Taxon):
+            return Gene.objects.filter(species=related_instance)
