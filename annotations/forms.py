@@ -3,6 +3,7 @@ from django import forms
 # models import
 from .models import Annotation, AnnotationDocument, AnnotationApproval, AnnotationOntologyTerm
 from taxon.models import Taxon
+from genes.models import Gene
 
 
 # classes
@@ -37,6 +38,7 @@ class AnnotationAddForm(forms.ModelForm):
 class AnnotationAddByGeneForm(forms.ModelForm):
     ontology_term = forms.CharField(widget=forms.TextInput())
     onto_pk = forms.IntegerField(widget=forms.HiddenInput)
+    gene_pk = forms.IntegerField(widget=forms.HiddenInput)
     class Meta:
         model = AnnotationApproval
         exclude = ['datetime', 'action', 'status', 'requestor', 'internal_gene', 'source_annotation', 'assigned_by', 'date']
@@ -51,11 +53,16 @@ class AnnotationAddByGeneForm(forms.ModelForm):
         if onto_pk:
             ontology_term = AnnotationOntologyTerm.objects.get(pk=onto_pk)
             self.cleaned_data['ontology_term']=ontology_term
+        gene_pk = cleaned_data.get('gene_pk')
+        if gene_pk:
+            internal_gene = Gene.objects.get(pk=gene_pk)
+            self.cleaned_data['internal_gene']=internal_gene
         return  self.cleaned_data
 
     def __init__(self, *args, **kwargs):
         db_obj_id = kwargs.pop('db_obj_id', None)
         taxon = kwargs.pop('taxon', None)
+        gene_pk = kwargs.pop('gene_pk', None)
         super(AnnotationAddByGeneForm, self).__init__(*args, **kwargs)
         self.fields['db_obj_id'].initial = db_obj_id
         self.fields['db_obj_id'].widget.attrs['readonly'] = True
@@ -63,6 +70,7 @@ class AnnotationAddByGeneForm(forms.ModelForm):
         self.fields['taxon'].initial = taxon
         self.fields['taxon'].widget.attrs['readonly'] = True
         self.fields['taxon'].diabled = True
+        self.fields['gene_pk'].initial = gene_pk
 
 class AnnotationEditForm(forms.ModelForm):
     class Meta:

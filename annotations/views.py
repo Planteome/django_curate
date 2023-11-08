@@ -407,10 +407,11 @@ class AnnotationAddByGeneView(FormView):
         gene = Gene.objects.get(pk=self.kwargs['pk'])
         kwargs['db_obj_id'] = gene.gene_id
         kwargs['taxon'] = gene.species
+        kwargs['gene_pk'] = gene.pk
         return kwargs
 
     def post(self, request, *args, **kwargs):
-        form = AnnotationAddForm(request.POST)
+        form = AnnotationAddByGeneForm(request.POST)
         assigned_by = "Planteome_curate:" + self.request.user.username
         if form.is_valid():
             new_annotation = AnnotationApproval()
@@ -438,6 +439,7 @@ class AnnotationAddByGeneView(FormView):
             new_annotation.annotation_extension = form.cleaned_data['annotation_extension']
             new_annotation.gene_product_form_id = form.cleaned_data['gene_product_form_id']
             # TODO: add lookup for internal_gene
+            new_annotation.internal_gene = form.cleaned_data['internal_gene']
 
             if self.request.user.is_superuser:
                 # go ahead and save it as a new annotation
@@ -457,7 +459,7 @@ class AnnotationAddByGeneView(FormView):
                                           date=new_annotation.date,
                                           assigned_by=new_annotation.assigned_by,
                                           gene_product_form_id=new_annotation.gene_product_form_id,
-                                          internal_gene=None,
+                                          internal_gene=new_annotation.internal_gene,
                                           changed_by=new_annotation.requestor,
                                           )
                 # change the AnnotationApproval model
