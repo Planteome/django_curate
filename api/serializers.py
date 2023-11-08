@@ -4,6 +4,7 @@ from rest_framework import serializers
 from annotations import documents as annotations_documents
 from genes import documents as genes_documents
 from dbxrefs.models import DBXref
+from taxon.models import Taxon
 
 
 class OntologyTermDocumentSerializer(DocumentSerializer):
@@ -40,4 +41,14 @@ class DBXrefSerializer(serializers.ModelSerializer):
         fields = (
             'dbname',
             'fullname',
+        )
+        
+    
+class TaxonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Taxon
+        fields = (
+            'name',
+            'related_synonyms',
+            'exact_synonyms',
         )

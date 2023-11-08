@@ -6,8 +6,9 @@ from annotations.documents import AnnotationDocument as ESAnnotationDocument
 from annotations.documents import OntologyTermDocument as ESOntologyTermDocument
 from genes.documents import GeneDocument as ESGeneDocument
 from dbxrefs.models import DBXref
+from taxon.models import Taxon
 
-from .serializers import OntologyTermDocumentSerializer, GeneDocumentSerializer, DBXrefSerializer
+from .serializers import OntologyTermDocumentSerializer, GeneDocumentSerializer, DBXrefSerializer, TaxonSerializer
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -73,6 +74,25 @@ class DBXrefAPIView(APIView):
                 Q(fullname__icontains=search_term)
             )[:max_items]
             serializers = DBXrefSerializer(queryset, many=True)
+            return Response(serializers.data)
+        else:
+            return Response(None)
+        
+        
+class TaxonAPIView(APIView):
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, *args, **kwargs):
+        max_items = 5
+        search_term = request.GET.get('q')
+
+        if search_term:
+            queryset = Taxon.objects.filter(
+                Q(name__icontains=search_term) |
+                Q(related_synonyms__icontains=search_term) |
+                Q(exact_synonyms__icontains=search_term)
+            )[:max_items]
+            serializers = TaxonSerializer(queryset, many=True)
             return Response(serializers.data)
         else:
             return Response(None)
