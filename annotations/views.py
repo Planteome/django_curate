@@ -742,6 +742,35 @@ class OntologyUpdateView(TemplateView):
             return HttpResponse("Something is dreadfully wrong")
 
 
+class OntologyTermView(TemplateView):
+    model = AnnotationOntologyTerm
+    template_name = 'annotations/onto_term.html'
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(OntologyTermView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if not user.is_authenticated:
+            context['logged_in'] = False
+            return context
+
+        context['logged_in'] = True
+        if user.is_superuser:
+            context['superuser'] = True
+        else:
+            context['superuser'] = False
+
+        term_id = self.kwargs['pk']
+        onto_term = AnnotationOntologyTerm.objects.get(pk=term_id)
+        context['onto_term'] = onto_term
+
+        annotations = Annotation.objects.filter(ontology_term=onto_term)
+        context['related_annotations'] = annotations
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
+        return context
+
 class SearchView(ListView):
     model = Annotation
     template_name = 'annotations/search.html'
