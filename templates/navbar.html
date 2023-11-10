@@ -5,24 +5,39 @@
         $("#id_genes_search").autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "{% url 'api:autocomplete_genes' %}",
+                    url: "{% url 'api:autocomplete_combined' %}",
                     dataType: "json",
                     data: {
                         q: request.term
                     },
                     success: function(data) {
                         response($.map(data, function (item) {
-                            var label_text = item.gene_id;
-                            if (item.symbol){
-                                label_text = item.symbol + " - " + label_text;
+                            if (item.gene_id) {
+                                var label_text = item.gene_id;
+                                if (item.symbol) {
+                                    label_text = item.symbol + " - " + label_text;
+                                }
+                                if (item.synonyms) {
+                                    label_text = label_text + " - " + item.synonyms;
+                                }
+                                return {
+                                    label: label_text,
+                                    value: item.gene_id,
+                                    type: 'gene'
+                                };
+                            }else{
+                                var label_text = item.onto_term;
+                                if (item.term_name) {
+                                    label_text = label_text + " - " + item.term_name;
+                                }
+                                return {
+                                    label: label_text,
+                                    value: item.onto_term,
+                                    type: 'onto_term',
+                                    id: item.id
+
+                                }
                             }
-                            if (item.synonyms){
-                                label_text = label_text + " - " + item.synonyms;
-                            }
-                            return {
-                                label: label_text,
-                                value: item.gene_id,
-                            };
                         }));
                     }
                 })
@@ -37,6 +52,10 @@
             select: function(event, ui) {
                 event.preventDefault();
                 $(this).val(ui.item.value);
+                if (ui.item.type == 'onto_term') {
+                    // Change the form action in this case
+                    $('form').attr('action', "/annotations/onto_term/" + ui.item.id);
+                }
                 $(this).closest('form').submit();
             },
             focus: function (event, ui) {
@@ -68,7 +87,7 @@
             </ul>
             <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'genes:search' %}">
                 <div>
-                    <input class="form-control mr-sm-2" placeholder="Search for genes: CONSTANS, AT5G15850" type="search" name="search" size="40" id="id_genes_search">
+                    <input class="form-control mr-sm-2" placeholder="Search: CONSTANS, AT5G15850, PO:0009032 (petal)" type="search" name="search" size="40" id="id_genes_search">
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
                 </div>
             </form>

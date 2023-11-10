@@ -8,6 +8,10 @@ from taxon.models import Taxon
 
 
 class OntologyTermDocumentSerializer(DocumentSerializer):
+    ESscore = serializers.SerializerMethodField()
+
+    def get_ESscore(self, obj):
+        return obj.meta.score
     class Meta:
         document = annotations_documents.OntologyTermDocument
         fields = (
@@ -22,6 +26,10 @@ class OntologyTermDocumentSerializer(DocumentSerializer):
 
 
 class GeneDocumentSerializer(DocumentSerializer):
+    ESscore = serializers.SerializerMethodField()
+
+    def get_ESscore(self, obj):
+        return obj.meta.score
     class Meta:
         document = genes_documents.GeneDocument
         fields = (
@@ -42,8 +50,8 @@ class DBXrefSerializer(serializers.ModelSerializer):
             'dbname',
             'fullname',
         )
-        
-    
+
+
 class TaxonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Taxon

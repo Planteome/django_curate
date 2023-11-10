@@ -32,6 +32,8 @@ class OntologyTermAPIView(APIView):
                                                           fields=["onto_term^10", "term_name^5", "term_definition^3", "term_synonyms"])
             #Convert to JSON
             serializers = OntologyTermDocumentSerializer(terms, many=True)
+            for element in serializers.data:
+                del element['ESscore']
             return Response(serializers.data)
         else:
             return Response(None)
@@ -55,9 +57,46 @@ class GeneAPIView(APIView):
                                                                   "summary", "description", "synonyms"])
             #Convert to JSON
             serializers = GeneDocumentSerializer(terms, many=True)
+            for element in serializers.data:
+                del element['ESscore']
+
             return Response(serializers.data)
         else:
             return Response(None)
+
+
+class GenesAndTermsAPIView(APIView):
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, *args, **kwargs):
+        max_items = 5
+        q = request.GET.get('q')
+
+        if q:
+            if ':' in q:
+                q = q.replace(':', '\":\"')
+            search_term = "*" + q + "*"
+            gene_terms = ESGeneDocument.search().extra(size=max_items).query("multi_match", query=search_term,
+                                                          fields=["gene_id^10", "name^5", "symbol^3",
+                                                                  "summary", "description", "synonyms"])
+            onto_terms = ESOntologyTermDocument.search().extra(size=max_items).query("multi_match", query=search_term,
+                                                          fields=["onto_term^10", "term_name^5", "term_definition^3", "term_synonyms"])
+            genes_serializer = GeneDocumentSerializer(gene_terms, many=True)
+            onto_serializer = OntologyTermDocumentSerializer(onto_terms, many=True)
+
+            combined_data = genes_serializer.data + onto_serializer.data
+            def ESscore(e):
+                return e['ESscore']
+            combined_data.sort(reverse=True, key=ESscore)
+
+            # Now that they are sorted, remove the ESscore fields
+            for element in combined_data:
+                del element['ESscore']
+
+            return Response(combined_data)
+        else:
+            return Response(None)
+
 
 
 #DBXrefs are few enough in number no need to index in elasticsearch, but an autocomplete endpoint might still be nice
@@ -77,8 +116,8 @@ class DBXrefAPIView(APIView):
             return Response(serializers.data)
         else:
             return Response(None)
-        
-        
+
+
 class TaxonAPIView(APIView):
     renderer_classes = [JSONRenderer]
 

@@ -10,5 +10,6 @@ urlpatterns = [
     path('autocomplete_genes/', views.GeneAPIView.as_view(), name='autocomplete_genes'),
     path('autocomplete_dbxrefs/', views.DBXrefAPIView.as_view(), name='autocomplete_dbxrefs'),
     path('autocomplete_taxon/', views.TaxonAPIView.as_view(), name='autcomplete_taxon'),
+    path('autocomplete_genes_and_onto_terms/', views.GenesAndTermsAPIView.as_view(), name='autocomplete_combined'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
