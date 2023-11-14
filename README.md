@@ -23,6 +23,9 @@ ALLOWED_HOSTS=curate.planteome.org #FQDN. Use '*' for wildcard but only in debug
 
 DJANGO_SECRET_KEY=
 
+ORCID_clientID=
+ORCID_secret=
+
 ENTREZ_EMAIL=""
 ENTREZ_API_KEY=
 
