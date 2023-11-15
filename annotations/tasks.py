@@ -277,7 +277,8 @@ def update_ontology_terms(terms_lst, progress_recorder):
         local_is_obsolete = onto_terms_dict[term].term_is_obsolete
         amigo_is_obsolete = current_terms[term]['is_obsolete']
         local_synonyms = onto_terms_dict[term].term_synonyms
-        amigo_synonyms = current_terms[term]['synonym']
+        # Japanese synonyms have characters that won't work in the database, so don't include them
+        amigo_synonyms = [x for x in current_terms[term]['synonym'] if "Japanese" not in x]
         # convert the synonyms list to a string
         amigo_synonyms = ', '.join(amigo_synonyms)
         local_aspect = onto_terms_dict[term].aspect
