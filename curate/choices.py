@@ -64,6 +64,7 @@ class AspectCode(models.IntegerChoices):
     P = 6, "GO Biological Process"
     C = 7, "GO Cellular Component"
     F = 8, "GO Molecular Function"
+    N = 99, "Not defined"
 
 
 class AspectCodeAmigo(models.IntegerChoices):
@@ -75,6 +76,7 @@ class AspectCodeAmigo(models.IntegerChoices):
     biological_process = 6, "biological_process"
     cellular_component = 7, "cellular_component"
     molecular_function = 8, "molecular_function"
+    not_defined = 99, "not_defined"
 
 
 # annotation object types
