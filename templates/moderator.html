@@ -3,7 +3,7 @@
 {% block title %}Moderator page{% endblock %}
 
 {% block main %}
-    {% if request.user.role == "Moderator" %}
+    {% if request.user.role == "Moderator" or request.user.role == "Superuser" %}
         <h2 align="center">All important pages for a moderator</h2>
         <br>
         <div class="card-deck">
