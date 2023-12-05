@@ -70,10 +70,10 @@
     <div class="row d-flex" style="align-items: center">
         <div>
             <a href="/" title="Home" id="logo">
-                <img src="{% static 'images/Planteome_logo1.png' %}" width="180" style="margin-right: 10px">
+                <img src="{% static 'images/Planteome_logo1.png' %}" alt="Planteome logo" width="180" style="margin-right: 10px">
             </a>
         </div>
-        <nav class="navbar navbar-expand navbar-light bg-light" role="navigation" style="height: 100px">
+        <nav class="navbar navbar-expand navbar-light bg-light" style="height: 100px">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                     <a class="nav-link" href="/">Home</a>
@@ -97,19 +97,19 @@
                 <div class="row">
                     <div class="col-auto">
                         <div style="text-align: center">
-                        <a class="fas fa-2x fa-user-alt" href="{% url 'accounts:info' user=request.user %}"login button></a>
+                        <a class="fas fa-2x fa-user-alt" href="{% url 'accounts:info' user=request.user %}"></a>
                         </div>
                         <div style="text-align: center; font-size: x-small">Account</div>
                     </div>
                     <div class="col-auto">
                         <div style="text-align: center">
-                        <a class="fas fa-2x fa-plus-circle" href="{% url 'genes:gene_add' %}"gene add button></a>
+                        <a class="fas fa-2x fa-plus-circle" href="{% url 'genes:gene_add' %}"></a>
                         </div>
                         <div style="text-align: center; font-size: x-small">Add gene</div>
                     </div>
                     <div class="col-auto">
                         <div style="text-align: center">
-                        <a class="fas fa-2x fa-plus-circle" href="{% url 'annotations:annotation_add' %}"annotation add button></a>
+                        <a class="fas fa-2x fa-plus-circle" href="{% url 'annotations:annotation_add' %}"></a>
                         </div>
                         <div style="text-align: center; font-size: x-small">Annotation</div>
                     </div>
@@ -117,7 +117,7 @@
             {% else %}
                 <div class="col">
                     <div>
-                    <a class="fas fa-2x fa-sign-in-alt" href="{% url 'accounts:login' %}"login button></a>
+                    <a class="fas fa-2x fa-sign-in-alt" href="{% url 'accounts:login' %}"></a>
                     </div>
                     <div>Sign in</div>
                 </div>
