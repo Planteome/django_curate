@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
 
+    'django_filters',
+    'django_filters_facet',
+
     'mozilla_django_oidc',
 
     'celery',

@@ -26,6 +26,9 @@ from .forms import GeneImportDocumentForm, GeneAddForm, GeneEditForm
 # tasks import
 from .tasks import process_genes_task, process_aliases_task, test_task
 
+# filters import
+from .filters import GeneFilterSet
+
 # choices import
 import curate.choices as choices
 
@@ -471,6 +474,7 @@ class SearchView(ListView):
         self.object_list = self.get_queryset().order_by('pk')[:10000]
         context = super(SearchView, self).get_context_data(**kwargs)
         context['count'] = self.object_list.count()
+        context['filter'] = self.filter_set
         adjacent_pages = 2
         page_number = context['page_obj'].number
         num_pages = context['paginator'].num_pages
@@ -498,9 +502,10 @@ class SearchView(ListView):
                                              Q(gene_id__icontains=search_term) |
                                              Q(synonyms__icontains=search_term))
             result = postresult
+            self.filter_set = GeneFilterSet(self.request.GET, queryset=result)
         else:
             result = None
-        return result
+        return self.filter_set.qs
 
 
 class SearchByReferenceView(ListView):
