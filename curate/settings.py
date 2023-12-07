@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'celery_progress',
     'crispy_forms',
     'simple_history',
+    'crispy_bootstrap4',
 
     'corsheaders',
     'rest_framework',

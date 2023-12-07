@@ -12,6 +12,7 @@ click
 click-didyoumean
 click-plugins
 click-repl
+crispy-bootstrap4
 Django==4.2.8
 django-celery-beat
 django-celery-results
