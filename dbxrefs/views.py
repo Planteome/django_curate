@@ -4,8 +4,10 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django.views.generic.edit import UpdateView
 from django.db.models import Count
+from django.core.files.base import ContentFile
 
 # urllib import
+import requests
 import urllib.request
 
 # models import
@@ -89,7 +91,8 @@ class DBXrefImportView(FormView):
             if form.cleaned_data['document']:
                 file = DBXrefDocument(document=request.FILES['document'])
             elif form.cleaned_data['document_URL']:
-                downloaded_file = urllib.request.urlopen(form.cleaned_data['document_URL'])
+                r = requests.get(form.cleaned_data['document_URL'])
+                downloaded_file = ContentFile(r.content, name="dbxref_file_from_URL")
                 file = DBXrefDocument(document=downloaded_file)
             file.save()
             self.handle_uploaded_dbxrefs(file)
@@ -128,7 +131,9 @@ class DBXrefImportView(FormView):
             dbxrefs_lst.append(DBXref(dbname=database, fullname=fullname, genericURL=genericURL,
                                       exampleID=exampleID, xrefURL=xrefURL, synonyms=synonyms))
         # Now load them into the db
-        DBXref.objects.bulk_create(dbxrefs_lst)
+        DBXref.objects.bulk_create(dbxrefs_lst,
+                                   update_conflicts=True,
+                                   update_fields=['fullname', 'genericURL', 'exampleID', 'xrefURL', 'synonyms'])
 
 class DBXrefEditView(UpdateView):
     model = DBXref
