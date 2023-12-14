@@ -5,6 +5,9 @@ from django.views.generic import TemplateView, FormView
 from django.views.generic.edit import UpdateView
 from django.db.models import Count
 
+# urllib import
+import urllib.request
+
 # models import
 from .models import DBXref, DBXrefDocument
 from annotations.models import Annotation
@@ -83,10 +86,15 @@ class DBXrefImportView(FormView):
     def post(self, request, *args, **kwargs):
         form = DBXrefImportDocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            file = DBXrefDocument(document=request.FILES['document'])
+            if form.cleaned_data['document']:
+                file = DBXrefDocument(document=request.FILES['document'])
+            elif form.cleaned_data['document_URL']:
+                downloaded_file = urllib.request.urlopen(form.cleaned_data['document_URL'])
+                file = DBXrefDocument(document=downloaded_file)
             file.save()
             self.handle_uploaded_dbxrefs(file)
             return HttpResponseRedirect('/dbxref/import_success/')
+        return self.render_to_response(self.get_context_data(form=form))
 
     def handle_uploaded_dbxrefs(self, file):
         # All dbxrefs

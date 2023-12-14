@@ -5,7 +5,9 @@
 
 {% block main %}
     {% if logged_in and superuser %}
-        Use this page to import a database xrefs (db-xrefs.yaml) file
+        Use this page to import a database xrefs (db-xrefs.yaml) file by either uploading a file or supplying a direct URL
+        <br>
+        <br>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
