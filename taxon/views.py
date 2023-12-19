@@ -202,9 +202,7 @@ class TaxonImportView(FormView):
         Taxon.objects.bulk_create(taxon_lst)
 
         # Create the ElasticSearch document for all taxon
-        last_taxon_id = Taxon.objects.last().id + 1
-        taxon_ids = [num for num in range(1, last_taxon_id)]
-        new_taxons_qs = Taxon.objects.filter(id__in=taxon_ids)
+        new_taxons_qs = Taxon.objects.all()
         ESTaxonDocument().update(new_taxons_qs)
 
 
