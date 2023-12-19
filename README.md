@@ -20,6 +20,7 @@ MYSQL_PASSWORD=
 
 DEBUG=True #False
 ALLOWED_HOSTS=curate.planteome.org #FQDN. Use '*' for wildcard but only in debug mode
+CSRF_TRUSTED_ORIGINS=https://*.planteome.org,https://*.127.0.0.1
 
 DJANGO_SECRET_KEY=
 
