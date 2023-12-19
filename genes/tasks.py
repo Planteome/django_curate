@@ -159,7 +159,7 @@ def process_aliases_task(self, file_id, species_pk):
     missing_gene_model.save()
 
     # Use the list of updated gene_ids to repopulate the Elasticsearch index
-    new_genes_qs = Gene.objects.filter(id__in=aliases_gene_id_lst)
+    new_genes_qs = Gene.objects.filter(gene_id__in=aliases_gene_id_lst)
     ESGeneDocument().update(new_genes_qs)
 
 
