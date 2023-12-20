@@ -99,3 +99,4 @@ class AnnotationObject(models.IntegerChoices):
     lnc_RNA = 16, "lnc_RNA"
     antisense_RNA = 17, "antisense_RNA"
     uORF = 18, "uORF"
+    transposable_element_gene = 19, "transposable_element_gene"
