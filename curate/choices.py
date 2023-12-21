@@ -70,7 +70,7 @@ class AspectCode(models.IntegerChoices):
 class AspectCodeAmigo(models.IntegerChoices):
     plant_anatomy = 1, "plant_anatomy"
     plant_structure_development_stage = 2, "plant_structure_development_stage"
-    plant_trait = 3, "plant_trait"
+    plant_trait_ontology = 3, "plant_trait_ontology"
     plant_experimental_conditions_ontology = 4, "plant_experimental_conditions_ontology"
     plant_stress_ontology = 5, "plant_stress_ontology"
     biological_process = 6, "biological_process"
