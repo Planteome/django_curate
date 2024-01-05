@@ -87,6 +87,9 @@ def process_annotations_task(self, file_id, user_id):
     ontology_term_objects = (AnnotationOntologyTerm(onto_term=term) for term in ontology_term_lst)
     AnnotationOntologyTerm.objects.bulk_create(ontology_term_objects, ignore_conflicts=True)
     ontology_term_dict = AnnotationOntologyTerm.objects.in_bulk(ontology_term_lst, field_name='onto_term')
+    ontology_term_list = list(ontology_term_dict.keys())
+    onto_terms_qs = AnnotationOntologyTerm.objects.filter(onto_term__in=ontology_term_list)
+    ESOntologyTermDocument().update(onto_terms_qs)
 
 
     # use the choices fields for the evidence_code, aspect and db_obj_type
@@ -204,12 +207,9 @@ def process_all_ontology_terms_task(self):
                                                description="Updating ElasticSearch documents")
                 batch_qs = Annotation.objects.filter(ontology_term_id__in=batch[index])
                 ESAnnotationDocument().update(batch_qs)
-                # Also need to update the root ontology terms documents in ES
-                ESOntologyTermDocument().update(batch_qs)
         else:
             batch_qs = Annotation.objects.filter(ontology_term_id__in=terms_to_update)
             ESAnnotationDocument().update(batch_qs)
-            ESOntologyTermDocument().update(batch_qs)
 
 
 # shared function for updating ontology terms to current
@@ -296,10 +296,17 @@ def update_ontology_terms(terms_lst, progress_recorder):
             onto_terms_dict[term].aspect = amigo_aspect
             terms_to_update.append(onto_terms_dict[term])
     if terms_to_update:
+        progress_recorder.set_progress(0,2,description="Updating ontology terms in database")
         AnnotationOntologyTerm.objects.bulk_update(terms_to_update, ['term_name', 'term_definition', 'term_is_obsolete',
                                                                      'term_synonyms', 'aspect'])
         # return the list of changed ids
         terms_ids = [term.id for term in terms_to_update]
+
+        # Update the ES Ontology term documents
+        terms_qs = AnnotationOntologyTerm.objects.filter(onto_term__in=terms_ids)
+        progress_recorder.set_progress(1,2,description="Updating ontology terms in ElasticSearch")
+        ESOntologyTermDocument().update(terms_qs)
+
         return terms_ids
     else:
         return None
