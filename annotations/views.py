@@ -35,6 +35,9 @@ import curate.choices as choices
 # tasks import
 from .tasks import process_annotations_task, process_all_ontology_terms_task
 
+# filters import
+from .filters import AnnotationFilterSet
+
 # itertools import
 from itertools import tee, chain
 
@@ -786,6 +789,7 @@ class SearchView(ListView):
         context = super(SearchView, self).get_context_data(**kwargs)
         context['count'] = self.object_list.count()
         context['amigo_base_url'] = settings.AMIGO_BASE_URL
+        context['filter'] = self.filter_set
         context = adjust_pagination(context)
         return context
 
@@ -797,9 +801,10 @@ class SearchView(ListView):
                                                    Q(db_obj_name__icontains=search_term) |
                                                    Q(db_obj_synonym__icontains=search_term))
             result = postresult
+            self.filter_set = AnnotationFilterSet(self.request.GET, queryset=result)
         else:
             result = None
-        return result
+        return self.filter_set.qs
 
 
 class SearchByReferenceView(ListView):
