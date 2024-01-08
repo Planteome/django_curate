@@ -13,11 +13,11 @@
 
     {# List of pages (wtih current "active") #}
     {% for page in page_numbers %}
-        {% ifequal page page_obj.number %}
+        {% if page == page_obj.number %}
             <li class="active page-item"><span class="page-link"><a href="#" style="color: white">{{ page }}</a></span> </li>
         {% else %}
             <li class="page-item"><span class="page-link"><a href="?page={{ page }}">{{ page }}</a></span> </li>
-        {% endifequal %}
+        {% endif %}
     {% endfor %}
 
     {# Last page #}
