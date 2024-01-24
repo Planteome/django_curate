@@ -179,7 +179,7 @@
             {% if logged_in %}
                 &nbsp;
                 <div class="d-inline-block align-middle">
-                    <a class="btn-lg btn-primary" role="button" href="{% url 'annotations:annotation_add' %}">Add new annotation</a>
+                    <a class="btn-lg btn-primary" role="button" href="{% url 'annotations:annotation_add_by_gene' pk=gene.pk %}">Add new annotation</a>
                 </div>
             {% endif %}
         </div>
