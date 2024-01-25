@@ -822,6 +822,7 @@ class SearchByReferenceView(ListView):
         context = super(SearchByReferenceView, self).get_context_data(**kwargs)
         context['count'] = self.object_list.count()
         context = adjust_pagination(context)
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
         return context
 
     def get_queryset(self):
@@ -849,6 +850,7 @@ class SearchByTaxonView(ListView):
         context = super(SearchByTaxonView, self).get_context_data(**kwargs)
         context['count'] = self.object_list.count()
         context = adjust_pagination(context)
+        context['amigo_base_url'] = settings.AMIGO_BASE_URL
         return context
 
     def get_queryset(self):
