@@ -11,7 +11,12 @@ from django.conf import settings
 
 # models import
 from taxon.models import Taxon
-from annotations.models import Annotation
+from annotations.models import Annotation, AnnotationApproval
+from accounts.models import User
+from genes.models import GeneApproval
+
+# choices import
+from curate.choices import ApprovalStates
 
 
 class HomeView(TemplateView):
@@ -53,4 +58,19 @@ class HomeView(TemplateView):
         # now get the actual last 10 annotated genes
         annotation_10_list = Annotation.objects.filter(pk__in=list(annot_dict.values())).order_by('-id')
         context['latest_annotations'] = annotation_10_list
+        return context
+
+
+class SuperUserView(TemplateView):
+    template_name = 'superuser.html'
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(SuperUserView, self).get_context_data(**kwargs)
+        context['user_approval_count'] = User.objects.filter(is_approved=False).count()
+        context['gene_approval_count'] = GeneApproval.objects.filter(status=ApprovalStates.PENDING).count()
+        context['annotation_approval_count'] = AnnotationApproval.objects.filter(status=ApprovalStates.PENDING).count()
+
         return context

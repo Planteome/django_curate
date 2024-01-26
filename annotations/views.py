@@ -294,7 +294,7 @@ class AnnotationAddView(FormView):
     form_class = AnnotationAddForm
     model = Annotation
     template_name = 'annotations/annotation_add.html'
-    success_url = reverse_lazy('annotations:import_success')
+    success_url = reverse_lazy('annotations:request_success')
 
     def get(self, request):
         return self.render_to_response(self.get_context_data())

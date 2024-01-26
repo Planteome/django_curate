@@ -11,13 +11,13 @@
                 <h3 class="card-title" align="center">Approvals</h3>
                 <div class="card-body">
                     <h4 class="card-title"><a href="{% url 'accounts:approve' %}">Account approval page</a></h4>
-                    <p class="card-text">Approve user accounts</p>
+                    <p class="card-text">Approve user accounts awaiting approval ({{ user_approval_count }})</p>
                     <br>
                     <h4 class="card-title"><a href="{% url 'genes:approval' %}">Gene approval page</a></h4>
-                    <p class="card-text">Approve new and changed genes</p>
+                    <p class="card-text">Approve new and changed genes awaiting approval ({{ gene_approval_count }})</p>
                     <br>
                     <h4 class="card-title"><a href="{% url 'annotations:approval' %}">Annotation approval page</a></h4>
-                    <p class="card-text">Approve new annotations</p>
+                    <p class="card-text">Approve new annotations awaiting approval ({{ annotation_approval_count }})</p>
                 </div>
             </div>
             <div class="card border-primary mb-3">
