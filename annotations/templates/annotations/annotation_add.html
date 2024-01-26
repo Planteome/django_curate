@@ -53,7 +53,7 @@
 {% endblock %}
 
 {% block main %}
-    {% if logged_in and superuser %}
+    {% if logged_in %}
         Use this page to add a single annotation
         <br>
         Note: Not all ontology terms are in database. If the term you want to use is not, go to the <a href="{% url 'annotations:add_onto_term' %}">ontology term add page</a>
