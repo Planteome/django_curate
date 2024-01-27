@@ -81,7 +81,7 @@ def process_annotations_task(self, file_id, user_id):
     gene_id_objects = Gene.objects.filter(species__in=taxon_lst, gene_id__in=gene_id_lst)
     gene_id_dict = {}
     for gene in gene_id_objects:
-        gene_id_dict[gene.gene_id] = gene
+        gene_id_dict[gene.gene_id.lower()] = gene
 
     # get the ontology terms, create them if needed first
     ontology_term_objects = (AnnotationOntologyTerm(onto_term=term) for term in ontology_term_lst)
@@ -117,14 +117,14 @@ def process_annotations_task(self, file_id, user_id):
         gene_product_form_id = line[16]
 
         # try to find the internal gene
-        if db_obj_symbol in gene_id_dict:
-            internal_gene = gene_id_dict[db_obj_symbol]
-        elif db_obj_id in gene_id_dict:
-            internal_gene = gene_id_dict[db_obj_id]
-        elif db_obj_name in gene_id_dict:
-            internal_gene = gene_id_dict[db_obj_name]
-        elif db_obj_synonym in gene_id_dict:
-            internal_gene = gene_id_dict[db_obj_synonym]
+        if db_obj_symbol.lower() in gene_id_dict:
+            internal_gene = gene_id_dict[db_obj_symbol.lower()]
+        elif db_obj_id.lower() in gene_id_dict:
+            internal_gene = gene_id_dict[db_obj_id.lower()]
+        elif db_obj_name.lower() in gene_id_dict:
+            internal_gene = gene_id_dict[db_obj_name.lower()]
+        elif db_obj_synonym.lower() in gene_id_dict:
+            internal_gene = gene_id_dict[db_obj_synonym.lower()]
         else:
             internal_gene = None
 
