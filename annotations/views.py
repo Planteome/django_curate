@@ -129,7 +129,13 @@ class AnnotationView(TemplateView):
         db_references = annotation.db_reference.split("|")
         for db_reference in db_references:
             dbname = db_reference.split(':')[0]
-            db_reference_dict[db_reference] = DBXref.objects.get(Q(dbname=dbname) | Q(synonyms__icontains=dbname))
+            try:
+                db_reference_dict[db_reference] = DBXref.objects.get(Q(dbname=dbname))
+            except DBXref.DoesNotExist:
+                try:
+                    db_reference_dict[dbname] = DBXref.objects.get(synonyms__icontains=dbname)
+                except DBXref.DoesNotExist:
+                    db_reference_dict[dbname] = None
         context['db_references_dict'] = db_reference_dict
         # Get the count of changes that been approved for this annotation
         change_count = AnnotationApproval.objects.filter(source_annotation=annotation, status=choices.ApprovalStates.APPROVED).count()
