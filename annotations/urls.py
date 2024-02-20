@@ -22,6 +22,7 @@ urlpatterns = [
     path('ontology_update/', views.OntologyUpdateView.as_view(), name='ontology-update'),
     path('add_ontology_term/', views.OntologyTermAddView.as_view(), name='add_onto_term'),
     path('onto_term/<int:pk>', views.OntologyTermView.as_view(), name='onto_term'),
+    path('link_internal/<int:pk>', views.LinkInternalView.as_view(), name='link_internal'),
     path('', views.BaseAnnotationView.as_view(), name='base_annotation')
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

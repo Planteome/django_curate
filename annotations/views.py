@@ -262,6 +262,29 @@ class AnnotationEditView(UpdateView):
         return render(self.request, 'annotations/annotation_request.html')
 
 
+class LinkInternalView(TemplateView):
+    model = Annotation
+    template_name = 'annotations/annotation_link_internal.html'
+
+    def get(self, reqeust, *args, **kwargs):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super(LinkInternalView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if not user.is_authenticated:
+            context['logged_in'] = False
+            return context
+
+        context['logged_in'] = True
+
+        annotation_id = self.kwargs['pk']
+        annotation = Annotation.objects.get(pk=annotation_id)
+        context['annotation'] = annotation
+
+        return context
+
+
 class AnnotationSearchGeneView(TemplateView):
     template_name = 'annotations/annotation_search_gene.html'
 

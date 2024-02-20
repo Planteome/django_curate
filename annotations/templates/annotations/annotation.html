@@ -14,6 +14,11 @@
             <div id="addAnnotation" class="d-inline-block">
                 <a href="{% url 'annotations:annotation_add' %}" class="btn btn-primary" role="button">Add new Annotation</a>
             </div>
+            {% if not annotation.internal_gene %}
+                <div id="AnnotationLinkInternal" class="d-inline-block">
+                    <a href="{% url 'annotations:link_internal' pk=annotation.id %}" class="btn btn-success" role="button">Link Internal Gene</a>
+                </div>
+            {% endif %}
             {% if change_count %}
                 <div id="annotationChanges" class="d-inline-block">
                     <a href="{% url 'annotations:annotation_changes' pk=annotation.id %}" class="btn btn-dark" role="button">View {{ change_count }} approved changes</a>

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Planteome annotation page{% endblock %}
+{% block meta_description %}Planteome annotation page{% endblock %}
+
+{% block main %}
+    {% if logged_in %}
+        <h2>HI!</h2>
+    {% else %}
+        <h2>You must be a logged in user to use this page.</h2>
+    {% endif %}
+
+{% endblock %}
