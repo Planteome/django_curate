@@ -5,7 +5,7 @@ This project is an attempt to create a python-django based site for curators/use
 
 # Install
 ## Prerequisites
-This project requires Docker to already be installed and configured. Docker-compose is also required.
+This project requires Docker to already be installed and configured. Docker-compose is also required. See notes below if using podman instead of docker.
 
 Development is done using the Professional version of PyCharm from JetBrains. The free versions do not support Docker and Django for debugging.
 To set up PyCharm to use Docker as a remote interpreter, follow the instructions at https://www.jetbrains.com/help/pycharm/using-docker-compose-as-a-remote-interpreter.html#configuring-docker
@@ -74,3 +74,31 @@ annotations
 Genes must be imported after taxonomy, and annotations after genes.
 
 More info on doing this will be added to this doc later.
+
+
+## Using podman instead of docker
+Assumes podman is already installed.
+
+Additional steps if using podman instead of docker:
+
+1. Set up the sub{uids,gids}.
+   ```
+      sudo usermod --add-subuids 100000-100999 username
+      sudo usermod --add-subgids 100000-100999 username
+   ```
+2. Optional: Change the container storage location by adding the file ~/.config/containers/storage.conf with the following:
+   ```
+      [storage]
+      driver = "overlay"
+      graphroot = "/data/podman"
+   ```
+3. Run the migrate tool with `podman system migrate`
+4. Instead of using `docker` use `podman` and `podman-compose` instead of `docker compose`
+
+Notes: It might ask from where to download the images from. I chose docker.io for each, but I don't think it matters.
+
+Also, the permissions for the mariadb and elasticsearch volumes may need to be changed. I did it with:
+```
+sudo chown -R 100999:jaiswallab /data/docker_volumes/curate/es
+sudo chown -R 100998:100998 /data/docker_columes/curate/mysqldata
+```
