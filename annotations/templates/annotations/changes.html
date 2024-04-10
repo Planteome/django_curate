@@ -27,6 +27,8 @@
                 <td><a href="{% url 'accounts:info' delta.changed_by %}">{{ delta.changed_by }}</a></td>
                 <td>{{ delta.datetime }}</td>
             </tr>
+        {% empty %}
+            The changes may have been entered by a superuser internally and will not show up here
         {% endfor %}
         </tbody>
     {% endfor %}

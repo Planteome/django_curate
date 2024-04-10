@@ -5,7 +5,37 @@
 
 {% block main %}
     {% if logged_in %}
-        <h2>HI!</h2>
+        <h2>Use this page to link to a known gene in Planteome</h2>
+        <br>
+        <div style="text-align: center">
+            <form class="form-inline my-2 my-lg-0" style="display: inline-block" method="GET" action="{% url 'annotations:link_internal' pk=annotation.pk %}">
+                <div id="search_box">
+                    <input class="form-control mr-sm-2" placeholder="Search for genes: CONSTANS, AT5G15850" type="search" name="search" size="40">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
+                </div>
+            </form>
+        </div>
+        {%  if search_genes %}
+            <br>
+            Please pick one of these genes to link:
+            <br>
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <th>Gene Symbol</th>
+                    <th>Gene Name</th>
+                    <th>Gene ID</th>
+                    <th>Species</th>
+                </thead>
+            {% for gene in search_genes %}
+                <tr>
+                <td><a href="{% url 'annotations:link_with_gene' annot_pk=annotation.pk gene_pk=gene.meta.id %}">{{ gene.symbol }}</a></td>
+                <td>{{ gene.name }}</td>
+                <td>{{ gene.gene_id }}</td>
+                <td>{{ gene.species.name }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% endif %}
     {% else %}
         <h2>You must be a logged in user to use this page.</h2>
     {% endif %}

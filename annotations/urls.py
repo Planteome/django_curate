@@ -23,6 +23,7 @@ urlpatterns = [
     path('add_ontology_term/', views.OntologyTermAddView.as_view(), name='add_onto_term'),
     path('onto_term/<int:pk>', views.OntologyTermView.as_view(), name='onto_term'),
     path('link_internal/<int:pk>', views.LinkInternalView.as_view(), name='link_internal'),
+    path('link_with_gene/<int:annot_pk>/<int:gene_pk>', views.LinkInternalGeneView.as_view(), name='link_with_gene'),
     path('', views.BaseAnnotationView.as_view(), name='base_annotation')
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

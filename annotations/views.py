@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import model_to_dict
 from django.utils import timezone
 
@@ -282,7 +283,68 @@ class LinkInternalView(TemplateView):
         annotation = Annotation.objects.get(pk=annotation_id)
         context['annotation'] = annotation
 
+        if self.request.GET.get('search'):
+            s = self.get_queryset()
+            hit_list = []
+            for hit in s:
+                hit_list.append(hit)
+            context['search_genes'] = hit_list
         return context
+
+    def get_queryset(self, **kwargs):
+        search_term = self.request.GET.get('search')
+        if search_term:
+            search_term = "*" + search_term + "*"
+            postresult = ESGeneDocument.search().query("query_string", query=search_term,
+                                                             fields=["symbol", "name", "gene_id"])
+            result = postresult
+        else:
+            result = None
+        return result
+
+
+class LinkInternalGeneView(LoginRequiredMixin, TemplateView):
+    model = Annotation
+    template_name = 'annotations/annotation_request.html'
+
+    def get(self, request, *args, **kwargs):
+        context = super(LinkInternalGeneView, self)
+        user = self.request.user
+
+        existing_annotation = get_object_or_404(Annotation, pk=self.kwargs['annot_pk'])
+        existing_gene = get_object_or_404(Gene, pk=self.kwargs['gene_pk'])
+
+        # initialize the changed annotation to the same as the existing
+        changed_annotation = AnnotationApproval()
+        for field in existing_annotation._meta.fields:
+            setattr(changed_annotation, field.name, getattr(existing_annotation, field.name))
+        # Change the value
+        changed_annotation.internal_gene = existing_gene
+
+        # update status and requestor fields
+        status = choices.ApprovalStates.PENDING
+        requestor = self.request.user
+        curr_time = timezone.now()
+
+        # add new values
+        changed_annotation.status = status
+        changed_annotation.action = choices.ApprovalActions.INITIAL
+        changed_annotation.requestor = requestor
+        changed_annotation.datetime = curr_time
+        changed_annotation.date = curr_time
+        changed_annotation.source_annotation = existing_annotation
+
+        # Set it to approved already if the user was a superuser
+        if requestor.is_superuser:
+            changed_annotation.status = choices.ApprovalStates.APPROVED
+            changed_annotation.action = choices.ApprovalActions.APPROVE
+            existing_annotation.internal_gene = existing_gene
+            existing_annotation.save()
+
+        # save it to the db as a AnnotationApproval model
+        changed_annotation.save()
+
+        return render(self.request, 'annotations/annotation_request.html')
 
 
 class AnnotationSearchGeneView(TemplateView):
