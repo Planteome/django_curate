@@ -271,11 +271,12 @@ class GeneAddView(FormView):
 
     def post(self, request, *args, **kwargs):
         form = GeneAddForm(request.POST)
+        object_type_dict = {e.name: e.value for e in choices.GeneType}
         if form.is_valid():
             symbol = form.cleaned_data['symbol']
             name = form.cleaned_data['name']
             gene_id = form.cleaned_data['gene_id']
-            gene_type = form.cleaned_data['gene_type']
+            gene_type = object_type_dict[form.cleaned_data['gene_type']]
             species = form.cleaned_data['species']
             synonyms = form.cleaned_data['synonyms']
             location = form.cleaned_data['location']

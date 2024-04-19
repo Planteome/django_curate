@@ -18,7 +18,7 @@ class AbstractGene(models.Model):
     symbol = models.CharField(max_length=255, blank=True, help_text='Example - BBX22')
     name = models.CharField(max_length=255, blank=True, help_text='Example - B-box domain protein 22')
     gene_id = models.CharField(max_length=255, help_text='Example - AT1G78600')
-    gene_type = models.CharField(max_length=255, blank=True, help_text='Example - protein_coding')
+    gene_type = models.PositiveSmallIntegerField(choices=choices.GeneType.choices, blank=True, help_text='Example - protein_coding')
     species = models.ForeignKey(Taxon, on_delete=models.PROTECT, limit_choices_to=Q(rank='species') | Q(rank='subspecies'))
     synonyms = models.TextField(max_length=2000, blank=True, help_text='Example - DBB3|Double B-Box 3|LZF1')
     location = models.CharField(max_length=255, blank=True, help_text='Example - Chromosome 1: 29566863 - 29568931')

@@ -21,6 +21,9 @@ import re
 # json import
 import json
 
+#choices import
+import curate.choices as choices
+
 #####
 # NOTE!!!!
 # Celery will have to be restarted if any changes are made to the tasks below
@@ -38,13 +41,14 @@ def process_genes_task(self, file_id, species_pk, user_id):
     total_genes_to_save = len(genes)
     chrLine = genes.columns.str.startswith('Chromosome')
     symbolLine = genes.columns.str.contains('Gene name|Symbol')
+    object_type_dict = {e.name: e.value for e in choices.GeneType}
     for index, line in genes.iterrows():
         gene_id = line['Gene stable ID']
         gene_chr = line[chrLine][0]
         gene_start = line['Gene start (bp)']
         gene_end = line['Gene end (bp)']
         gene_symbol = line[symbolLine][0]
-        gene_type = line['Gene type']
+        gene_type = object_type_dict[line['Gene type']]
         gene_desc = line['Gene description']
 
         gene_location = "Chromosome " + str(gene_chr) + ": " + str(gene_start) + " - " + str(gene_end)
