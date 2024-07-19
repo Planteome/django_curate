@@ -20,6 +20,10 @@ from .documents import TaxonDocument as ESTaxonDocument
 # views import
 from curate.views import HomeView
 
+# choices import
+import curate.choices as choices
+
+
 # forms import
 from .forms import TaxonomyImportDocumentForm, TaxonomyAddForm
 
@@ -92,7 +96,16 @@ class TaxonView(TemplateView):
         if gene_count > 0:
             context['gene_count'] = gene_count
 
-                # Get the 10 latest unique genes that have annotations
+        # Get the gene objects by type with counts
+        objects_by_type = Gene.objects.filter(species=taxon).values('gene_type').annotate(Count('gene_type'))
+        object_type_dict = {e.value: e.name for e in choices.GeneType}
+        objects_with_label = {}
+        for obj in objects_by_type:
+            objects_with_label[object_type_dict[obj['gene_type']]] = obj['gene_type__count']
+        if objects_by_type.count() > 0:
+            context['objects_by_type'] = objects_with_label
+
+        # Get the 10 latest unique genes that have annotations
         # First get the last 100, hopefully there are 10 unique genes in there
         # If using postgres, could just use a "distinct(db_obj_id)" to the 1st query
         # Since using mysql, have to manually find the 10 unique genes and do another query

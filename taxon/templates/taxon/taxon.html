@@ -10,7 +10,7 @@
         <h2>Taxonomy: {{ taxon.name }}</h2>
         <br>
         {% if gene_count %}
-            <ul><h5>{{ gene_count }} genes in database</h5></ul>
+            <ul><h5>{{ gene_count }} objects in database</h5></ul>
         {% endif %}
         <div class="card">
             <div class="card-body">
@@ -44,6 +44,18 @@
                 </div>
             </div>
         {% endif  %}
+        {% if objects_by_type %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Objects by type:</h4>
+                {%  for type, count in objects_by_type.items %}
+                    {{ type }} - {{ count }}
+                    <br>
+                {% endfor %}
+
+            </div>
+        </div>
+        {% endif %}
     </div>
     <div id="taxon_padding" style="alignment: center; width: 15%"></div>
 {% if latest_annotations %}
