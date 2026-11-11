@@ -83,8 +83,8 @@ Additional steps if using podman instead of docker:
 
 1. Set up the sub{uids,gids}.
    ```
-      sudo usermod --add-subuids 100000-100999 username
-      sudo usermod --add-subgids 100000-100999 username
+      sudo usermod --add-subuids 100000-165535 username
+      sudo usermod --add-subgids 100000-165535 username
    ```
 2. Optional: Change the container storage location by adding the file ~/.config/containers/storage.conf with the following:
    ```
@@ -99,6 +99,6 @@ Notes: It might ask from where to download the images from. I chose docker.io fo
 
 Also, the permissions for the mariadb and elasticsearch volumes may need to be changed. I did it with:
 ```
-sudo chown -R 100999:jaiswallab /data/docker_volumes/curate/es
-sudo chown -R 100998:100998 /data/docker_columes/curate/mysqldata
+sudo chown -R 100999:jaiswallab /data/podman_volumes/curate/es
+sudo chown -R 100998:100998 /data/podman_volumes/curate/mysqldata
 ```
